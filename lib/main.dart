@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_finance_app/account_page.dart';
+import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:get/get.dart';
 
 void main() {
