@@ -32,7 +32,7 @@ class AccountPageLogic extends GetxController
     startRotation();
     try {
       // Simulates network request
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
     } finally {
       stopRotation();
     }

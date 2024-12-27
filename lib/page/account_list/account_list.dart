@@ -1,9 +1,7 @@
-import 'dart:math';
-
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/page/account_detail/account_detail_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:get/get.dart';
 
 class AccountListWidget extends StatelessWidget {
   const AccountListWidget({super.key});
@@ -16,7 +14,7 @@ class AccountListWidget extends StatelessWidget {
     return SliverPadding(
         padding: const EdgeInsets.all(16.0),
         sliver: SliverMasonryGrid.extent(
-          maxCrossAxisExtent: isTablet ? 300 : 200, // 平板上更宽
+          maxCrossAxisExtent: isTablet ? 300 : 200,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
           childCount: accounts.length,
@@ -32,7 +30,7 @@ class AccountListWidget extends StatelessWidget {
       {
         'name': '支付宝',
         'balance': 84290.45,
-        'color': Colors.purple,
+        'color': Colors.lightBlue[200],
         'change': '+125.78',
         'assets': [
           {'name': '余额宝', 'amount': 1758.08},
@@ -46,7 +44,7 @@ class AccountListWidget extends StatelessWidget {
       {
         'name': '微信钱包',
         'balance': 23567.77,
-        'color': Colors.blue,
+        'color': Colors.lightGreen[400],
         'change': '-320.45',
         'assets': [
           {'name': '零钱通', 'amount': 8483.54},
@@ -56,7 +54,7 @@ class AccountListWidget extends StatelessWidget {
       {
         'name': '招商银行',
         'balance': -29862.25,
-        'color': Colors.green,
+        'color': Colors.orangeAccent[200],
         'change': '+430.67',
         'assets': [
           {'name': '存款', 'amount': 14206.47},
@@ -67,49 +65,56 @@ class AccountListWidget extends StatelessWidget {
   }
 
   Widget _buildAccountCard(Map<String, dynamic> account, int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          Get.context!,
-          MaterialPageRoute(
-            builder: (context) => AccountDetailsPage(account: account),
+    return OpenContainer(
+      openElevation: 0,
+      closedElevation: 0,
+      openBuilder: (context, _) => AccountDetailsPage(account: account),
+      closedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      openShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      closedBuilder: (context, openContainer) => GestureDetector(
+        onTap: openContainer,
+        child: Card(
+          elevation: 0,
+          color: account['color'], // Set card color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-        );
-      },
-      child: Card(
-        color: account['color'].withOpacity(0.2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                account['name'],
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '余额: ${account['balance']}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '变化: ${account['change']}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: account['change'].startsWith('+')
-                      ? Colors.green
-                      : Colors.red,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  account['name'],
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  '余额: ${account['balance']}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '变化: ${account['change']}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: account['change'].startsWith('+')
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

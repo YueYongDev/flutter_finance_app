@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AccountDetailsPage extends StatelessWidget {
   final Map<String, dynamic> account;
@@ -29,6 +31,20 @@ class AccountDetailsPage extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Handle the button press to add a new asset
+          print("Add Asset Button Pressed");
+          showCupertinoModalBottomSheet(
+            expand: true,
+            context: context,
+            enableDrag: false,
+            builder: (context) => EditAssetPage(),
+          );
+        },
+        backgroundColor: account['color'],
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -47,9 +63,9 @@ class AccountDetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             '账户总览',
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 16),
@@ -59,13 +75,13 @@ class AccountDetailsPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '总资产',
-                    style: const TextStyle(fontSize: 16, color: Colors.white70),
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${totalAssets.toStringAsFixed(2)}',
+                    totalAssets.toStringAsFixed(2),
                     style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -76,13 +92,13 @@ class AccountDetailsPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '净资产',
-                    style: const TextStyle(fontSize: 16, color: Colors.white70),
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${netAssets.toStringAsFixed(2)}',
+                    netAssets.toStringAsFixed(2),
                     style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -136,7 +152,7 @@ class AccountDetailsPage extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

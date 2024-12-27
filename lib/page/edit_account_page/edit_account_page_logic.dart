@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
 import 'package:get/get.dart';
@@ -10,6 +10,20 @@ class AccountController extends GetxController {
   final nameController = TextEditingController();
   String selectedCurrency = "CNY";
   String selectedColor = "FFABAB";
+  var remainingCharacters = 20.obs;
+  Color remainingCharactersColor = Colors.grey;
+
+  void updateRemainingCharacters(String text) {
+    remainingCharacters.value = 20 - text.length;
+    if (remainingCharacters.value <= 3) {
+      remainingCharactersColor = Colors.red;
+    } else if (remainingCharacters.value <= 10) {
+      remainingCharactersColor = Colors.orange;
+    } else {
+      remainingCharactersColor = Colors.grey;
+    }
+    update();
+  }
 
   void fetchAccounts() async {
     List<Account> retrievedAccounts = await dbHelper

@@ -195,8 +195,7 @@ class NetAssetsSection extends StatelessWidget {
                                   ),
                                 ),
                                 rightTitles: const AxisTitles(
-                                    sideTitles:
-                                        const SideTitles(showTitles: false)),
+                                    sideTitles: SideTitles(showTitles: false)),
                                 topTitles: const AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),
                               ),

@@ -32,7 +32,7 @@ class EditAssetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CupertinoNavigationBar(
-        middle: Text("Account Details",
+        middle: Text("Asset Details",
             style: TextStyle(color: CupertinoColors.label, fontSize: 18)),
       ),
       body: GetBuilder<AssetController>(

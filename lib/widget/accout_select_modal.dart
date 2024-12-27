@@ -27,8 +27,8 @@ class AccoutSelectModal extends StatelessWidget {
               return Column(
                 children: [
                   CupertinoListTile(
-                    padding:
-                        EdgeInsets.only(left: 20, right: 10, top: 5, bottom: 5),
+                    padding: const EdgeInsets.only(
+                        left: 20, right: 10, top: 5, bottom: 5),
                     title: Text(account),
                     onTap: () {
                       Navigator.of(context).pop(account);
