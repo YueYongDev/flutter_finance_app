@@ -57,11 +57,11 @@ Widget buildTrailingMenu() {
           ),
         ),
         const SizedBox(width: 8),
-        PullDownButton(
-          itemBuilder: (context) => buildSortMenuItems(),
-          buttonBuilder: (context, showMenu) =>
-              buildMenuButton(showMenu, icon: CupertinoIcons.sort_down),
-        ),
+        // PullDownButton(
+        //   itemBuilder: (context) => buildSortMenuItems(),
+        //   buttonBuilder: (context, showMenu) =>
+        //       buildMenuButton(showMenu, icon: CupertinoIcons.sort_down),
+        // ),
         PullDownButton(
           itemBuilder: (context) => buildAddMenuItems(context),
           buttonBuilder: (context, showMenu) =>
@@ -134,7 +134,10 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
           expand: true,
           context: context,
           enableDrag: false,
-          builder: (context) => EditAssetPage(),
+          builder: (context) => EditAssetPage(
+            account: null,
+            asset: null,
+          ),
         );
       },
       icon: CupertinoIcons.bag_badge_plus,

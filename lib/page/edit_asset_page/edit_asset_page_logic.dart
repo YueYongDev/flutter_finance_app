@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/assets.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
@@ -15,17 +16,76 @@ class AssetController extends GetxController {
   String selectedCurrency = "CNY";
   CountSummaryType selectedCountType = CountSummaryType.SummaryAccount;
   String selectedCountTypeString = 'Summart Account';
-  IconData selectedCurrencyIcon = CupertinoIcons.money_yen;
+  Icon selectedCurrencyIcon = const Icon(
+    CupertinoIcons.money_yen,
+    color: Colors.red,
+  );
+  var remainingCharacters = 20.obs;
+  Color remainingCharactersColor = Colors.grey;
+  bool enableCounting = false;
 
   String tag = "None";
   String note = "";
   String countInfo = "Summary Account";
+
+  var currencyList = [
+    {
+      'CNY': const Icon(
+        CupertinoIcons.money_yen,
+        color: Colors.red,
+      )
+    },
+    {
+      'HKD': const Icon(
+        CupertinoIcons.money_dollar,
+        color: Colors.redAccent,
+      )
+    },
+    {
+      'USD': const Icon(
+        CupertinoIcons.money_dollar,
+        color: Colors.green,
+      )
+    },
+    {
+      'EUR': const Icon(
+        CupertinoIcons.money_euro,
+        color: Colors.blue,
+      )
+    },
+  ];
+
+  getCurrencyIconByName(String currencyName) {
+    for (var currency in currencyList) {
+      if (currency.containsKey(currencyName)) {
+        return currency[currencyName];
+      }
+    }
+    return null;
+  }
 
   @override
   void onInit() {
     super.onInit();
 
     fetchAssets();
+  }
+
+  void toggleCounting(bool value) {
+    enableCounting = value;
+    update(); // 通知 GetBuilder 更新
+  }
+
+  void updateRemainingCharacters(String text) {
+    remainingCharacters.value = 20 - text.length;
+    if (remainingCharacters.value <= 3) {
+      remainingCharactersColor = Colors.red;
+    } else if (remainingCharacters.value <= 10) {
+      remainingCharactersColor = Colors.orange;
+    } else {
+      remainingCharactersColor = Colors.grey;
+    }
+    update();
   }
 
   void fetchAssets() async {

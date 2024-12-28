@@ -27,19 +27,18 @@ class AccountDetailsPage extends StatelessWidget {
           children: [
             _buildAccountSummary(account, totalAssets, netAssets),
             const SizedBox(height: 16),
-            _buildAssetList(assets),
+            _buildAssetList(context, assets),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle the button press to add a new asset
-          print("Add Asset Button Pressed");
+          // 打开资产编辑页面（新增资产）
           showCupertinoModalBottomSheet(
             expand: true,
             context: context,
             enableDrag: false,
-            builder: (context) => EditAssetPage(),
+            builder: (context) => EditAssetPage(account: account),
           );
         },
         backgroundColor: account['color'],
@@ -113,7 +112,9 @@ class AccountDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAssetList(List<Map<String, dynamic>> assets) {
+  // 资产清单
+  Widget _buildAssetList(
+      BuildContext context, List<Map<String, dynamic>> assets) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -127,32 +128,44 @@ class AccountDetailsPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           ...assets.map((asset) {
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.account_balance_wallet,
-                  size: 32,
-                  color: Colors.blue,
+            return GestureDetector(
+              onTap: () {
+                // 打开资产编辑页面（编辑现有资产）
+                showCupertinoModalBottomSheet(
+                  expand: true,
+                  context: context,
+                  enableDrag: false,
+                  builder: (context) =>
+                      EditAssetPage(account: account, asset: asset),
+                );
+              },
+              child: Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                title: Text(
-                  asset['name'],
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                trailing: Text(
-                  '${asset['amount']}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: asset['amount'] >= 0 ? Colors.green : Colors.red,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.account_balance_wallet,
+                    size: 32,
+                    color: Colors.blue,
+                  ),
+                  title: Text(
+                    asset['name'],
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    '${asset['amount']}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: asset['amount'] >= 0 ? Colors.green : Colors.red,
+                    ),
                   ),
                 ),
               ),
             );
-          }),
+          }).toList(),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/page/account_detail/account_detail_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -30,8 +31,9 @@ class AccountListWidget extends StatelessWidget {
       {
         'name': '支付宝',
         'balance': 84290.45,
-        'color': Colors.lightBlue[200],
+        'color': Colors.lightBlue[400],
         'change': '+125.78',
+        'lastUpdateTime': 1735385741312,
         'assets': [
           {'name': '余额宝', 'amount': 1758.08},
           {'name': '花呗', 'amount': -2019.29},
@@ -46,6 +48,7 @@ class AccountListWidget extends StatelessWidget {
         'balance': 23567.77,
         'color': Colors.lightGreen[400],
         'change': '-320.45',
+        'lastUpdateTime': 1735385741312,
         'assets': [
           {'name': '零钱通', 'amount': 8483.54},
           {'name': '理财通', 'amount': 15084.23},
@@ -56,6 +59,7 @@ class AccountListWidget extends StatelessWidget {
         'balance': -29862.25,
         'color': Colors.orangeAccent[200],
         'change': '+430.67',
+        'lastUpdateTime': 1735385741312,
         'assets': [
           {'name': '存款', 'amount': 14206.47},
           {'name': '贷款', 'amount': -44068.72},
@@ -105,13 +109,12 @@ class AccountListWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  '变化: ${account['change']}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: account['change'].startsWith('+')
-                        ? Colors.green
-                        : Colors.red,
-                  ),
+                  '上次更新: ${TimelineUtil.formatA(
+                    account['lastUpdateTime'],
+                    languageCode: 'zh',
+                    short: true,
+                  )}',
+                  style: const TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],
             ),
