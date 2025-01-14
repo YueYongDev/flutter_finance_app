@@ -1,7 +1,7 @@
-import 'package:flutter_finance_app/entity/assets.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
 
-class AssetsRepository {
+class AssetRepository {
   final dbHelper = DatabaseHelper();
 
   Future<void> createAsset(Asset asset) async {
@@ -21,5 +21,15 @@ class AssetsRepository {
 
   Future<void> deleteAsset(String id) async {
     await dbHelper.deleteAsset(id);
+  }
+
+  Future<List<Asset>> retrieveAssetsByAccountId(String accountId) async {
+    final db = await dbHelper.database;
+    final result = await db.query(
+      'asset',
+      where: 'accountId = ?',
+      whereArgs: [accountId],
+    );
+    return result.map((map) => Asset.fromMap(map)).toList();
   }
 }

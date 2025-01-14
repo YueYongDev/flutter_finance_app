@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class AccountController extends GetxController {
+  final accountPageLogic = Get.find<AccountPageLogic>();
   final dbHelper = DatabaseHelper();
   var accounts = <Account>[].obs;
   final nameController = TextEditingController();
   String selectedCurrency = "CNY";
-  String selectedColor = "FFABAB";
+  String selectedColor = "0xFFFFABAB";
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
 
@@ -25,13 +27,6 @@ class AccountController extends GetxController {
     update();
   }
 
-  void fetchAccounts() async {
-    List<Account> retrievedAccounts = await dbHelper
-        .getAccounts()
-        .then((result) => result.map((map) => Account.fromMap(map)).toList());
-    accounts.assignAll(retrievedAccounts);
-  }
-
   Future<void> addAccount() async {
     var uuid = const Uuid();
     var newAccount = Account(
@@ -39,9 +34,13 @@ class AccountController extends GetxController {
       name: nameController.text,
       color: selectedColor,
       currency: selectedCurrency,
+      balance: 0.0,
+      change: '0',
+      lastUpdateTime: DateTime.now().millisecondsSinceEpoch,
+      createTime: DateTime.now().millisecondsSinceEpoch,
+      assets: [],
     );
     await dbHelper.insertAccount(newAccount.toMap());
-    fetchAccounts();
-    Get.back(); // Close the dialog or page
+    await accountPageLogic.refreshAccount();
   }
 }

@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/common_constant.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:flutter_finance_app/widget/accout_select_modal.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -8,24 +13,11 @@ import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class EditAssetPage extends StatelessWidget {
-  final Map<String, dynamic>? account; // 可选择的账户列表
-  final Map<String, dynamic>? asset; // 传入的资产数据，null 表示新增模式
+  final Account? account; // Updated to use Account class
+  final Asset? asset; // Updated to use Asset class
   final controller = Get.put(AssetController());
 
   EditAssetPage({super.key, required this.account, this.asset});
-
-  final List<String> accounts = [
-    'Account 1',
-    'Account 2',
-    'Account 3',
-    'Account 3',
-    'Account 3',
-    'Account 3',
-    'Account 3',
-    'Account 3',
-    'Account 3',
-    // Add more accounts as needed
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +26,15 @@ class EditAssetPage extends StatelessWidget {
 
     // 初始化数据（如果是编辑模式）
     if (isEditMode) {
-      controller.nameController.text = asset!['name'] ?? '';
-      controller.amountController.text = asset!['amount']?.toString() ?? '';
-      controller.selectedCurrency = asset!['currency'] ?? 'USD';
-      controller.selectedAccount = asset!['account'] ?? 'Select Account';
+      controller.nameController.text = asset!.name;
+      controller.amountController.text = asset!.amount.toString();
+      controller.selectedCurrency = asset!.currency;
+      controller.selectedAccount = account!;
       controller.selectedCurrencyIcon =
-          controller.getCurrencyIconByName(controller.selectedCurrency);
+          getCurrencyIconByName(controller.selectedCurrency);
       controller.updateRemainingCharacters(controller.nameController.text);
     }
+
     return Scaffold(
       appBar: CupertinoNavigationBar(
         middle: Text(
@@ -73,11 +66,15 @@ class EditAssetPage extends StatelessWidget {
           title: const Text("Belong Account"),
           leading: Icon(
             CupertinoIcons.rectangle_stack_badge_plus,
-            color: account!['color'],
+            color: account != null
+                ? Color(int.parse(account!.color))
+                : Colors.grey,
           ),
           trailing: Row(
             children: [
-              Text(account?['name']),
+              account != null
+                  ? Text(account!.name)
+                  : Text(controller.selectedAccount?.name ?? 'Select Account'),
               const Icon(
                 CupertinoIcons.chevron_right,
                 size: 20,
@@ -85,19 +82,26 @@ class EditAssetPage extends StatelessWidget {
               )
             ],
           ),
-          onPressed: (BuildContext context) async {
-            dynamic value = await showCupertinoModalBottomSheet(
-              expand: true,
-              enableDrag: false,
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) => AccoutSelectModal(accounts: accounts),
-            );
-            if (value != null) {
-              controller.selectedAccount = value;
-              controller.update();
-            }
-          },
+          onPressed: account != null
+              ? null
+              : (BuildContext context) async {
+                  final accountPageLogic = Get.find<AccountPageLogic>();
+                  List<Account> fetchAllAccounts =
+                      await accountPageLogic.fetchAllAccountsWithAssets();
+
+                  dynamic value = await showCupertinoModalBottomSheet(
+                    expand: true,
+                    enableDrag: false,
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) =>
+                        AccountSelectModal(accounts: fetchAllAccounts),
+                  );
+                  if (value != null) {
+                    controller.selectedAccount = value;
+                    controller.update();
+                  }
+                },
         ),
       ],
     );
@@ -121,7 +125,7 @@ class EditAssetPage extends StatelessWidget {
       title: const Text('Assets Name'),
       leading: Icon(
         CupertinoIcons.bag_badge_plus,
-        color: account!['color'],
+        color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
       ),
       description: Text(
         'Remaining characters: ${controller.remainingCharacters}',
@@ -187,8 +191,8 @@ class EditAssetPage extends StatelessWidget {
 
   /// 构建货币选择菜单
   List<PullDownMenuItem> _buildCurrencyMenu() {
-    return List.generate(controller.currencyList.length, (i) {
-      var currency = controller.currencyList[i].entries;
+    return List.generate(currencyList.length, (i) {
+      var currency = currencyList[i].entries;
       return PullDownMenuItem(
         title: currency.first.key,
         icon: currency.first.value.icon,
@@ -206,7 +210,7 @@ class EditAssetPage extends StatelessWidget {
     return SettingsTile.switchTile(
       leading: Icon(
         CupertinoIcons.percent,
-        color: account!['color'],
+        color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
       ),
       initialValue: controller.enableCounting,
       onToggle: (value) => controller.toggleCounting(value),
@@ -222,13 +226,17 @@ class EditAssetPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: CupertinoButton.filled(
           child: Text(isEditMode ? 'Update Asset' : 'Add Asset'),
-          onPressed: () {
+          onPressed: () async {
             if (isEditMode) {
               debugPrint("Asset updated: ${controller.nameController.text}");
+              await controller.updateAsset(asset!);
             } else {
               debugPrint("New asset added: ${controller.nameController.text}");
+              if (account != null) {
+                controller.selectedAccount = account!;
+              }
+              await controller.addAsset();
             }
-            Navigator.pop(context);
           },
         ),
       ),

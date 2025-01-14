@@ -1,59 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
+import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AccountDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> account;
+  final Account account;
+  final AccountDetailLogic logic = Get.put(AccountDetailLogic());
 
-  const AccountDetailsPage({super.key, required this.account});
+  AccountDetailsPage({super.key, required this.account}) {
+    logic.updateAssets(account.assets);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final assets = account['assets'] as List<Map<String, dynamic>>;
-
-    // 计算总资产和净资产
-    final totalAssets =
-        assets.fold<double>(0, (sum, item) => sum + item['amount']);
-    final netAssets = totalAssets; // 假设无额外债务
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(account['name']),
-        backgroundColor: account['color'],
+        title: Text(account.name),
+        backgroundColor: Color(int.parse(account.color)),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildAccountSummary(account, totalAssets, netAssets),
-            const SizedBox(height: 16),
-            _buildAssetList(context, assets),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildAccountSummary(account),
+              const SizedBox(height: 16),
+              Obx(() => _buildAssetList(context, logic.assets)),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // 打开资产编辑页面（新增资产）
-          showCupertinoModalBottomSheet(
+        onPressed: () async {
+          // Open asset edit page (add new asset)
+          await showCupertinoModalBottomSheet(
             expand: true,
             context: context,
             enableDrag: false,
             builder: (context) => EditAssetPage(account: account),
           );
+          // Clear input fields after modal is closed
+          _clearInputFields();
         },
-        backgroundColor: account['color'],
+        backgroundColor: Color(int.parse(account.color)),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  // 账户概览
-  Widget _buildAccountSummary(
-      Map<String, dynamic> account, double totalAssets, double netAssets) {
+  // Account summary
+  Widget _buildAccountSummary(Account account) {
+    final totalAssets =
+        account.assets.fold<double>(0, (sum, item) => sum + item.amount);
+    final netAssets = totalAssets; // Assuming no additional liabilities
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: account['color'],
+        color: Color(int.parse(account.color)),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(24),
           bottomRight: Radius.circular(24),
@@ -63,7 +71,7 @@ class AccountDetailsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            '账户总览',
+            'Account Overview',
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           ),
@@ -75,7 +83,7 @@ class AccountDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '总资产',
+                    'Total Assets',
                     style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 8),
@@ -92,7 +100,7 @@ class AccountDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    '净资产',
+                    'Net Assets',
                     style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                   const SizedBox(height: 8),
@@ -112,9 +120,8 @@ class AccountDetailsPage extends StatelessWidget {
     );
   }
 
-  // 资产清单
-  Widget _buildAssetList(
-      BuildContext context, List<Map<String, dynamic>> assets) {
+  // Asset list
+  Widget _buildAssetList(BuildContext context, List<Asset> assets) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -122,22 +129,24 @@ class AccountDetailsPage extends StatelessWidget {
           const Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '资产清单',
+              'Asset List',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 8),
           ...assets.map((asset) {
             return GestureDetector(
-              onTap: () {
-                // 打开资产编辑页面（编辑现有资产）
-                showCupertinoModalBottomSheet(
+              onTap: () async {
+                // Open asset edit page (edit existing asset)
+                await showCupertinoModalBottomSheet(
                   expand: true,
                   context: context,
                   enableDrag: false,
                   builder: (context) =>
                       EditAssetPage(account: account, asset: asset),
                 );
+                // Clear input fields after modal is closed
+                _clearInputFields();
               },
               child: Card(
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -151,23 +160,28 @@ class AccountDetailsPage extends StatelessWidget {
                     color: Colors.blue,
                   ),
                   title: Text(
-                    asset['name'],
+                    asset.name,
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    '${asset['amount']}',
+                    '${asset.amount}',
                     style: TextStyle(
                       fontSize: 16,
-                      color: asset['amount'] >= 0 ? Colors.green : Colors.red,
+                      color: asset.amount >= 0 ? Colors.green : Colors.red,
                     ),
                   ),
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
+  }
+
+  void _clearInputFields() {
+    final accountPageLogic = Get.find<AssetController>();
+    accountPageLogic.clearInputFields();
   }
 }

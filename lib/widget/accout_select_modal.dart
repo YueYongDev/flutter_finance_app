@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/entity/account.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class AccoutSelectModal extends StatelessWidget {
-  final List<String> accounts;
+class AccountSelectModal extends StatelessWidget {
+  final List<Account> accounts;
 
-  const AccoutSelectModal({super.key, required this.accounts});
+  const AccountSelectModal({super.key, required this.accounts});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class AccoutSelectModal extends StatelessWidget {
                   CupertinoListTile(
                     padding: const EdgeInsets.only(
                         left: 20, right: 10, top: 5, bottom: 5),
-                    title: Text(account),
+                    title: Text(account.name),
                     onTap: () {
                       Navigator.of(context).pop(account);
                     },

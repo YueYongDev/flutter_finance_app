@@ -1,12 +1,12 @@
 class Asset {
-  final String? id;
-  final String name;
-  final double amount;
-  final String currency;
-  final String tag;
-  final String note;
-  final String accountId;
-  final String countInfo;
+  String? id;
+  String name;
+  double amount;
+  String currency;
+  String tag;
+  String note;
+  String accountId;
+  bool enableCounting;
 
   Asset({
     this.id,
@@ -16,7 +16,7 @@ class Asset {
     required this.tag,
     required this.note,
     required this.accountId,
-    required this.countInfo,
+    required this.enableCounting,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,7 +28,7 @@ class Asset {
       'tag': tag,
       'note': note,
       'accountId': accountId,
-      'countInfo': countInfo,
+      'enableCounting': enableCounting ? 1 : 0, // Convert bool to int
     };
   }
 
@@ -41,7 +41,7 @@ class Asset {
       tag: map['tag'],
       note: map['note'],
       accountId: map['accountId'],
-      countInfo: map['countInfo'],
+      enableCounting: map['enableCounting'] == 1, // Convert int to bool
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -11,6 +12,12 @@ class EditAccountPage extends StatelessWidget {
   final AccountController controller = Get.put(AccountController());
 
   EditAccountPage({super.key});
+
+  final int _portraitCrossAxisCount = 4;
+  final int _landscapeCrossAxisCount = 5;
+  final double _borderRadius = 30;
+  final double _blurRadius = 5;
+  final double _iconSize = 24;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +122,7 @@ class EditAccountPage extends StatelessWidget {
       leading: const Icon(Icons.color_lens, color: Colors.teal),
       trailing: CircleAvatar(
         radius: 12,
-        backgroundColor: Color(int.parse("0xFF${controller.selectedColor}")),
+        backgroundColor: Color(int.parse(controller.selectedColor)),
       ),
       onPressed: (_) => _showColorPicker(context),
     );
@@ -168,6 +175,7 @@ class EditAccountPage extends StatelessWidget {
         child: ElevatedButton.icon(
           onPressed: () {
             controller.addAccount();
+            Get.back();
             Get.snackbar(
               'Success',
               'Account saved successfully!',
@@ -195,17 +203,24 @@ class EditAccountPage extends StatelessWidget {
   void _showColorPicker(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pick a color'),
+          title: const Text('Select a color'),
           content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: Color(int.parse("0xFF${controller.selectedColor}")),
+            child: BlockPicker(
+              pickerColor: Color(int.parse(controller.selectedColor)),
               onColorChanged: (color) {
-                controller.selectedColor =
+                String colorString =
                     color.value.toRadixString(16).padLeft(8, '0');
+                if (!colorString.startsWith('0xFF')) {
+                  colorString = '0xFF$colorString';
+                }
+                controller.selectedColor = colorString;
                 controller.update();
               },
+              availableColors: colors,
+              layoutBuilder: pickerLayoutBuilder,
+              itemBuilder: pickerItemBuilder,
             ),
           ),
           actions: [
@@ -216,6 +231,57 @@ class EditAccountPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget pickerLayoutBuilder(
+      BuildContext context, List<Color> colors, PickerItem child) {
+    Orientation orientation = MediaQuery.of(context).orientation;
+
+    return SizedBox(
+      width: 300,
+      height: orientation == Orientation.portrait ? 360 : 240,
+      child: GridView.count(
+        crossAxisCount: orientation == Orientation.portrait
+            ? _portraitCrossAxisCount
+            : _landscapeCrossAxisCount,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+        children: [for (Color color in colors) child(color)],
+      ),
+    );
+  }
+
+  Widget pickerItemBuilder(
+      Color color, bool isCurrentColor, void Function() changeColor) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(_borderRadius),
+        color: color,
+        boxShadow: [
+          BoxShadow(
+              color: color.withOpacity(0.8),
+              offset: const Offset(1, 2),
+              blurRadius: _blurRadius)
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: changeColor,
+          borderRadius: BorderRadius.circular(_borderRadius),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 250),
+            opacity: isCurrentColor ? 1 : 0,
+            child: Icon(
+              Icons.done,
+              size: _iconSize,
+              color: useWhiteForeground(color) ? Colors.white : Colors.black,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

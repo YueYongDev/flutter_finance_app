@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/entity/assets.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class AssetController extends GetxController {
+  final accountPageLogic = Get.find<AccountPageLogic>();
+
   final dbHelper = DatabaseHelper();
   var assets = <Asset>[].obs;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
   final amountController = TextEditingController();
-  String selectedAccount = "Select Account";
+  Account? selectedAccount;
   String selectedCurrency = "CNY";
   CountSummaryType selectedCountType = CountSummaryType.SummaryAccount;
   String selectedCountTypeString = 'Summart Account';
@@ -26,49 +30,25 @@ class AssetController extends GetxController {
 
   String tag = "None";
   String note = "";
-  String countInfo = "Summary Account";
-
-  var currencyList = [
-    {
-      'CNY': const Icon(
-        CupertinoIcons.money_yen,
-        color: Colors.red,
-      )
-    },
-    {
-      'HKD': const Icon(
-        CupertinoIcons.money_dollar,
-        color: Colors.redAccent,
-      )
-    },
-    {
-      'USD': const Icon(
-        CupertinoIcons.money_dollar,
-        color: Colors.green,
-      )
-    },
-    {
-      'EUR': const Icon(
-        CupertinoIcons.money_euro,
-        color: Colors.blue,
-      )
-    },
-  ];
-
-  getCurrencyIconByName(String currencyName) {
-    for (var currency in currencyList) {
-      if (currency.containsKey(currencyName)) {
-        return currency[currencyName];
-      }
-    }
-    return null;
-  }
 
   @override
   void onInit() {
     super.onInit();
+  }
 
-    fetchAssets();
+  @override
+  void onClose() {
+    super.onClose();
+    clearInputFields();
+  }
+
+  void clearInputFields() {
+    // Clear input fields
+    nameController.clear();
+    amountController.clear();
+    selectedCurrency = '';
+    selectedAccount = null;
+    enableCounting = false;
   }
 
   void toggleCounting(bool value) {
@@ -96,19 +76,43 @@ class AssetController extends GetxController {
   }
 
   Future<void> addAsset() async {
-    var uuid = const Uuid();
-    var newAsset = Asset(
-      id: uuid.v4(),
-      name: nameController.text,
-      amount: double.parse(amountController.text),
-      currency: selectedCurrency,
-      tag: tag,
-      note: note,
-      accountId: selectedAccount, // Modify to get actual account ID
-      countInfo: countInfo,
-    );
-    await dbHelper.insertAsset(newAsset.toMap());
-    fetchAssets();
-    Get.back(); // Close the dialog or page
+    try {
+      var uuid = const Uuid();
+      var newAsset = Asset(
+        id: uuid.v4(),
+        name: nameController.text,
+        amount: double.parse(amountController.text),
+        currency: selectedCurrency,
+        tag: tag,
+        note: note,
+        accountId: selectedAccount?.id ?? '',
+        enableCounting: enableCounting,
+      );
+
+      await dbHelper.insertAsset(newAsset.toMap());
+      await accountPageLogic.fetchAllAccountsWithAssets();
+      Get.back(); // Close the dialog or page
+    } catch (e) {
+      debugPrint('Error adding asset: $e');
+      Get.snackbar('Error', 'Failed to add asset. Please try again.');
+    }
+  }
+
+  Future<void> updateAsset(Asset asset) async {
+    try {
+      asset.name = nameController.text;
+      asset.amount = double.parse(amountController.text);
+      asset.currency = selectedCurrency;
+      asset.accountId =
+          selectedAccount?.id ?? ''; // Ensure accountId is not null
+      asset.enableCounting = enableCounting;
+
+      await dbHelper.updateAsset(asset.id!, asset.toMap());
+      await accountPageLogic.fetchAllAccountsWithAssets();
+      Get.back(); // Close the dialog or page
+    } catch (e) {
+      debugPrint('Error updating asset: $e');
+      Get.snackbar('Error', 'Failed to update asset. Please try again.');
+    }
   }
 }
