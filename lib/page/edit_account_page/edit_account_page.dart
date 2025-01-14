@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
+import 'package:flutter_finance_app/entity/account.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -10,8 +11,14 @@ import 'edit_account_page_logic.dart';
 
 class EditAccountPage extends StatelessWidget {
   final AccountController controller = Get.put(AccountController());
+  final Account? account;
+  final bool isEditMode;
 
-  EditAccountPage({super.key});
+  EditAccountPage({super.key, this.account}) : isEditMode = account != null {
+    if (isEditMode) {
+      controller.setAccount(account!);
+    }
+  }
 
   final int _portraitCrossAxisCount = 4;
   final int _landscapeCrossAxisCount = 5;
@@ -21,11 +28,10 @@ class EditAccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: _buildNavigationBar(context),
-      child: Column(
+    return Scaffold(
+      appBar: _buildNavigationBar(context),
+      body: Column(
         children: [
-          const SizedBox(height: 16.0),
           Expanded(
             child: GetBuilder<AccountController>(
               builder: (controller) => _buildSettingsList(context),
@@ -36,10 +42,9 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建导航栏
   CupertinoNavigationBar _buildNavigationBar(BuildContext context) {
     return CupertinoNavigationBar(
-      middle: const Text('Edit Account'),
+      middle: Text(isEditMode ? 'Edit Account' : 'Add Account'),
       leading: GestureDetector(
         onTap: () => Get.back(),
         child: const Icon(
@@ -50,7 +55,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建设置列表
   SettingsList _buildSettingsList(BuildContext context) {
     return SettingsList(
       lightTheme: const SettingsThemeData(
@@ -64,7 +68,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建账户信息部分
   SettingsSection _buildAccountInfoSection() {
     return SettingsSection(
       title: const Text('Account Info'),
@@ -82,7 +85,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建账户名称输入框
   Widget _buildAccountNameInput() {
     return SizedBox(
       width: 200,
@@ -104,7 +106,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建外观设置部分
   SettingsSection _buildAppearanceSection(BuildContext context) {
     return SettingsSection(
       title: const Text('Appearance'),
@@ -115,7 +116,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建颜色选择器条目
   SettingsTile _buildColorPickerTile(BuildContext context) {
     return SettingsTile(
       title: const Text('Color'),
@@ -128,7 +128,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建货币选择器条目
   SettingsTile _buildCurrencySelectorTile() {
     return SettingsTile(
       title: const Text('Currency'),
@@ -153,9 +152,8 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 构建货币选择菜单
   List<PullDownMenuItem> _buildCurrencyMenu() {
-    var currencyList = ['CNY', 'USD', 'EUR'];
+    var currencyList = ['CNY'];
     return List.generate(currencyList.length, (index) {
       return PullDownMenuItem(
         title: currencyList[index],
@@ -167,26 +165,31 @@ class EditAccountPage extends StatelessWidget {
     });
   }
 
-  /// 构建保存按钮部分
   CustomSettingsSection _buildSaveButtonSection() {
     return CustomSettingsSection(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton.icon(
           onPressed: () {
-            controller.addAccount();
+            if (isEditMode) {
+              controller.updateAccount(account!);
+            } else {
+              controller.addAccount();
+            }
             Get.back();
             Get.snackbar(
               'Success',
-              'Account saved successfully!',
+              isEditMode
+                  ? 'Account updated successfully!'
+                  : 'Account added successfully!',
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.green,
               colorText: Colors.white,
             );
           },
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
-          label:
-              const Text('Save Account', style: TextStyle(color: Colors.teal)),
+          label: Text(isEditMode ? 'Update Account' : 'Save Account',
+              style: const TextStyle(color: Colors.teal)),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             shape: RoundedRectangleBorder(
@@ -199,7 +202,6 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  /// 显示颜色选择器
   void _showColorPicker(BuildContext context) {
     showDialog(
       context: context,

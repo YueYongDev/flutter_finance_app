@@ -6,14 +6,4 @@ import 'package:get/get.dart';
 class AccountListLogic extends GetxController
     with GetSingleTickerProviderStateMixin {
   AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
-
-  List<Account> accounts = [];
-
-  @override
-  void onInit() async {
-    super.onInit();
-    accounts = accountPageState.accounts;
-    print(accountPageState.accounts);
-    update();
-  }
 }

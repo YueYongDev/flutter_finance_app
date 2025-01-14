@@ -1,42 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/account_page/net_assets_section/net_assets_section_logic.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-
-class NetAssetsController extends GetxController {
-  var isExpanded = false.obs;
-
-  List<Map<String, dynamic>> dataWithDates = [
-    {'date': DateTime(2023, 1, 1), 'value': 300.0},
-    {'date': DateTime(2023, 2, 1), 'value': 315.0},
-    {'date': DateTime(2023, 3, 1), 'value': 295.0},
-    {'date': DateTime(2023, 4, 1), 'value': 310.0},
-    {'date': DateTime(2023, 5, 1), 'value': 320.0},
-  ];
-
-  List<FlSpot> generateSampleData() {
-    return dataWithDates
-        .asMap()
-        .entries
-        .map((entry) =>
-            FlSpot(entry.key.toDouble(), entry.value['value'] as double))
-        .toList();
-  }
-
-  String getFormattedDate(int index) {
-    if (index >= 0 && index < dataWithDates.length) {
-      return DateFormat.Md().format(dataWithDates[index]['date']);
-    }
-    return '';
-  }
-}
 
 class NetAssetsSection extends StatelessWidget {
   const NetAssetsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Instantiate the controller
     final NetAssetsController controller = Get.put(NetAssetsController());
 
     return SliverToBoxAdapter(
@@ -54,49 +26,51 @@ class NetAssetsSection extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Net Assets (CNY)',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '300,782.45',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Total Assets: 334,629.24',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                        ),
-                        Text(
-                          'Total Debt: -33,846.79',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                        ),
-                      ],
-                    ),
+                    child: GetBuilder<AccountPageLogic>(
+                        builder: (controller) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Net Assets (CNY)',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  controller.state.netAssets.toStringAsFixed(2),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Total Assets: ${controller.state.totalAssets.toStringAsFixed(2)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Total Debt: ${controller.state.totalDebt.toStringAsFixed(2)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                )
+                              ],
+                            )),
                   ),
                   Obx(() {
                     return AnimatedSwitcher(
@@ -110,8 +84,8 @@ class NetAssetsSection extends StatelessWidget {
                           : Container(
                               key: const ValueKey('sideChart'),
                               margin: const EdgeInsets.only(left: 15),
-                              width: 80, // Initial chart width
-                              height: 50, // Initial chart height
+                              width: 80,
+                              height: 50,
                               child: LineChart(
                                 LineChartData(
                                   lineBarsData: [
@@ -132,17 +106,19 @@ class NetAssetsSection extends StatelessWidget {
                             ),
                     );
                   }),
-                  IconButton(
-                    icon: Obx(() => Icon(
-                          controller.isExpanded.value
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                          color: Colors.white,
-                        )),
-                    onPressed: () {
-                      controller.isExpanded.toggle();
-                    },
-                  ),
+                  Obx(() {
+                    return IconButton(
+                      icon: Icon(
+                        controller.isExpanded.value
+                            ? Icons.expand_less
+                            : Icons.expand_more,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        controller.isExpanded.toggle();
+                      },
+                    );
+                  }),
                 ],
               ),
               Obx(() {

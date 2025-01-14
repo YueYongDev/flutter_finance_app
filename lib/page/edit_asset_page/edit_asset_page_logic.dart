@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/database_helper.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 class AssetController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
+  final accountDetailLogic = Get.find<AccountDetailLogic>();
 
   final dbHelper = DatabaseHelper();
   var assets = <Asset>[].obs;
@@ -26,7 +28,7 @@ class AssetController extends GetxController {
   );
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
-  bool enableCounting = false;
+  bool enableCounting = true;
 
   String tag = "None";
   String note = "";
@@ -42,7 +44,8 @@ class AssetController extends GetxController {
     clearInputFields();
   }
 
-  void clearInputFields() {
+  void clearInputFields() async {
+    await Future.delayed(const Duration(microseconds: 200));
     // Clear input fields
     nameController.clear();
     amountController.clear();
@@ -90,7 +93,9 @@ class AssetController extends GetxController {
       );
 
       await dbHelper.insertAsset(newAsset.toMap());
-      await accountPageLogic.fetchAllAccountsWithAssets();
+      await accountPageLogic.refreshAccount();
+      await accountDetailLogic
+          .refreshAccountAndAssets(selectedAccount?.id ?? '');
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error adding asset: $e');
@@ -108,11 +113,27 @@ class AssetController extends GetxController {
       asset.enableCounting = enableCounting;
 
       await dbHelper.updateAsset(asset.id!, asset.toMap());
-      await accountPageLogic.fetchAllAccountsWithAssets();
+      await accountPageLogic.refreshAccount();
+      await accountDetailLogic.refreshAccountAndAssets(asset.accountId);
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error updating asset: $e');
       Get.snackbar('Error', 'Failed to update asset. Please try again.');
+    }
+  }
+
+  Future<void> deleteAsset(Asset asset) async {
+    try {
+      await dbHelper.deleteAsset(asset.id!);
+      await accountPageLogic.refreshAccount();
+      await accountDetailLogic.refreshAccountAndAssets(asset.accountId);
+      Get.snackbar('Success', 'Asset deleted successfully!',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
+    } catch (e) {
+      debugPrint('Error deleting asset: $e');
+      Get.snackbar('Error', 'Failed to delete asset. Please try again.');
     }
   }
 }

@@ -2,8 +2,11 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'account_list_logic.dart';
 
@@ -15,25 +18,30 @@ class AccountListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width > 600;
-    return GetBuilder<AccountListLogic>(builder: (controller) {
+    return GetBuilder<AccountPageLogic>(builder: (controller) {
       return SliverPadding(
-          padding: const EdgeInsets.all(16.0),
-          sliver: SliverMasonryGrid.extent(
-            maxCrossAxisExtent: isTablet ? 300 : 200,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childCount: controller.accounts.length,
-            itemBuilder: (context, index) {
-              final account = controller.accounts[index];
-              return _buildAccountCard(account, index);
-            },
-          ));
+        padding: const EdgeInsets.all(16.0),
+        sliver: SliverMasonryGrid.extent(
+          maxCrossAxisExtent: isTablet ? 300 : 200,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childCount: controller.state.accounts.length,
+          itemBuilder: (context, index) {
+            final account = controller.state.accounts[index];
+            return _buildAccountCard(account, index);
+          },
+        ),
+      );
     });
   }
 
   Widget _buildAccountCard(Account account, int index) {
+    debugPrint(
+        '_buildAccountCard|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
     return GestureDetector(
       onTap: () {
+        debugPrint(
+            'onTap|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
         Navigator.push(
           Get.context!,
           MaterialPageRoute(
@@ -41,11 +49,19 @@ class AccountListWidget extends StatelessWidget {
           ),
         );
       },
+      onLongPress: () {
+        debugPrint(
+            'onLongPress|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
+        showCupertinoModalBottomSheet(
+          context: Get.context!,
+          builder: (context) => EditAccountPage(account: account),
+        );
+      },
       child: SizedBox(
         width: double.infinity,
         child: Card(
           elevation: 0,
-          color: Color(int.parse(account.color)), // Set card color
+          color: Color(int.parse(account.color)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

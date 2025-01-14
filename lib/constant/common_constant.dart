@@ -68,27 +68,27 @@ const List<Color> colors = [
 
 const currencyList = [
   {
-    'CNY': const Icon(
+    'CNY': Icon(
       CupertinoIcons.money_yen,
       color: Colors.red,
     )
   },
-  {
-    'HKD': const Icon(
-      CupertinoIcons.money_dollar,
-      color: Colors.redAccent,
-    )
-  },
-  {
-    'USD': const Icon(
-      CupertinoIcons.money_dollar,
-      color: Colors.green,
-    )
-  },
-  {
-    'EUR': const Icon(
-      CupertinoIcons.money_euro,
-      color: Colors.blue,
-    )
-  },
+  // {
+  //   'HKD': const Icon(
+  //     CupertinoIcons.money_dollar,
+  //     color: Colors.redAccent,
+  //   )
+  // },
+  // {
+  //   'USD': const Icon(
+  //     CupertinoIcons.money_dollar,
+  //     color: Colors.green,
+  //   )
+  // },
+  // {
+  //   'EUR': const Icon(
+  //     CupertinoIcons.money_euro,
+  //     color: Colors.blue,
+  //   )
+  // },
 ];

@@ -27,7 +27,17 @@ class AccountDetailsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildAccountSummary(account),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Color(int.parse(account.color)),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
+                ),
+                child: Obx(() => _buildAccountSummary(logic.assets)),
+              ),
               const SizedBox(height: 16),
               Obx(() => _buildAssetList(context, logic.assets)),
             ],
@@ -53,70 +63,90 @@ class AccountDetailsPage extends StatelessWidget {
   }
 
   // Account summary
-  Widget _buildAccountSummary(Account account) {
-    final totalAssets =
-        account.assets.fold<double>(0, (sum, item) => sum + item.amount);
-    final netAssets = totalAssets; // Assuming no additional liabilities
+  Widget _buildAccountSummary(List<Asset> assets) {
+    final filteredAssets =
+        assets.where((asset) => asset.enableCounting).toList();
+    final totalAssets = filteredAssets
+        .where((asset) => asset.amount >= 0)
+        .fold<double>(0, (sum, item) => sum + item.amount);
+    final totalDebt = filteredAssets
+        .where((asset) => asset.amount < 0)
+        .fold<double>(0, (sum, item) => sum + item.amount.abs());
+    final netAssets = totalAssets - totalDebt;
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Color(int.parse(account.color)),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Account Overview',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Account Overview',
-            style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Total Assets',
-                    style: TextStyle(fontSize: 16, color: Colors.white70),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    totalAssets.toStringAsFixed(2),
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Net Assets',
-                    style: TextStyle(fontSize: 16, color: Colors.white70),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    netAssets.toStringAsFixed(2),
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Assets',
+                      style: TextStyle(fontSize: 16, color: Colors.white70),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      totalAssets.toStringAsFixed(2),
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Debt',
+                      style: TextStyle(fontSize: 16, color: Colors.white70),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      totalDebt > 0
+                          ? "-${totalDebt.toStringAsFixed(2)}"
+                          : totalDebt.toStringAsFixed(2),
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Net Assets',
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  netAssets.toStringAsFixed(2),
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -137,6 +167,7 @@ class AccountDetailsPage extends StatelessWidget {
           ...assets.map((asset) {
             return GestureDetector(
               onTap: () async {
+                print("onTap asset:${asset.toMap()}");
                 // Open asset edit page (edit existing asset)
                 await showCupertinoModalBottomSheet(
                   expand: true,

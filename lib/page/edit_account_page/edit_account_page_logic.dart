@@ -8,12 +8,18 @@ import 'package:uuid/uuid.dart';
 class AccountController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
   final dbHelper = DatabaseHelper();
-  var accounts = <Account>[].obs;
   final nameController = TextEditingController();
   String selectedCurrency = "CNY";
   String selectedColor = "0xFFFFABAB";
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
+
+  void setAccount(Account account) {
+    nameController.text = account.name;
+    selectedCurrency = account.currency;
+    selectedColor = account.color;
+    updateRemainingCharacters(account.name);
+  }
 
   void updateRemainingCharacters(String text) {
     remainingCharacters.value = 20 - text.length;
@@ -41,6 +47,14 @@ class AccountController extends GetxController {
       assets: [],
     );
     await dbHelper.insertAccount(newAccount.toMap());
+    await accountPageLogic.refreshAccount();
+  }
+
+  Future<void> updateAccount(Account account) async {
+    account.name = nameController.text;
+    account.color = selectedColor;
+    account.currency = selectedCurrency;
+    await dbHelper.updateAccount(account.id!, account.toMap());
     await accountPageLogic.refreshAccount();
   }
 }

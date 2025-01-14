@@ -28,10 +28,12 @@ class EditAssetPage extends StatelessWidget {
     if (isEditMode) {
       controller.nameController.text = asset!.name;
       controller.amountController.text = asset!.amount.toString();
-      controller.selectedCurrency = asset!.currency;
+      controller.selectedCurrency =
+          (asset?.currency.isNotEmpty ?? false) ? asset!.currency : "CNY";
       controller.selectedAccount = account!;
       controller.selectedCurrencyIcon =
           getCurrencyIconByName(controller.selectedCurrency);
+      controller.enableCounting = asset!.enableCounting;
       controller.updateRemainingCharacters(controller.nameController.text);
     }
 
@@ -213,7 +215,10 @@ class EditAssetPage extends StatelessWidget {
         color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
       ),
       initialValue: controller.enableCounting,
-      onToggle: (value) => controller.toggleCounting(value),
+      onToggle: (value) {
+        controller.toggleCounting(value);
+        controller.update();
+      },
       title: const Text("是否计入统计账户"),
     );
   }
@@ -224,21 +229,65 @@ class EditAssetPage extends StatelessWidget {
     return CustomSettingsSection(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: CupertinoButton.filled(
-          child: Text(isEditMode ? 'Update Asset' : 'Add Asset'),
-          onPressed: () async {
-            if (isEditMode) {
-              debugPrint("Asset updated: ${controller.nameController.text}");
-              await controller.updateAsset(asset!);
-            } else {
-              debugPrint("New asset added: ${controller.nameController.text}");
-              if (account != null) {
-                controller.selectedAccount = account!;
-              }
-              await controller.addAsset();
-            }
-          },
+        child: Column(
+          children: [
+            ElevatedButton.icon(
+              onPressed: () async {
+                if (isEditMode) {
+                  debugPrint(
+                      "Asset updated: ${controller.nameController.text}");
+                  await controller.updateAsset(asset!);
+                } else {
+                  debugPrint(
+                      "New asset added: ${controller.nameController.text}");
+                  if (account != null) {
+                    controller.selectedAccount = account!;
+                  }
+                  await controller.addAsset();
+                }
+              },
+              icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
+              label: Text(isEditMode ? 'Update Asset' : 'Add Asset',
+                  style: const TextStyle(color: Colors.teal)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 0,
+              ),
+            ),
+            if (isEditMode) _buildDeleteAssetButton(context),
+          ],
         ),
+      ),
+    );
+  }
+
+  /// 构建删除资产按钮
+  Widget _buildDeleteAssetButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        await controller.deleteAsset(asset!);
+        Get.back();
+        Get.snackbar(
+          'Success',
+          'Asset deleted successfully!',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      },
+      icon: const Icon(CupertinoIcons.trash,
+          color: CupertinoColors.destructiveRed),
+      label: const Text('Delete Asset',
+          style: TextStyle(color: CupertinoColors.destructiveRed)),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        elevation: 0,
       ),
     );
   }

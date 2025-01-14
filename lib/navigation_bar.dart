@@ -120,7 +120,7 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
           expand: true,
           context: context,
           enableDrag: false,
-          builder: (context) => EditAccountPage(),
+          builder: (context) => EditAccountPage(account: null,),
         );
       },
       title: 'Add Account',
