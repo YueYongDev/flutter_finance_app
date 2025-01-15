@@ -190,11 +190,11 @@ class NetAssetsSection extends StatelessWidget {
                                 drawHorizontalLine: true,
                                 getDrawingHorizontalLine: (value) =>
                                     const FlLine(
-                                  color: Colors.white30,
+                                  color: Colors.white54,
                                   strokeWidth: 1,
                                 ),
                                 getDrawingVerticalLine: (value) => const FlLine(
-                                  color: Colors.white30,
+                                  color: Colors.white54,
                                   strokeWidth: 1,
                                 ),
                               ),

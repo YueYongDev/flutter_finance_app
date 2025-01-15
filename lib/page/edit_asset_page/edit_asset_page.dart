@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/helper/number_input_formatter.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
@@ -165,6 +166,7 @@ class EditAssetPage extends StatelessWidget {
             child: CupertinoTextField(
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [NumberInputFormatter()],
               placeholder: "Amount",
               decoration: null,
               textAlign: TextAlign.right,

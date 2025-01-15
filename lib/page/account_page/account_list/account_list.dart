@@ -82,7 +82,7 @@ class AccountListWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  '余额: ${account.balance}',
+                  '余额: ${account.balance.toStringAsFixed(2)}',
                   style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 10),

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/colors.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
@@ -13,8 +14,11 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 CupertinoSliverNavigationBar buildNavigationBar() {
   return CupertinoSliverNavigationBar(
-    largeTitle: const Text('Account'),
-    backgroundColor: Colors.white,
+    largeTitle: const Text(
+      '账户总览',
+      style: TextStyle(color: Colors.white, fontSize: 22),
+    ),
+    backgroundColor: AppColors.blueSecondary,
     leading: buildLeadingMenu(),
     trailing: buildTrailingMenu(),
   );
@@ -52,7 +56,8 @@ Widget buildTrailingMenu() {
             padding: EdgeInsets.zero,
             child: const Icon(
               CupertinoIcons.arrow_2_circlepath,
-              size: 28,
+              color: Colors.white,
+              size: 24,
             ),
           ),
         ),
@@ -120,7 +125,9 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
           expand: true,
           context: context,
           enableDrag: false,
-          builder: (context) => EditAccountPage(account: null,),
+          builder: (context) => EditAccountPage(
+            account: null,
+          ),
         );
       },
       title: 'Add Account',
@@ -184,6 +191,10 @@ Widget buildMenuButton(VoidCallback showMenu, {required IconData icon}) {
   return CupertinoButton(
     onPressed: showMenu,
     padding: EdgeInsets.zero,
-    child: Icon(icon),
+    child: Icon(
+      icon,
+      size: 24,
+      color: Colors.white,
+    ),
   );
 }
