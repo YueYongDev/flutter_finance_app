@@ -14,6 +14,18 @@ class AccountController extends GetxController {
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
 
+  @override
+  void onClose() {
+    super.onClose();
+    clearInputFields();
+  }
+
+  void clearInputFields() async {
+    await Future.delayed(const Duration(microseconds: 200));
+    // Clear input fields
+    nameController.clear();
+  }
+
   void setAccount(Account account) {
     nameController.text = account.name;
     selectedCurrency = account.currency;
@@ -55,6 +67,11 @@ class AccountController extends GetxController {
     account.color = selectedColor;
     account.currency = selectedCurrency;
     await dbHelper.updateAccount(account.id!, account.toMap());
+    await accountPageLogic.refreshAccount();
+  }
+
+  Future<void> deleteAccount(String accountId) async {
+    await dbHelper.deleteAccount(accountId);
     await accountPageLogic.refreshAccount();
   }
 }

@@ -1,36 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/model/homeScreenModel.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:get/get.dart';
 
-class AccountPageLogic extends GetxController
-    with GetSingleTickerProviderStateMixin {
+class AccountPageLogic extends GetxController with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   final AccountPageState state = AccountPageState();
+
+  RxList<TypesOfDataItem> dataItemList = RxList<TypesOfDataItem>([
+    TypesOfDataItem(title: "CARDS", icons: "assets/icons/ic_creditcard.png", isSelected: true),
+    TypesOfDataItem(title: "BANK", icons: "assets/icons/ic_bank.png", isSelected: false),
+    TypesOfDataItem(title: "ID’S", icons: "assets/icons/ic_id.png", isSelected: false),
+    TypesOfDataItem(title: "BUSINESS", icons: "assets/icons/ic_business.png", isSelected: false),
+    TypesOfDataItem(title: "PASSWORDS", icons: "assets/icons/ic_key.png", isSelected: false),
+  ]);
+
+  RxList<ChallengesDataBasedOnSelectionOfItem> cardDataList = RxList<ChallengesDataBasedOnSelectionOfItem>();
 
   @override
   void onInit() async {
     super.onInit();
     animationController = AnimationController(
       duration: const Duration(seconds: 2),
-      vsync: this, // Correctly using the mixin for the vsync parameter
+      vsync: this,
     );
     await refreshAccount();
   }
 
   void startRotation() {
-    animationController.repeat(); // Use repeat to keep it spinning
+    animationController.repeat();
   }
 
   void stopRotation() {
-    animationController.stop(canceled: false); // Stop the animation
+    animationController.stop(canceled: false);
   }
 
   @override
   void onClose() {
-    animationController.dispose(); // Dispose of animationController properly
+    animationController.dispose();
     super.onClose();
   }
 
@@ -44,7 +54,7 @@ class AccountPageLogic extends GetxController
     }
   }
 
-  refreshAccount() async {
+  Future<void> refreshAccount() async {
     List<Account> list = await fetchAllAccountsWithAssets();
     state.accounts.clear();
     state.accounts.addAll(list);
@@ -64,6 +74,18 @@ class AccountPageLogic extends GetxController
     });
 
     state.netAssets = state.totalAssets + state.totalDebt;
+
+    // Map state.accounts to cardDataList
+    cardDataList.value = state.accounts.map((account) {
+      return ChallengesDataBasedOnSelectionOfItem(
+        id: account.id,
+        title: account.name,
+        content: "¥ ${account.balance}",
+        cardIcon: "assets/icons/ic_visaCard.png", // Replace with appropriate icon
+        cardBGColor: Color(int.parse(account.color)), // Replace with appropriate color
+      );
+    }).toList();
+
     update();
   }
 
@@ -72,15 +94,12 @@ class AccountPageLogic extends GetxController
     final assetRepository = AssetRepository();
     List<Account> accounts = await accountRepository.retrieveAccounts();
     for (var account in accounts) {
-      account.assets =
-          await assetRepository.retrieveAssetsByAccountId(account.id!);
+      account.assets = await assetRepository.retrieveAssetsByAccountId(account.id!);
       account.balance = account.assets
-          .where(
-              (asset) => asset.enableCounting) // Filter assets that are counted
+          .where((asset) => asset.enableCounting)
           .fold(0.0, (sum, asset) => sum + asset.amount);
 
-      debugPrint(
-          "${account.name} has ${account.assets.length} assets with a total balance of ${account.balance}");
+      debugPrint("${account.name} has ${account.assets.length} assets with a total balance of ${account.balance}");
     }
     return accounts;
   }

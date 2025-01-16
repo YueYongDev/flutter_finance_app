@@ -54,6 +54,7 @@ class EditAssetPage extends StatelessWidget {
             _buildAccountSection(context),
             _buildAssetDetailsSection(context),
             _buildAddAssetButton(context, isEditMode),
+            if (isEditMode) _buildDeleteAssetButton(context),
           ],
         ),
       ),
@@ -231,65 +232,65 @@ class EditAssetPage extends StatelessWidget {
     return CustomSettingsSection(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ElevatedButton.icon(
-              onPressed: () async {
-                if (isEditMode) {
-                  debugPrint(
-                      "Asset updated: ${controller.nameController.text}");
-                  await controller.updateAsset(asset!);
-                } else {
-                  debugPrint(
-                      "New asset added: ${controller.nameController.text}");
-                  if (account != null) {
-                    controller.selectedAccount = account!;
-                  }
-                  await controller.addAsset();
-                }
-              },
-              icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
-              label: Text(isEditMode ? 'Update Asset' : 'Add Asset',
-                  style: const TextStyle(color: Colors.teal)),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 0,
-              ),
+        child: ElevatedButton.icon(
+          onPressed: () async {
+            if (isEditMode) {
+              debugPrint("Asset updated: ${controller.nameController.text}");
+              await controller.updateAsset(asset!);
+            } else {
+              debugPrint("New asset added: ${controller.nameController.text}");
+              if (account != null) {
+                controller.selectedAccount = account!;
+              }
+              await controller.addAsset();
+            }
+          },
+          icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
+          label: Text(isEditMode ? 'Update Asset' : 'Add Asset',
+              style: const TextStyle(color: Colors.teal)),
+          style: ElevatedButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            if (isEditMode) _buildDeleteAssetButton(context),
-          ],
+            elevation: 0,
+          ),
         ),
       ),
     );
   }
 
   /// 构建删除资产按钮
-  Widget _buildDeleteAssetButton(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () async {
-        await controller.deleteAsset(asset!);
-        Get.back();
-        Get.snackbar(
-          'Success',
-          'Asset deleted successfully!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-      },
-      icon: const Icon(CupertinoIcons.trash,
-          color: CupertinoColors.destructiveRed),
-      label: const Text('Delete Asset',
-          style: TextStyle(color: CupertinoColors.destructiveRed)),
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+  _buildDeleteAssetButton(BuildContext context) {
+    return CustomSettingsSection(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton.icon(
+          onPressed: () async {
+            await controller.deleteAsset(asset!);
+            Get.back();
+            Get.snackbar(
+              'Success',
+              'Asset deleted successfully!',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+            );
+          },
+          icon: const Icon(CupertinoIcons.trash,
+              color: CupertinoColors.destructiveRed),
+          label: const Text('Delete Asset',
+              style: TextStyle(color: CupertinoColors.destructiveRed)),
+          style: ElevatedButton.styleFrom(
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 0,
+          ),
         ),
-        elevation: 0,
       ),
     );
   }

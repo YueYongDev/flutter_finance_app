@@ -22,6 +22,7 @@ class AccountPage extends StatelessWidget {
           buildNavigationBar(),
           // buildNetAssetsSection(context),
           topPanel(size),
+          // SliverToBoxAdapter(child: SizedBox(height: 20)),
           const NetAssetsSection(),
           AccountListWidget(),
         ],

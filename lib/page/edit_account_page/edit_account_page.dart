@@ -64,6 +64,7 @@ class EditAccountPage extends StatelessWidget {
         _buildAccountInfoSection(),
         _buildAppearanceSection(context),
         _buildSaveButtonSection(),
+        if (isEditMode) _buildDeleteButtonSection(),
       ],
     );
   }
@@ -190,6 +191,37 @@ class EditAccountPage extends StatelessWidget {
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
           label: Text(isEditMode ? 'Update Account' : 'Save Account',
               style: const TextStyle(color: Colors.teal)),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildDeleteButtonSection() {
+    return CustomSettingsSection(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton.icon(
+          onPressed: () {
+            controller.deleteAccount(account!.id!);
+            Get.back();
+            Get.snackbar(
+              'Success',
+              'Account deleted successfully!',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          },
+          icon: const Icon(CupertinoIcons.trash, color: Colors.red),
+          label: const Text('Delete Account',
+              style: TextStyle(color: Colors.redAccent)),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             shape: RoundedRectangleBorder(

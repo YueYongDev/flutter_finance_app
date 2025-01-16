@@ -25,6 +25,9 @@ dependencies:
   animations: ^2.0.0
   flutter_colorpicker: ^1.1.0
   common_utils: ^2.1.0
+  flutter_screenutil: ^5.9.3
+  collection: ^1.15.0
+
 
 
 dev_dependencies:
@@ -34,3 +37,55 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icons/
+    - assets/images/
+  fonts:
+    - family: alumniSansBold
+      fonts:
+        - asset: assets/fonts/AlumniSans-Black.ttf
+    - family: alumniSansSemiBold
+      fonts:
+        - asset: assets/fonts/AlumniSans-Bold.ttf
+    - family: alumniSansMedium
+      fonts:
+        - asset: assets/fonts/AlumniSans-Medium.ttf
+    - family: alumniSansRegular
+      fonts:
+        - asset: assets/fonts/AlumniSans-Regular.ttf
+
+    - family: sfProBold
+      fonts:
+        - asset: assets/fonts/SF-Pro-Rounded-Bold.otf
+    - family: sfProSemiBold
+      fonts:
+        - asset: assets/fonts/SF-Pro-Rounded-Semibold.otf
+    - family: sfProMedium
+      fonts:
+        - asset: assets/fonts/SF-Pro-Rounded-Medium.otf
+    - family: sfProRegular
+      fonts:
+        - asset: assets/fonts/SF-Pro-Rounded-Regular.otf
+
+    - family: robotoBold
+      fonts:
+        - asset: assets/fonts/Roboto-Bold.ttf
+    - family: robotoMedium
+      fonts:
+        - asset: assets/fonts/Roboto-Medium.ttf
+    - family: robotoRegular
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+
+    - family: oswaldBold
+      fonts:
+        - asset: assets/fonts/Oswald-Bold.ttf
+    - family: oswaldSemiBold
+      fonts:
+        - asset: assets/fonts/Oswald-SemiBold.ttf
+    - family: oswaldMedium
+      fonts:
+        - asset: assets/fonts/Oswald-Medium.ttf
+    - family: oswaldRegular
+      fonts:
+        - asset: assets/fonts/Oswald-Regular.ttf
