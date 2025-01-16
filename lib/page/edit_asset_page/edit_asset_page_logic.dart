@@ -11,17 +11,22 @@ import 'package:uuid/uuid.dart';
 
 class AssetController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
-  final accountDetailLogic = Get.find<AccountDetailLogic>();
+
+  // 检查是否已经注册了 AccountDetailLogic
+  final accountDetailLogic = Get.isRegistered<AccountDetailLogic>()
+      ? Get.find<AccountDetailLogic>()
+      : null;
 
   final dbHelper = DatabaseHelper();
   var assets = <Asset>[].obs;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
   final amountController = TextEditingController();
+  final FocusNode amountFocusNode = FocusNode();
   Account? selectedAccount;
   String selectedCurrency = "CNY";
   CountSummaryType selectedCountType = CountSummaryType.SummaryAccount;
-  String selectedCountTypeString = 'Summart Account';
+  String selectedCountTypeString = 'Summary Account';
   Icon selectedCurrencyIcon = const Icon(
     CupertinoIcons.money_yen,
     color: Colors.red,
@@ -94,8 +99,10 @@ class AssetController extends GetxController {
 
       await dbHelper.insertAsset(newAsset.toMap());
       await accountPageLogic.refreshAccount();
-      await accountDetailLogic
-          .refreshAccountAndAssets(selectedAccount?.id ?? '');
+      if (accountDetailLogic != null) {
+        await accountDetailLogic!
+            .refreshAccountAndAssets(selectedAccount?.id ?? '');
+      }
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error adding asset: $e');
@@ -114,7 +121,10 @@ class AssetController extends GetxController {
 
       await dbHelper.updateAsset(asset.id!, asset.toMap());
       await accountPageLogic.refreshAccount();
-      await accountDetailLogic.refreshAccountAndAssets(asset.accountId);
+      if (accountDetailLogic != null) {
+        await accountDetailLogic!
+            .refreshAccountAndAssets(selectedAccount?.id ?? '');
+      }
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error updating asset: $e');
@@ -126,7 +136,10 @@ class AssetController extends GetxController {
     try {
       await dbHelper.deleteAsset(asset.id!);
       await accountPageLogic.refreshAccount();
-      await accountDetailLogic.refreshAccountAndAssets(asset.accountId);
+      if (accountDetailLogic != null) {
+        await accountDetailLogic!
+            .refreshAccountAndAssets(selectedAccount?.id ?? '');
+      }
       Get.snackbar('Success', 'Asset deleted successfully!',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,

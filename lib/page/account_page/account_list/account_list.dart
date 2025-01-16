@@ -7,6 +7,7 @@ import 'package:flutter_finance_app/page/account_detail_page/account_detail_page
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/widget/custom_text_view.dart';
+import 'package:flutter_finance_app/widget/no_account_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -29,9 +30,15 @@ class AccountListWidget extends StatelessWidget {
   Widget _buildAccountCardList() {
     return GetBuilder<AccountPageLogic>(
       builder: (controller) {
+        if (controller.cardDataList.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: NoAccountCard(),
+          );
+        }
         return SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.all(16.w),
             child: Stack(
               children: controller.cardDataList
                   .mapIndexed((index, item) => GestureDetector(

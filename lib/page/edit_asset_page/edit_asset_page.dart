@@ -8,6 +8,7 @@ import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:flutter_finance_app/widget/accout_select_modal.dart';
+import 'package:flutter_finance_app/widget/numeric_keyboard.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -46,15 +47,26 @@ class EditAssetPage extends StatelessWidget {
         ),
       ),
       body: GetBuilder<AssetController>(
-        builder: (controller) => SettingsList(
-          lightTheme: const SettingsThemeData(
-            settingsListBackground: Color(0xFFF8F8F8),
-          ),
-          sections: [
-            _buildAccountSection(context),
-            _buildAssetDetailsSection(context),
-            _buildAddAssetButton(context, isEditMode),
-            if (isEditMode) _buildDeleteAssetButton(context),
+        builder: (controller) => Stack(
+          children: [
+            SettingsList(
+              lightTheme: const SettingsThemeData(
+                settingsListBackground: Color(0xFFF8F8F8),
+              ),
+              sections: [
+                _buildAccountSection(context),
+                _buildAssetDetailsSection(context),
+                _buildAddAssetButton(context, isEditMode),
+                if (isEditMode) _buildDeleteAssetButton(context),
+              ],
+            ),
+            Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: controller.amountFocusNode.hasFocus
+                    ? SafeArea(child: NumericKeyboard(controller: controller.amountController))
+                    : const SizedBox.shrink())
           ],
         ),
       ),
@@ -92,7 +104,16 @@ class EditAssetPage extends StatelessWidget {
                   final accountPageLogic = Get.find<AccountPageLogic>();
                   List<Account> fetchAllAccounts =
                       await accountPageLogic.fetchAllAccountsWithAssets();
-
+                  if (fetchAllAccounts.isEmpty) {
+                    Get.snackbar(
+                      'Warning',
+                      'Please add an account first!',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
                   dynamic value = await showCupertinoModalBottomSheet(
                     expand: true,
                     enableDrag: false,
@@ -164,15 +185,20 @@ class EditAssetPage extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: CupertinoTextField(
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [NumberInputFormatter()],
-              placeholder: "Amount",
-              decoration: null,
+            child: TextField(
+              controller: controller.amountController,
+              focusNode: controller.amountFocusNode,
+              keyboardType: TextInputType.none,
+              // Disable system keyboard
+              decoration: const InputDecoration(
+                hintStyle: TextStyle(color: Colors.grey),
+                hintText: 'Amount',
+                counterText: '',
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(vertical: 10),
+              ),
               textAlign: TextAlign.right,
               maxLength: 10,
-              controller: controller.amountController,
             ),
           ),
           Text(
