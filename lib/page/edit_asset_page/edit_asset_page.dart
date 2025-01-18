@@ -40,8 +40,8 @@ class EditAssetPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: CupertinoNavigationBar(
-        middle: Text(
+      appBar: AppBar(
+        title: Text(
           isEditMode ? 'Edit Asset' : 'Add Asset',
           style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
         ),
@@ -179,7 +179,7 @@ class EditAssetPage extends StatelessWidget {
   SettingsTile _buildAssetAmountTile(BuildContext context) {
     return SettingsTile(
       leading: controller.selectedCurrencyIcon,
-      title: const Text('Asset Amount'),
+      title: const Text('Amount'),
       trailing: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -201,6 +201,7 @@ class EditAssetPage extends StatelessWidget {
               maxLength: 10,
             ),
           ),
+          const SizedBox(width: 3),
           Text(
             controller.selectedCurrency,
             style: Theme.of(context)

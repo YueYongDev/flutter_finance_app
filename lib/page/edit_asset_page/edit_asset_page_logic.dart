@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/repository/database_helper.dart';
+import 'package:flutter_finance_app/repository/asset_repository.dart';
+import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
 class AssetController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
@@ -17,7 +18,7 @@ class AssetController extends GetxController {
       ? Get.find<AccountDetailLogic>()
       : null;
 
-  final dbHelper = DatabaseHelper();
+  final assetRepository = AssetRepository();
   var assets = <Asset>[].obs;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
@@ -77,17 +78,14 @@ class AssetController extends GetxController {
   }
 
   void fetchAssets() async {
-    List<Asset> retrievedAssets = await dbHelper
-        .getAssets()
-        .then((result) => result.map((map) => Asset.fromMap(map)).toList());
+    List<Asset> retrievedAssets = await assetRepository.retrieveAssets();
     assets.assignAll(retrievedAssets);
   }
 
   Future<void> addAsset() async {
     try {
-      var uuid = const Uuid();
       var newAsset = Asset(
-        id: uuid.v4(),
+        id: generateShortId(),
         name: nameController.text,
         amount: double.parse(amountController.text),
         currency: selectedCurrency,
@@ -95,9 +93,13 @@ class AssetController extends GetxController {
         note: note,
         accountId: selectedAccount?.id ?? '',
         enableCounting: enableCounting,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        type: AccountAssetType.CASH.name,
+        extra: {},
       );
 
-      await dbHelper.insertAsset(newAsset.toMap());
+      await assetRepository.createAsset(newAsset);
       await accountPageLogic.refreshAccount();
       if (accountDetailLogic != null) {
         await accountDetailLogic!
@@ -118,8 +120,9 @@ class AssetController extends GetxController {
       asset.accountId =
           selectedAccount?.id ?? ''; // Ensure accountId is not null
       asset.enableCounting = enableCounting;
-
-      await dbHelper.updateAsset(asset.id!, asset.toMap());
+      asset.updatedAt = DateTime.now().millisecondsSinceEpoch;
+      asset.extra = {}; // Update extra with Map
+      await assetRepository.updateAsset(asset);
       await accountPageLogic.refreshAccount();
       if (accountDetailLogic != null) {
         await accountDetailLogic!
@@ -134,7 +137,7 @@ class AssetController extends GetxController {
 
   Future<void> deleteAsset(Asset asset) async {
     try {
-      await dbHelper.deleteAsset(asset.id!);
+      await assetRepository.deleteAsset(asset.id!);
       await accountPageLogic.refreshAccount();
       if (accountDetailLogic != null) {
         await accountDetailLogic!

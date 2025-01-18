@@ -27,13 +27,13 @@ dependencies:
   common_utils: ^2.1.0
   flutter_screenutil: ^5.9.3
   collection: ^1.15.0
-
-
+  flustars: ^2.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true

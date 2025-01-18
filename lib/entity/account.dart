@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_finance_app/entity/asset.dart';
 
 class Account {
@@ -7,8 +9,10 @@ class Account {
   String currency;
   double balance;
   String change;
-  int lastUpdateTime;
-  int createTime;
+  int updatedAt;
+  int createdAt;
+  String type;
+  Map<String, dynamic> extra; // Change extra to Map
   List<Asset> assets;
 
   Account({
@@ -18,8 +22,10 @@ class Account {
     required this.currency,
     required this.balance,
     required this.change,
-    required this.lastUpdateTime,
-    required this.createTime,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.type,
+    required this.extra, // Initialize new field
     required this.assets,
   });
 
@@ -31,8 +37,10 @@ class Account {
       'currency': currency,
       'balance': balance,
       'change': change,
-      'lastUpdateTime': lastUpdateTime,
-      'createTime': createTime
+      'updatedAt': updatedAt,
+      'createdAt': createdAt,
+      'type': type,
+      'extra': jsonEncode(extra), // Convert Map to JSON string
     };
   }
 
@@ -48,8 +56,11 @@ class Account {
       currency: map['currency'],
       balance: map['balance'],
       change: map['change'],
-      lastUpdateTime: map['lastUpdateTime'],
-      createTime: map['createTime'],
+      updatedAt: map['updatedAt'],
+      createdAt: map['createdAt'],
+      type: map['type'],
+      extra: jsonDecode(map['extra']),
+      // Parse JSON string to Map
       assets: [],
     );
   }

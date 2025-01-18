@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/colors.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail_page.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/credit_card_page/credit_card_page.dart';
+import 'package:flutter_finance_app/page/credit_card_page/credit_cards_page.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/widget/custom_text_view.dart';
 import 'package:flutter_finance_app/widget/no_account_card.dart';
@@ -46,7 +47,7 @@ class AccountListWidget extends StatelessWidget {
                           Account account = controller.state.accounts[index];
                           debugPrint(
                               'onTap|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
-                          toAccountDetailPage(account);
+                          toAccountDetailPage(account, index);
                         },
                         onLongPress: () {
                           Account account = controller.state.accounts[index];
@@ -122,7 +123,7 @@ class AccountListWidget extends StatelessWidget {
                                                       ),
                                                     ),
                                                     CustomText(
-                                                      text: 'CREDIT',
+                                                      text: item.type ?? '',
                                                       textSize: 12.sp,
                                                       fontFamily: FontFamily
                                                           .oswaldSemiBold,
@@ -236,30 +237,41 @@ class AccountListWidget extends StatelessWidget {
     );
   }
 
-  toAccountDetailPage(Account account) {
-    Navigator.push(
+  toAccountDetailPage(Account account, int index) {
+    pushFadeInRoute(
       Get.context!,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            AccountDetailsPage(account: account),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var scaleTween =
-              Tween(begin: 0.8, end: 1.0).chain(CurveTween(curve: Curves.ease));
-          var fadeTween =
-              Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease));
-
-          var scaleAnimation = animation.drive(scaleTween);
-          var fadeAnimation = animation.drive(fadeTween);
-
-          return FadeTransition(
-            opacity: fadeAnimation,
-            child: ScaleTransition(
-              scale: scaleAnimation,
-              child: child,
-            ),
-          );
-        },
+      pageBuilder: (context, animation, __) => CreditCardPage(
+        initialIndex: index,
+        pageTransitionAnimation: animation,
       ),
-    );
+    ).then((value) {
+      if (value != null && value is int) {
+        debugPrint("$value");
+      }
+    });
+    // Navigator.push(
+    //   Get.context!,
+    //   PageRouteBuilder(
+    //     pageBuilder: (context, animation, secondaryAnimation) =>
+    //         AccountDetailsPage(account: account),
+    //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    //       var scaleTween =
+    //           Tween(begin: 0.8, end: 1.0).chain(CurveTween(curve: Curves.ease));
+    //       var fadeTween =
+    //           Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease));
+    //
+    //       var scaleAnimation = animation.drive(scaleTween);
+    //       var fadeAnimation = animation.drive(fadeTween);
+    //
+    //       return FadeTransition(
+    //         opacity: fadeAnimation,
+    //         child: ScaleTransition(
+    //           scale: scaleAnimation,
+    //           child: child,
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
   }
 }

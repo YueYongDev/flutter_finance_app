@@ -15,8 +15,8 @@ class SettingsPage extends StatelessWidget {
     final Color backgroundColor =
         CupertinoTheme.of(Get.context!).barBackgroundColor;
     return Scaffold(
-      appBar: const CupertinoNavigationBar(
-        middle: Text("设置",
+      appBar: AppBar(
+        title: const Text("设置",
             style: TextStyle(color: CupertinoColors.label, fontSize: 18)),
       ),
       body: Column(

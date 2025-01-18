@@ -34,6 +34,7 @@ class DataListBasedOnSelectionOfItem {
 class ChallengesDataBasedOnSelectionOfItem {
   String? id; // Add this line
   String? title;
+  String? type;
   String? content;
   Color? cardBGColor;
   String? cardIcon;
@@ -41,6 +42,7 @@ class ChallengesDataBasedOnSelectionOfItem {
   ChallengesDataBasedOnSelectionOfItem(
       {this.id,
       this.title,
+      this.type,
       this.content,
       this.cardBGColor,
       this.cardIcon}); // Update constructor

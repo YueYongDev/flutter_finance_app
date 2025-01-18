@@ -1,15 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/enum/account_asset_type.dart';
+import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/repository/database_helper.dart';
+import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
+import 'package:flutter_finance_app/repository/account_repository.dart';
+import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
 class AccountController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
-  final dbHelper = DatabaseHelper();
+  final accountRepository = AccountRepository();
   final nameController = TextEditingController();
-  String selectedCurrency = "CNY";
+  String selectedCurrency = CurrencyType.CNY.name;
+  String selectedAccountType = AccountType.CASH.name;
+  String selectedAccountCardStyle = CreditCardStyle.primary.name;
   String selectedColor = "0xFFFFABAB";
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
@@ -46,19 +53,22 @@ class AccountController extends GetxController {
   }
 
   Future<void> addAccount() async {
-    var uuid = const Uuid();
     var newAccount = Account(
-      id: uuid.v4(),
+      id: generateShortId(),
       name: nameController.text,
       color: selectedColor,
       currency: selectedCurrency,
       balance: 0.0,
       change: '0',
-      lastUpdateTime: DateTime.now().millisecondsSinceEpoch,
-      createTime: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
       assets: [],
+      type: selectedAccountType,
+      extra: {
+        'cardStyle': selectedAccountCardStyle,
+      }, // Store as a Map
     );
-    await dbHelper.insertAccount(newAccount.toMap());
+    await accountRepository.createAccount(newAccount);
     await accountPageLogic.refreshAccount();
   }
 
@@ -66,12 +76,15 @@ class AccountController extends GetxController {
     account.name = nameController.text;
     account.color = selectedColor;
     account.currency = selectedCurrency;
-    await dbHelper.updateAccount(account.id!, account.toMap());
+    account.extra = {
+      'cardStyle': selectedAccountCardStyle,
+    }; // Update extra with Map
+    await accountRepository.updateAccount(account);
     await accountPageLogic.refreshAccount();
   }
 
   Future<void> deleteAccount(String accountId) async {
-    await dbHelper.deleteAccount(accountId);
+    await accountRepository.deleteAccount(accountId);
     await accountPageLogic.refreshAccount();
   }
 }

@@ -80,6 +80,7 @@ class AccountPageLogic extends GetxController with GetSingleTickerProviderStateM
       return ChallengesDataBasedOnSelectionOfItem(
         id: account.id,
         title: account.name,
+        type: account.type,
         content: "¥ ${account.balance}",
         cardIcon: "assets/icons/ic_visaCard.png", // Replace with appropriate icon
         cardBGColor: Color(int.parse(account.color)), // Replace with appropriate color

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/enum/account_asset_type.dart';
+import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -42,9 +45,9 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  CupertinoNavigationBar _buildNavigationBar(BuildContext context) {
-    return CupertinoNavigationBar(
-      middle: Text(isEditMode ? 'Edit Account' : 'Add Account'),
+  _buildNavigationBar(BuildContext context) {
+    return AppBar(
+      title: Text(isEditMode ? 'Edit Account' : 'Add Account'),
       leading: GestureDetector(
         onTap: () => Get.back(),
         child: const Icon(
@@ -82,6 +85,7 @@ class EditAccountPage extends StatelessWidget {
           ),
           trailing: _buildAccountNameInput(),
         ),
+        _buildAccountTypeSelectorTile(),
       ],
     );
   }
@@ -113,6 +117,7 @@ class EditAccountPage extends StatelessWidget {
       tiles: [
         _buildColorPickerTile(context),
         _buildCurrencySelectorTile(),
+        _buildAccountCardStyleSelectorTile(),
       ],
     );
   }
@@ -153,13 +158,87 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
+  SettingsTile _buildAccountTypeSelectorTile() {
+    return SettingsTile(
+      title: const Text('Account Type'),
+      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      trailing: PullDownButton(
+        itemBuilder: (context) => _buildAccountTypeMenu(),
+        buttonBuilder: (context, showMenu) => GestureDetector(
+          onTap: showMenu,
+          child: Row(
+            children: [
+              Text(controller.selectedAccountType),
+              const SizedBox(width: 3),
+              const Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey,
+                size: 18,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  SettingsTile _buildAccountCardStyleSelectorTile() {
+    return SettingsTile(
+      title: const Text('Card Style'),
+      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      trailing: PullDownButton(
+        itemBuilder: (context) => _buildAccountCardStyleMenu(),
+        buttonBuilder: (context, showMenu) => GestureDetector(
+          onTap: showMenu,
+          child: Row(
+            children: [
+              Text(controller.selectedAccountCardStyle),
+              const SizedBox(width: 3),
+              const Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey,
+                size: 18,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   List<PullDownMenuItem> _buildCurrencyMenu() {
-    var currencyList = ['CNY'];
-    return List.generate(currencyList.length, (index) {
+    var currencyList = CurrencyType.values.map((e) => e.name).toList();
+    return List.generate(CurrencyType.values.length, (index) {
       return PullDownMenuItem(
         title: currencyList[index],
         onTap: () {
           controller.selectedCurrency = currencyList[index];
+          controller.update();
+        },
+      );
+    });
+  }
+
+  List<PullDownMenuItem> _buildAccountCardStyleMenu() {
+    var accountCardStyleList = CreditCardStyle.values.map((e) => e.name).toList();
+    return List.generate(accountCardStyleList.length, (index) {
+      return PullDownMenuItem(
+        title: accountCardStyleList[index],
+        onTap: () {
+          controller.selectedAccountCardStyle = accountCardStyleList[index];
+          controller.update();
+        },
+      );
+    });
+  }
+
+  List<PullDownMenuItem> _buildAccountTypeMenu() {
+    var accountTypeList = AccountType.values.map((e) => e.name).toList();
+    return List.generate(AccountType.values.length, (index) {
+      return PullDownMenuItem(
+        title: accountTypeList[index],
+        onTap: () {
+          controller.selectedAccountType = accountTypeList[index];
           controller.update();
         },
       );
@@ -187,6 +266,7 @@ class EditAccountPage extends StatelessWidget {
               backgroundColor: Colors.green,
               colorText: Colors.white,
             );
+            controller.clearInputFields();
           },
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
           label: Text(isEditMode ? 'Update Account' : 'Save Account',

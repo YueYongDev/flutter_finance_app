@@ -33,8 +33,10 @@ class DatabaseHelper {
       currency TEXT,
       balance REAL,
       change TEXT,
-      lastUpdateTime INTEGER,
-      createTime INTEGER
+      createdAt INTEGER,
+      updatedAt INTEGER,
+      type TEXT,
+      extra TEXT
     )
   ''');
 
@@ -48,6 +50,10 @@ class DatabaseHelper {
       note TEXT,
       accountId TEXT,
       enableCounting INTEGER,
+      createdAt INTEGER,
+      updatedAt INTEGER,
+      type TEXT,
+      extra TEXT,
       FOREIGN KEY (accountId) REFERENCES account (id)
     )
   ''');

@@ -1,0 +1,33 @@
+enum AccountType{
+  CASH,
+  BANK,
+  CREDIT_CARD,
+  ASSET,
+  LIABILITY,
+  INCOME,
+  EXPENSE,
+  EQUITY
+}
+
+enum AccountAssetType{
+  CASH,
+  BANK,
+  CREDIT_CARD,
+  ASSET,
+  LIABILITY,
+  INCOME,
+  EXPENSE,
+  EQUITY
+}
+
+enum BankType{
+  VISA,
+  MASTERCARD,
+  AMERICAN_EXPRESS,
+  DISCOVER,
+  RUPAY,
+  MAESTRO,
+  DINERS_CLUB,
+  JCB,
+  UNIONPAY,
+}

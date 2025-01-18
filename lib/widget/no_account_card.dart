@@ -60,7 +60,7 @@ class NoAccountCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Record and analyze your asset Detail',
+                  'Record and analyze your asset detail',
                   style: TextStyle(
                     color: Color(0xFF29272E),
                     fontSize: 24,
