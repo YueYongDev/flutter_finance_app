@@ -1,33 +1,28 @@
-enum AccountType{
+enum AccountType {
+  /// 现金
   CASH,
-  BANK,
+
+  /// 信用卡
   CREDIT_CARD,
-  ASSET,
-  LIABILITY,
-  INCOME,
-  EXPENSE,
-  EQUITY
+
+  /// 借记卡
+  DEBIT_CARD,
 }
 
-enum AccountAssetType{
+enum AccountAssetType {
+  /// 现金
   CASH,
-  BANK,
-  CREDIT_CARD,
-  ASSET,
-  LIABILITY,
-  INCOME,
-  EXPENSE,
-  EQUITY
+
+  /// 股票
+  STOCK,
+
+  /// 基金
+  FUND,
 }
 
-enum BankType{
+enum BankType {
   VISA,
   MASTERCARD,
   AMERICAN_EXPRESS,
-  DISCOVER,
-  RUPAY,
-  MAESTRO,
-  DINERS_CLUB,
-  JCB,
   UNIONPAY,
 }

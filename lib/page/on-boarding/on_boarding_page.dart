@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/widgets/wallet.dart';
-import 'package:flutter_finance_app/page/home_page.dart';
+import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/model/data.dart';
+import 'package:flutter_finance_app/page/account_page/account_page.dart';
+import 'package:flutter_finance_app/widget/wallet.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -149,7 +149,7 @@ class _OnBoardingPageState extends State<OnBoardingPage>
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (context) => const HomePage(),
+                          builder: (context) => AccountPage(),
                         ),
                       );
                     },

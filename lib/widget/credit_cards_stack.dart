@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/utils.dart';
-import 'package:flutter_finance_app/page/credit_card_page/credit_cards_page.dart';
+import 'package:flutter_finance_app/constant/account_card_constants.dart';
+import 'package:flutter_finance_app/util/account_card_utils.dart';
 
 class CreditCardsStack extends StatefulWidget {
   const CreditCardsStack({
@@ -30,13 +30,16 @@ class _CreditCardsStackState extends State<CreditCardsStack>
   Offset dragOffset = Offset.zero;
   Duration dragDuration = Duration.zero;
 
-  double get scaleDifference =>
-      widget.itemCount > 1 ? (maxCardScale - minCardScale) / (widget.itemCount - 1) : 0;
+  double get scaleDifference => widget.itemCount > 1
+      ? (AccountCardConstants.maxCardScale -
+              AccountCardConstants.minCardScale) /
+          (widget.itemCount - 1)
+      : 0;
 
   Future<void> _handleDismiss() async {
     throwAnimationTween.end = getThrowOffsetFromDragLocation(
       dragOffset,
-      minThrowDistance,
+      AccountCardConstants.minThrowDistance,
     );
     await animationController.forward();
     setState(() {
@@ -58,15 +61,15 @@ class _CreditCardsStackState extends State<CreditCardsStack>
   }
 
   void _onPanEnd(DragEndDetails details) {
-    if (dragOffset.dx.abs() > dragThreshold.dx ||
-        dragOffset.dy.abs() > dragThreshold.dy) {
+    if (dragOffset.dx.abs() > AccountCardConstants.dragThreshold.dx ||
+        dragOffset.dy.abs() > AccountCardConstants.dragThreshold.dy) {
       _handleDismiss().then((value) {
         setState(() {
           dragOffset = Offset.zero;
         });
       });
     } else {
-      dragDuration = dragSnapDuration;
+      dragDuration = AccountCardConstants.dragSnapDuration;
       setState(() {
         dragOffset = Offset.zero;
       });
@@ -87,7 +90,8 @@ class _CreditCardsStackState extends State<CreditCardsStack>
     );
     throwAnimationTween = Tween<Offset>(
       begin: Offset.zero,
-      end: const Offset(minThrowDistance, minThrowDistance),
+      end: const Offset(AccountCardConstants.minThrowDistance,
+          AccountCardConstants.minThrowDistance),
     );
     throwAnimation = throwAnimationTween.animate(curvedAnimation);
   }
@@ -126,7 +130,7 @@ class _CreditCardsStackState extends State<CreditCardsStack>
           clipBehavior: Clip.none,
           children: List.generate(
             widget.itemCount + 1,
-                (stackIndexWithPlaceholder) {
+            (stackIndexWithPlaceholder) {
               final index = stackIndexWithPlaceholder - 1;
               final modIndex = getModIndexFromActiveIndex(
                 index,
@@ -141,7 +145,7 @@ class _CreditCardsStackState extends State<CreditCardsStack>
                   top: 0,
                   left: 0,
                   child: Transform.scale(
-                    scale: minCardScale,
+                    scale: AccountCardConstants.minCardScale,
                     alignment: Alignment.topCenter,
                     child: HeroMode(
                       enabled: false,
@@ -175,12 +179,14 @@ class _CreditCardsStackState extends State<CreditCardsStack>
                 );
               }
 
-              final scaleByIndex = minCardScale +
-                  ((maxCardScale - minCardScale) / (widget.itemCount - 1)) *
+              final scaleByIndex = AccountCardConstants.minCardScale +
+                  ((AccountCardConstants.maxCardScale -
+                              AccountCardConstants.minCardScale) /
+                          (widget.itemCount - 1)) *
                       index;
 
-              final bottomOffsetByIndex =
-                  -cardsOffset * (widget.itemCount - 1 - index);
+              final bottomOffsetByIndex = -AccountCardConstants.cardsOffset *
+                  (widget.itemCount - 1 - index);
 
               return Positioned(
                 left: 0,
@@ -188,11 +194,13 @@ class _CreditCardsStackState extends State<CreditCardsStack>
                 child: Transform.translate(
                   offset: Offset(
                     0,
-                    bottomOffsetByIndex + cardsOffset * curvedAnimation.value,
+                    bottomOffsetByIndex +
+                        AccountCardConstants.cardsOffset *
+                            curvedAnimation.value,
                   ),
                   child: Transform.scale(
                     scale:
-                    scaleByIndex + scaleDifference * curvedAnimation.value,
+                        scaleByIndex + scaleDifference * curvedAnimation.value,
                     alignment: Alignment.topCenter,
                     child: child,
                   ),

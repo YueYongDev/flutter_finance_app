@@ -4,9 +4,8 @@ import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/page/credit_card_page/credit_card_logic.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
@@ -14,14 +13,9 @@ import 'package:get/get.dart';
 class AssetController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
 
-  // 检查是否已经注册了 AccountDetailLogic
-  final accountDetailLogic = Get.isRegistered<AccountDetailLogic>()
-      ? Get.find<AccountDetailLogic>()
-      : null;
-
-  // 检查是否已经注册了 CreditCardController
-  final creditCardController = Get.isRegistered<CreditCardController>()
-      ? Get.find<CreditCardController>()
+  // 检查是否已经注册了 AccountDetailController
+  final accountDetailController = Get.isRegistered<AccountDetailController>()
+      ? Get.find<AccountDetailController>()
       : null;
 
   final assetRepository = AssetRepository();
@@ -107,13 +101,9 @@ class AssetController extends GetxController {
 
       await assetRepository.createAsset(newAsset);
       await accountPageLogic.refreshAccount();
-      if (accountDetailLogic != null) {
-        await accountDetailLogic!
-            .refreshAccountAndAssets(selectedAccount?.id ?? '');
-      }
-      if (creditCardController != null) {
-        creditCardController!.refreshCardData();
-        creditCardController!.refresh();
+      if (accountDetailController != null) {
+        accountDetailController!.refreshCardData();
+        accountDetailController!.refresh();
       }
       Get.back(); // Close the dialog or page
     } catch (e) {
@@ -134,13 +124,10 @@ class AssetController extends GetxController {
       asset.extra = {}; // Update extra with Map
       await assetRepository.updateAsset(asset);
       await accountPageLogic.refreshAccount();
-      if (accountDetailLogic != null) {
-        await accountDetailLogic!
-            .refreshAccountAndAssets(selectedAccount?.id ?? '');
-      }
-      if(creditCardController != null) {
-        creditCardController!.refreshCardData();
-        creditCardController!.refresh();
+
+      if (accountDetailController != null) {
+        accountDetailController!.refreshCardData();
+        accountDetailController!.refresh();
       }
       Get.back(); // Close the dialog or page
     } catch (e) {
@@ -153,13 +140,10 @@ class AssetController extends GetxController {
     try {
       await assetRepository.deleteAsset(asset.id!);
       await accountPageLogic.refreshAccount();
-      if (accountDetailLogic != null) {
-        await accountDetailLogic!
-            .refreshAccountAndAssets(selectedAccount?.id ?? '');
-      }
-      if (creditCardController != null) {
-        creditCardController!.refreshCardData();
-        creditCardController!.refresh();
+
+      if (accountDetailController != null) {
+        accountDetailController!.refreshCardData();
+        accountDetailController!.refresh();
       }
       Get.snackbar('Success', 'Asset deleted successfully!',
           snackPosition: SnackPosition.BOTTOM,

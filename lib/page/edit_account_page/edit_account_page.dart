@@ -4,8 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
+import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -37,7 +37,7 @@ class EditAccountPage extends StatelessWidget {
         children: [
           Expanded(
             child: GetBuilder<AccountController>(
-              builder: (controller) => _buildSettingsList(context),
+              builder: (controller) => _buildSettingsList(controller),
             ),
           ),
         ],
@@ -58,21 +58,21 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  SettingsList _buildSettingsList(BuildContext context) {
+  SettingsList _buildSettingsList(AccountController controller) {
     return SettingsList(
       lightTheme: const SettingsThemeData(
         settingsListBackground: Color(0xFFF8F8F8),
       ),
       sections: [
-        _buildAccountInfoSection(),
-        _buildAppearanceSection(context),
-        _buildSaveButtonSection(),
+        _buildAccountInfoSection(controller),
+        _buildAppearanceSection(controller),
+        _buildSaveButtonSection(controller),
         if (isEditMode) _buildDeleteButtonSection(),
       ],
     );
   }
 
-  SettingsSection _buildAccountInfoSection() {
+  SettingsSection _buildAccountInfoSection(AccountController controller) {
     return SettingsSection(
       title: const Text('Account Info'),
       tiles: [
@@ -86,6 +86,9 @@ class EditAccountPage extends StatelessWidget {
           trailing: _buildAccountNameInput(),
         ),
         _buildAccountTypeSelectorTile(),
+        if (controller.selectedAccountType == AccountType.CREDIT_CARD.name ||
+            controller.selectedAccountType == AccountType.DEBIT_CARD.name)
+          _buildBankTypeSelectorTile(controller)
       ],
     );
   }
@@ -111,18 +114,18 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  SettingsSection _buildAppearanceSection(BuildContext context) {
+  SettingsSection _buildAppearanceSection(AccountController controller) {
     return SettingsSection(
       title: const Text('Appearance'),
       tiles: [
-        _buildColorPickerTile(context),
+        _buildColorPickerTile(),
         _buildCurrencySelectorTile(),
         _buildAccountCardStyleSelectorTile(),
       ],
     );
   }
 
-  SettingsTile _buildColorPickerTile(BuildContext context) {
+  SettingsTile _buildColorPickerTile() {
     return SettingsTile(
       title: const Text('Color'),
       leading: const Icon(Icons.color_lens, color: Colors.teal),
@@ -130,7 +133,7 @@ class EditAccountPage extends StatelessWidget {
         radius: 12,
         backgroundColor: Color(int.parse(controller.selectedColor)),
       ),
-      onPressed: (_) => _showColorPicker(context),
+      onPressed: (_) => _showColorPicker(),
     );
   }
 
@@ -206,9 +209,37 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
+  SettingsTile _buildBankTypeSelectorTile(AccountController controller) {
+    if (controller.selectedBankType.isEmpty) {
+      controller.selectedBankType = BankType.VISA.name;
+      controller.update();
+    }
+    return SettingsTile(
+      title: const Text('Bank Type'),
+      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      trailing: PullDownButton(
+        itemBuilder: (context) => _buildBankTypeMenu(),
+        buttonBuilder: (context, showMenu) => GestureDetector(
+          onTap: showMenu,
+          child: Row(
+            children: [
+              Text(controller.selectedBankType),
+              const SizedBox(width: 3),
+              const Icon(
+                CupertinoIcons.chevron_up_chevron_down,
+                color: Colors.grey,
+                size: 18,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   List<PullDownMenuItem> _buildCurrencyMenu() {
     var currencyList = CurrencyType.values.map((e) => e.name).toList();
-    return List.generate(CurrencyType.values.length, (index) {
+    return List.generate(currencyList.length, (index) {
       return PullDownMenuItem(
         title: currencyList[index],
         onTap: () {
@@ -220,7 +251,8 @@ class EditAccountPage extends StatelessWidget {
   }
 
   List<PullDownMenuItem> _buildAccountCardStyleMenu() {
-    var accountCardStyleList = CreditCardStyle.values.map((e) => e.name).toList();
+    var accountCardStyleList =
+        CreditCardStyle.values.map((e) => e.name).toList();
     return List.generate(accountCardStyleList.length, (index) {
       return PullDownMenuItem(
         title: accountCardStyleList[index],
@@ -234,7 +266,7 @@ class EditAccountPage extends StatelessWidget {
 
   List<PullDownMenuItem> _buildAccountTypeMenu() {
     var accountTypeList = AccountType.values.map((e) => e.name).toList();
-    return List.generate(AccountType.values.length, (index) {
+    return List.generate(accountTypeList.length, (index) {
       return PullDownMenuItem(
         title: accountTypeList[index],
         onTap: () {
@@ -245,7 +277,20 @@ class EditAccountPage extends StatelessWidget {
     });
   }
 
-  CustomSettingsSection _buildSaveButtonSection() {
+  List<PullDownMenuItem> _buildBankTypeMenu() {
+    var bankTypeList = BankType.values.map((e) => e.name).toList();
+    return List.generate(bankTypeList.length, (index) {
+      return PullDownMenuItem(
+        title: bankTypeList[index],
+        onTap: () {
+          controller.selectedBankType = bankTypeList[index];
+          controller.update();
+        },
+      );
+    });
+  }
+
+  CustomSettingsSection _buildSaveButtonSection(AccountController controller) {
     return CustomSettingsSection(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -314,9 +359,9 @@ class EditAccountPage extends StatelessWidget {
     );
   }
 
-  void _showColorPicker(BuildContext context) {
+  void _showColorPicker() {
     showDialog(
-      context: context,
+      context: Get.context!,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Select a color'),

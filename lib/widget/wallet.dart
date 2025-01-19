@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/constants.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/widgets/dashed_border_container.dart';
+import 'package:flutter_finance_app/constant/account_card_constants.dart';
+import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/widget/dashed_border_container.dart';
 
 class Wallet extends StatelessWidget {
   const Wallet({
@@ -54,16 +54,18 @@ class _WalletStrapSide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Constants.walletStrapWidth,
-      height: Constants.walletStrapHeight,
+      width: AccountCardConstants.walletStrapWidth,
+      height: AccountCardConstants.walletStrapHeight,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onBackground,
         border: Border.all(color: Theme.of(context).dividerColor),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppBorderRadius.sm),
           topRight: Radius.circular(AppBorderRadius.sm),
-          bottomRight: Radius.circular(Constants.walletStrapWidth / 2),
-          bottomLeft: Radius.circular(Constants.walletStrapWidth / 2),
+          bottomRight:
+              Radius.circular(AccountCardConstants.walletStrapWidth / 2),
+          bottomLeft:
+              Radius.circular(AccountCardConstants.walletStrapWidth / 2),
         ),
         boxShadow: [
           BoxShadow(
@@ -77,8 +79,10 @@ class _WalletStrapSide extends StatelessWidget {
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppBorderRadius.sm),
           topRight: Radius.circular(AppBorderRadius.sm),
-          bottomRight: Radius.circular(Constants.walletStrapWidth / 2),
-          bottomLeft: Radius.circular(Constants.walletStrapWidth / 2),
+          bottomRight:
+              Radius.circular(AccountCardConstants.walletStrapWidth / 2),
+          bottomLeft:
+              Radius.circular(AccountCardConstants.walletStrapWidth / 2),
         ),
         dash: 3,
         gap: 3,

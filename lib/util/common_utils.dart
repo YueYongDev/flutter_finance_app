@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter_finance_app/constant/common_constant.dart';
+import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
+import 'package:flutter_finance_app/enum/account_card_enums.dart';
 
 getCurrencyIconByName(String currencyName) {
   for (var currency in currencyList) {
@@ -28,14 +29,19 @@ String? getCurrencySymbolByName(String currencyName) {
   }
 }
 
-CreditCardType getCardTypeByName(String cardType) {
-  switch (cardType) {
-    case 'CASH':
-      return CreditCardType.cash;
-    case 'visa':
-      return CreditCardType.visa;
-    case 'masterCard':
-      return CreditCardType.masterCard;
+CreditCardType getAccountCardType(Account account) {
+  if (account.type == 'CASH') {
+    return CreditCardType.cash;
+  }
+  String accountBankType = account.extra['bankType'];
+  if (accountBankType == BankType.VISA.name) {
+    return CreditCardType.visa;
+  }
+  if (accountBankType == BankType.MASTERCARD.name) {
+    return CreditCardType.masterCard;
+  }
+  if (accountBankType == BankType.UNIONPAY.name) {
+    return CreditCardType.unionPay;
   }
   return CreditCardType.visa;
 }

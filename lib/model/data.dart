@@ -1,0 +1,92 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/enum/account_card_enums.dart';
+import 'package:flutter_finance_app/util/common_utils.dart';
+
+class AccountCardData {
+  const AccountCardData({
+    required this.id,
+    required this.name,
+    required this.type,
+    this.number = '1234567812345678',
+    this.style = CreditCardStyle.primary,
+    this.balance = '0.00',
+  });
+
+  final String id;
+  final String name;
+  final String number;
+  final CreditCardStyle style;
+  final CreditCardType type;
+  final String balance;
+}
+
+class TabItem {
+  const TabItem({
+    required this.view,
+    this.title = '',
+  });
+
+  final String title;
+  final Widget view;
+}
+
+class OnBoardingItem {
+  const OnBoardingItem({
+    required this.title,
+    required this.subtitle,
+    required this.image,
+  });
+
+  final String title;
+  final String subtitle;
+  final String image;
+}
+
+const List<OnBoardingItem> onBoardingItems = [
+  OnBoardingItem(
+    title: 'Cards',
+    subtitle: 'All your cards in one place!',
+    image: 'assets/images/on-boarding-1.png',
+  ),
+  OnBoardingItem(
+    title: 'Transactions',
+    subtitle: 'Send payments quickly and easily!',
+    image: 'assets/images/on-boarding-2.png',
+  ),
+  OnBoardingItem(
+    title: 'Insights',
+    subtitle: 'View your transaction history!',
+    image: 'assets/images/on-boarding-3.png',
+  ),
+];
+
+
+List<AccountCardData> generateAccountCardData(List<Account> accounts) {
+  return accounts.map((account) {
+    return AccountCardData(
+      /// 优先取bankType，没有再取accountType
+      type: getAccountCardType(account),
+      id: account.id!,
+      name: account.name,
+      number: account.id!,
+      style: getCardStyleByName(account.extra['cardStyle'])!,
+      balance:
+          "${getCurrencySymbolByName(account.currency)} ${account.balance}",
+    );
+  }).toList();
+}
+
+class AssetItemData {
+  const AssetItemData({
+    required this.title,
+    required this.date,
+    required this.amount,
+    required this.icon,
+  });
+
+  final String title;
+  final String date;
+  final double amount;
+  final String icon;
+}

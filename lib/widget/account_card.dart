@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
+import 'package:flutter_finance_app/model/data.dart';
+import 'package:flutter_finance_app/constant/account_card_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const double creditCardAspectRatio = 1.56;
 
-class CreditCard extends StatelessWidget {
-  const CreditCard({
+class AccountCard extends StatelessWidget {
+  const AccountCard({
     required this.data,
     super.key,
     this.width,
     this.isFront = false,
   }) : height = width != null ? width / creditCardAspectRatio : null;
 
-  final CreditCardData data;
+  final AccountCardData data;
   final bool isFront;
   final double? height;
   final double? width;
@@ -49,7 +49,7 @@ class CreditCard extends StatelessWidget {
 class _CreditCardFront extends StatelessWidget {
   const _CreditCardFront(this.data);
 
-  final CreditCardData data;
+  final AccountCardData data;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class _CreditCardFront extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Image(
-                  image: AssetImage('assets/icons/${data.type.name}.png'),
+                  image: AssetImage('assets/icons/bank/${data.type.name}.png'),
                   width: 45,
                   fit: BoxFit.cover,
                   color: data.style.textColor,
@@ -133,7 +133,7 @@ class _CreditCardFront extends StatelessWidget {
 class _CreditCardBack extends StatelessWidget {
   const _CreditCardBack(this.data);
 
-  final CreditCardData data;
+  final AccountCardData data;
 
   @override
   Widget build(BuildContext context) {

@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
+import 'package:flutter_finance_app/model/data.dart';
 import 'package:get/get.dart';
 
-class CreditCardController extends GetxController {
+class AccountDetailController extends GetxController {
   AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
 
   var activeIndex = 0.obs;
   late PageController pageController;
 
-  List<CreditCardData> cards = [];
-  List<Transaction> transactions = [];
+  List<AccountCardData> cards = [];
+  List<AssetItemData> assetItemData = [];
 
-  CreditCardController(int initialIndex) {
+  AccountDetailController(int initialIndex) {
     activeIndex.value = initialIndex;
     pageController = PageController(
       initialPage: initialIndex,
@@ -26,7 +26,7 @@ class CreditCardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    cards = generateCreditCardData(accountPageState.accounts);
+    cards = generateAccountCardData(accountPageState.accounts);
   }
 
   @override
@@ -37,7 +37,7 @@ class CreditCardController extends GetxController {
 
   refreshCardData() {
     cards.clear();
-    cards.addAll(generateCreditCardData(accountPageState.accounts));
+    cards.addAll(generateAccountCardData(accountPageState.accounts));
     update();
   }
 
@@ -46,14 +46,14 @@ class CreditCardController extends GetxController {
     update();
   }
 
-  List<Transaction> generateTransactions(List<Asset> assets) {
+  List<AssetItemData> generateAssetItemDataList(List<Asset> assets) {
     return assets.map((asset) {
-      return Transaction(
+      return AssetItemData(
           title: asset.name,
           date:
               DateUtil.formatDateMs(asset.createdAt, format: DateFormats.full),
           amount: asset.amount,
-          icon: 'assets/icons/tiktok.png');
+          icon: 'assets/icons/twitter.png');
     }).toList();
   }
 }

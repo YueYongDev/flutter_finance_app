@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
+import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/model/data.dart';
 
-class TransactionItem extends StatelessWidget {
-  const TransactionItem(this.transaction, {super.key});
+class AssetItem extends StatelessWidget {
+  const AssetItem(this.assetItemData, {super.key});
 
-  final Transaction transaction;
+  final AssetItemData assetItemData;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class TransactionItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
-              transaction.icon,
-              width: 60,
+              assetItemData.icon,
+              width: 50,
               fit: BoxFit.fitWidth,
             ),
           ),
@@ -32,7 +32,7 @@ class TransactionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  transaction.title,
+                  assetItemData.title,
                   style: const TextStyle(
                     color: AppColors.black,
                     fontWeight: FontWeight.w500,
@@ -40,17 +40,19 @@ class TransactionItem extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  transaction.date,
+                  assetItemData.date,
                   style: const TextStyle(color: AppColors.onBlack),
                 ),
               ],
             ),
           ),
           Text(
-            (transaction.amount < 0 ? '' : '+') + transaction.amount.toString(),
+            (assetItemData.amount < 0 ? '' : '+') +
+                assetItemData.amount.toString(),
             style: TextStyle(
-              color:
-                  transaction.amount < 0 ? AppColors.danger : AppColors.primary,
+              color: assetItemData.amount < 0
+                  ? AppColors.danger
+                  : AppColors.primary,
               fontSize: 18,
               fontWeight: FontWeight.w700,
             ),

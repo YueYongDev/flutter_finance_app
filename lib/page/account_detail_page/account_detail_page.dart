@@ -1,218 +1,288 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
+import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:flutter_finance_app/widget/transaction_item.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class AccountDetailsPage extends StatelessWidget {
-  final Account account;
-  final AccountDetailLogic logic = Get.put(AccountDetailLogic());
+import '../../constant/account_card_constants.dart';
+import '../../constant/account_card_styles.dart';
+import '../../widget/account_card.dart';
 
-  AccountDetailsPage({super.key, required this.account}) {
-    logic.updateAssets(account.assets);
-  }
+class AccountDetailPage extends StatelessWidget {
+  final int initialIndex;
+  final Animation<double> pageTransitionAnimation;
+
+  const AccountDetailPage({
+    required this.initialIndex,
+    required this.pageTransitionAnimation,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
+
+    final AccountDetailController controller =
+        Get.put(AccountDetailController(initialIndex));
+
+    final slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1.5),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: pageTransitionAnimation,
+        curve: Curves.easeOut,
+      ),
+    );
+
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        title: Text(account.name),
-        backgroundColor: Color(int.parse(account.color)),
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Color(int.parse(account.color)),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
-                  ),
-                ),
-                child: Obx(() => _buildAccountSummary(logic.assets)),
-              ),
-              const SizedBox(height: 16),
-              Obx(() => _buildAssetList(context, logic.assets)),
-            ],
+        backgroundColor: AppColors.black,
+        title: Obx(() => Text(
+              accountPageState.accounts[controller.activeIndex.value].name,
+              style: const TextStyle(color: Colors.white),
+            )),
+        leading: IconButton(
+          onPressed: () {
+            Get.delete<AccountDetailController>();
+            Navigator.of(context).pop(controller.activeIndex.value);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Open asset edit page (add new asset)
-          await showCupertinoModalBottomSheet(
-            expand: true,
-            context: context,
-            enableDrag: false,
-            builder: (context) => EditAssetPage(account: account),
-          );
-          // Clear input fields after modal is closed
-          _clearInputFields();
-        },
-        backgroundColor: Color(int.parse(account.color)),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  // Account summary
-  Widget _buildAccountSummary(List<Asset> assets) {
-    final filteredAssets =
-        assets.where((asset) => asset.enableCounting).toList();
-    final totalAssets = filteredAssets
-        .where((asset) => asset.amount >= 0)
-        .fold<double>(0, (sum, item) => sum + item.amount);
-    final totalDebt = filteredAssets
-        .where((asset) => asset.amount < 0)
-        .fold<double>(0, (sum, item) => sum + item.amount.abs());
-    final netAssets = totalAssets - totalDebt;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Account Overview',
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Assets',
-                      style: TextStyle(fontSize: 16, color: Colors.white70),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      totalAssets.toStringAsFixed(2),
-                      style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Debt',
-                      style: TextStyle(fontSize: 16, color: Colors.white70),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      totalDebt > 0
-                          ? "-${totalDebt.toStringAsFixed(2)}"
-                          : totalDebt.toStringAsFixed(2),
-                      style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Net Assets',
-                  style: TextStyle(fontSize: 16, color: Colors.white70),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  netAssets.toStringAsFixed(2),
-                  style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  // Asset list
-  Widget _buildAssetList(BuildContext context, List<Asset> assets) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
+      body: Column(
         children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Asset List',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Container(
+            padding: const EdgeInsets.only(bottom: 20),
+            decoration: const BoxDecoration(
+              color: AppColors.black,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          ...assets.map((asset) {
-            return GestureDetector(
-              onTap: () async {
-                print("onTap asset:${asset.toMap()}");
-                // Open asset edit page (edit existing asset)
-                await showCupertinoModalBottomSheet(
-                  expand: true,
-                  context: context,
-                  enableDrag: false,
-                  builder: (context) =>
-                      EditAssetPage(account: account, asset: asset),
-                );
-                // Clear input fields after modal is closed
-                _clearInputFields();
-              },
-              child: Card(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.account_balance_wallet,
-                    size: 32,
-                    color: Colors.blue,
-                  ),
-                  title: Text(
-                    asset.name,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Text(
-                    '${asset.amount}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: asset.amount >= 0 ? Colors.green : Colors.red,
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              children: [
+                _buildCardsPageView(),
+                SlideTransition(
+                  position: slideAnimation,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      children: [
+                        Obx(() => PageIndicator(
+                              length: controller.cards.length,
+                              activeIndex: controller.activeIndex.value,
+                              activeColor: controller
+                                  .cards[controller.activeIndex.value]
+                                  .style
+                                  .color,
+                            )),
+                        Obx(() => _buildButtons(accountPageState
+                            .accounts[controller.activeIndex.value])),
+                      ],
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: SlideTransition(
+                position: slideAnimation,
+                child: GetBuilder<AccountDetailController>(
+                  builder: (controller) {
+                    return _buildLatestTransactionsSection(
+                      accountPageState.accounts[controller.activeIndex.value],
+                    );
+                  },
+                ),
               ),
-            );
-          }),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  void _clearInputFields() {
-    final accountPageLogic = Get.find<AssetController>();
-    accountPageLogic.clearInputFields();
+  Widget _buildCardsPageView() {
+    final screenSize = MediaQuery.of(Get.context!).size;
+    final cardWidth = screenSize.width - AccountCardConstants.appHPadding * 2;
+    AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
+
+    return GetBuilder<AccountDetailController>(builder: (controller) {
+      return SizedBox(
+        height: cardWidth / creditCardAspectRatio,
+        child: PageView.builder(
+          controller: controller.pageController,
+          itemCount: accountPageState.accounts.length,
+          onPageChanged: (index) => controller.setActiveIndex(index),
+          itemBuilder: (context, index) {
+            return AnimatedScale(
+              scale: index == controller.activeIndex.value ? 1 : 0.85,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: HeroMode(
+                enabled: index == controller.activeIndex.value,
+                child: Hero(
+                  tag: 'card_${accountPageState.accounts[index].id}',
+                  child: AccountCard(
+                    width: cardWidth,
+                    data: controller.cards[index],
+                    isFront: true,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _buildButtons(Account account) {
+    return Row(
+      children: [
+        Expanded(
+          child: _Button(
+            label: 'Edit Account',
+            icon: Icons.edit,
+            onTap: () {
+              showCupertinoModalBottomSheet(
+                context: Get.context!,
+                builder: (context) => EditAccountPage(account: account),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _Button(
+            label: 'Add Asset',
+            icon: Icons.add,
+            onTap: () async {
+              // Open asset edit page (add new asset)
+              await showCupertinoModalBottomSheet(
+                expand: true,
+                context: Get.context!,
+                enableDrag: false,
+                builder: (context) => EditAssetPage(account: account),
+              );
+              // Clear input fields after modal is closed
+              final assetController = Get.find<AssetController>();
+              assetController.clearInputFields();
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLatestTransactionsSection(Account account) {
+    AccountDetailController controller = Get.find<AccountDetailController>();
+
+    List<Asset> assets = account.assets;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 15),
+        const Text(
+          'Assets List',
+          style: TextStyle(
+            color: AppColors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 15),
+        ...List.generate(
+          assets.length,
+          (index) => GestureDetector(
+            child: AssetItem(
+              controller.generateAssetItemDataList(assets)[index],
+            ),
+            onTap: () async {
+              await showCupertinoModalBottomSheet(
+                expand: true,
+                context: Get.context!,
+                enableDrag: false,
+                builder: (context) =>
+                    EditAssetPage(account: account, asset: assets[index]),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(Get.context!).padding.bottom),
+      ],
+    );
+  }
+}
+
+class _Button extends StatelessWidget {
+  const _Button({
+    required this.label,
+    required this.icon,
+    this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppColors.onBlack,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 50,
+              decoration: BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: AppColors.white,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  label,
+                  style: const TextStyle(color: AppColors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

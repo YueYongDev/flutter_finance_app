@@ -1,13 +1,12 @@
 import 'dart:math';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/helper/common_helper.dart';
+import 'package:flutter_finance_app/model/data.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
-import 'package:flutter_finance_app/page/credit_card_page/credit_card.dart';
-import 'package:flutter_finance_app/page/credit_card_page/credit_card_page.dart';
-import 'package:flutter_finance_app/page/credit_card_page/credit_cards_page.dart';
+import 'package:flutter_finance_app/widget/account_card.dart';
 import 'package:flutter_finance_app/widget/no_account_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -27,7 +26,7 @@ class AccountListWidget extends StatelessWidget {
           bottom: true,
           top: false,
           child: GetBuilder<AccountPageLogic>(builder: (controller) {
-            if (controller.cardDataList.isEmpty) {
+            if (controller.state.accounts.isEmpty) {
               return const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: NoAccountCard(),
@@ -67,9 +66,9 @@ class AccountListWidget extends StatelessWidget {
                         children: [
                           Hero(
                             tag: 'card_${accounts[index].id}',
-                            child: CreditCard(
+                            child: AccountCard(
                               width: cardWidth,
-                              data: generateCreditCardData(accounts)[index],
+                              data: generateAccountCardData(accounts)[index],
                               isFront: true,
                             ),
                             flightShuttleBuilder: (
@@ -113,9 +112,9 @@ class AccountListWidget extends StatelessWidget {
                                       child: Transform(
                                         alignment: Alignment.center,
                                         transform: Matrix4.rotationY(pi),
-                                        child: CreditCard(
+                                        child: AccountCard(
                                           width: cardWidth,
-                                          data: generateCreditCardData(
+                                          data: generateAccountCardData(
                                               accounts)[index],
                                           isFront: true,
                                         ),
@@ -141,7 +140,7 @@ class AccountListWidget extends StatelessWidget {
   toAccountDetailPage(Account account, int index) {
     pushFadeInRoute(
       Get.context!,
-      pageBuilder: (context, animation, __) => CreditCardPage(
+      pageBuilder: (context, animation, __) => AccountDetailPage(
         initialIndex: index,
         pageTransitionAnimation: animation,
       ),

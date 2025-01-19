@@ -1,22 +1,31 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
+import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
 
 class AccountController extends GetxController {
   final accountPageLogic = Get.find<AccountPageLogic>();
+
+  // 检查是否已经注册了 AccountDetailController
+  final accountDetailController = Get.isRegistered<AccountDetailController>()
+      ? Get.find<AccountDetailController>()
+      : null;
+
   final accountRepository = AccountRepository();
+
   final nameController = TextEditingController();
+
   String selectedCurrency = CurrencyType.CNY.name;
   String selectedAccountType = AccountType.CASH.name;
   String selectedAccountCardStyle = CreditCardStyle.primary.name;
+  String selectedBankType = "";
+
   String selectedColor = "0xFFFFABAB";
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
@@ -34,9 +43,15 @@ class AccountController extends GetxController {
   }
 
   void setAccount(Account account) {
+    debugPrint('setAccount: ${account.toMap()}');
     nameController.text = account.name;
     selectedCurrency = account.currency;
     selectedColor = account.color;
+    selectedAccountType = account.type;
+    selectedAccountCardStyle = account.extra['cardStyle'];
+    if (account.extra.containsKey('bankType')) {
+      selectedBankType = account.extra['bankType'];
+    }
     updateRemainingCharacters(account.name);
   }
 
@@ -66,21 +81,34 @@ class AccountController extends GetxController {
       type: selectedAccountType,
       extra: {
         'cardStyle': selectedAccountCardStyle,
-      }, // Store as a Map
+      },
     );
+    if (selectedBankType.isNotEmpty) {
+      newAccount.extra['bankType'] = selectedBankType;
+    }
     await accountRepository.createAccount(newAccount);
     await accountPageLogic.refreshAccount();
+    if (accountDetailController != null) {
+      accountDetailController!.refreshCardData();
+      accountDetailController!.refresh();
+    }
   }
 
   Future<void> updateAccount(Account account) async {
     account.name = nameController.text;
     account.color = selectedColor;
     account.currency = selectedCurrency;
-    account.extra = {
-      'cardStyle': selectedAccountCardStyle,
-    }; // Update extra with Map
+    account.type = selectedAccountType;
+    account.extra = {'cardStyle': selectedAccountCardStyle};
+    if (selectedBankType.isNotEmpty) {
+      account.extra['bankType'] = selectedBankType;
+    }
     await accountRepository.updateAccount(account);
     await accountPageLogic.refreshAccount();
+    if (accountDetailController != null) {
+      accountDetailController!.refreshCardData();
+      accountDetailController!.refresh();
+    }
   }
 
   Future<void> deleteAccount(String accountId) async {
