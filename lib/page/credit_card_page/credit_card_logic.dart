@@ -4,7 +4,6 @@ import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
 import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
-import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
 
 class CreditCardController extends GetxController {
@@ -17,7 +16,6 @@ class CreditCardController extends GetxController {
   List<Transaction> transactions = [];
 
   CreditCardController(int initialIndex) {
-    debugPrint('initialIndex: $initialIndex');
     activeIndex.value = initialIndex;
     pageController = PageController(
       initialPage: initialIndex,
@@ -28,7 +26,7 @@ class CreditCardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    cards = generateCreditCardData();
+    cards = generateCreditCardData(accountPageState.accounts);
   }
 
   @override
@@ -37,29 +35,15 @@ class CreditCardController extends GetxController {
     super.onClose();
   }
 
-  refreshCardData(){
+  refreshCardData() {
     cards.clear();
-    cards.addAll(generateCreditCardData());
+    cards.addAll(generateCreditCardData(accountPageState.accounts));
     update();
   }
 
   void setActiveIndex(int index) {
     activeIndex.value = index;
     update();
-  }
-
-  List<CreditCardData> generateCreditCardData() {
-    return accountPageState.accounts.map((account) {
-      return CreditCardData(
-        type: CreditCardType.visa,
-        id: account.id!,
-        name: account.name,
-        number: account.id!,
-        style: getCardStyleByName(account.extra['cardStyle'])!,
-        balance:
-            "${getCurrencySymbolByName(account.currency)} ${account.balance}",
-      );
-    }).toList();
   }
 
   List<Transaction> generateTransactions(List<Asset> assets) {

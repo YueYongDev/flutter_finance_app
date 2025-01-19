@@ -6,4 +6,6 @@ import 'package:get/get.dart';
 class AccountListLogic extends GetxController
     with GetSingleTickerProviderStateMixin {
   AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
+
+  int activeCard = 0;
 }

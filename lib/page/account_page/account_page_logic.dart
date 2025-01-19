@@ -59,21 +59,21 @@ class AccountPageLogic extends GetxController with GetSingleTickerProviderStateM
     state.accounts.clear();
     state.accounts.addAll(list);
 
-    state.totalAssets = list.fold(0.0, (previousValue, account) {
+    state.totalAssets = double.parse(list.fold(0.0, (previousValue, account) {
       return previousValue +
           account.assets
               .where((asset) => asset.enableCounting && asset.amount > 0)
               .fold(0.0, (sum, asset) => sum + asset.amount);
-    });
+    }).toStringAsFixed(2));
 
-    state.totalDebt = list.fold(0.0, (previousValue, account) {
+    state.totalDebt = double.parse(list.fold(0.0, (previousValue, account) {
       return previousValue +
           account.assets
               .where((asset) => asset.enableCounting && asset.amount < 0)
               .fold(0.0, (sum, asset) => sum + asset.amount);
-    });
+    }).toStringAsFixed(2));
 
-    state.netAssets = state.totalAssets + state.totalDebt;
+    state.netAssets = double.parse((state.totalAssets + state.totalDebt).toStringAsFixed(2));
 
     // Map state.accounts to cardDataList
     cardDataList.value = state.accounts.map((account) {

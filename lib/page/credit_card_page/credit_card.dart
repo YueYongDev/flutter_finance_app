@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/enum/font_family.dart';
 import 'package:flutter_finance_app/page/credit_card_page/core/data.dart';
 import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const double creditCardAspectRatio = 1.56;
 
@@ -60,11 +61,25 @@ class _CreditCardFront extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerRight,
-            child: Image(
-              image: AssetImage('assets/icons/${data.type.name}.png'),
-              width: 45,
-              fit: BoxFit.cover,
-              color: data.style.textColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  data.name,
+                  style: TextStyle(
+                    color: data.style.textColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Image(
+                  image: AssetImage('assets/icons/${data.type.name}.png'),
+                  width: 45,
+                  fit: BoxFit.cover,
+                  color: data.style.textColor,
+                ),
+              ],
             ),
           ),
           Row(
@@ -87,7 +102,7 @@ class _CreditCardFront extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '**** **** **** ${data.number.substring(12)}',
+                      data.id,
                       style:
                           TextStyle(color: data.style.textColor, fontSize: 16),
                     ),
@@ -149,13 +164,28 @@ class _CreditCardBack extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: Text(
-              'Ends in ${data.number.substring(12)}',
-              style: TextStyle(
-                color: data.style.textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  data.balance,
+                  style: TextStyle(
+                      color: data.style.textColor,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: FontFamily.oswaldSemiBold.name
+                  ),
+                ),
+                Text(
+                  data.number,
+                  style: TextStyle(
+                    color: data.style.textColor,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: FontFamily.oswaldSemiBold.name
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/page/credit_card_page/core/styles.dart';
+import 'package:flutter_finance_app/util/common_utils.dart';
 
 class CreditCardData {
   const CreditCardData({
@@ -20,11 +22,14 @@ class CreditCardData {
 }
 
 enum CreditCardType {
+  cash,
   visa,
   masterCard;
 
   String get label {
     switch (this) {
+      case cash:
+        return 'Cash';
       case visa:
         return 'Visa';
       case masterCard:
@@ -135,6 +140,20 @@ const cards = [
     type: CreditCardType.visa,
   ),
 ];
+
+List<CreditCardData> generateCreditCardData(List<Account> accounts) {
+  return accounts.map((account) {
+    return CreditCardData(
+      type: getCardTypeByName(account.type),
+      id: account.id!,
+      name: account.name,
+      number: account.id!,
+      style: getCardStyleByName(account.extra['cardStyle'])!,
+      balance:
+      "${getCurrencySymbolByName(account.currency)} ${account.balance}",
+    );
+  }).toList();
+}
 
 class Transaction {
   const Transaction({

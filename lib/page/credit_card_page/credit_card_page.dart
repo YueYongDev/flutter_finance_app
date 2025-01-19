@@ -270,7 +270,7 @@ class _Button extends StatelessWidget {
                 color: AppColors.white,
               ),
             ),
-            const SizedBox(width: 20),
+            const SizedBox(width: 10),
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
