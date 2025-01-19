@@ -246,7 +246,7 @@ class AccountListWidget extends StatelessWidget {
       ),
     ).then((value) {
       if (value != null && value is int) {
-        debugPrint("$value");
+        debugPrint("toAccountDetailPage return:$value");
       }
     });
     // Navigator.push(

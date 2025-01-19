@@ -8,11 +8,11 @@ import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dar
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
 import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:flutter_finance_app/widget/transaction_item.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'core/constants.dart';
-import 'core/data.dart';
 import 'core/styles.dart';
 import 'credit_card.dart';
 
@@ -30,7 +30,8 @@ class CreditCardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
 
-    final CreditCardController controller = Get.put(CreditCardController(initialIndex));
+    final CreditCardController controller =
+        Get.put(CreditCardController(initialIndex));
 
     final slideAnimation = Tween<Offset>(
       begin: const Offset(0, 1.5),
@@ -47,12 +48,14 @@ class CreditCardPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         title: Obx(() => Text(
-          accountPageState.accounts[controller.activeIndex.value].name,
-          style: const TextStyle(color: Colors.white),
-        )),
+              accountPageState.accounts[controller.activeIndex.value].name,
+              style: const TextStyle(color: Colors.white),
+            )),
         leading: IconButton(
-          onPressed: () =>
-              Navigator.of(context).pop(controller.activeIndex.value),
+          onPressed: () {
+            Get.delete<CreditCardController>();
+            Navigator.of(context).pop(controller.activeIndex.value);
+          },
           icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
@@ -73,7 +76,7 @@ class CreditCardPage extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: Column(
               children: [
-                _buildCardsPageView(controller),
+                _buildCardsPageView(),
                 SlideTransition(
                   position: slideAnimation,
                   child: Padding(
@@ -81,13 +84,13 @@ class CreditCardPage extends StatelessWidget {
                     child: Column(
                       children: [
                         Obx(() => PageIndicator(
-                          length: controller.cards.length,
-                          activeIndex: controller.activeIndex.value,
-                          activeColor: controller
-                              .cards[controller.activeIndex.value]
-                              .style
-                              .color,
-                        )),
+                              length: controller.cards.length,
+                              activeIndex: controller.activeIndex.value,
+                              activeColor: controller
+                                  .cards[controller.activeIndex.value]
+                                  .style
+                                  .color,
+                            )),
                         Obx(() => _buildButtons(accountPageState
                             .accounts[controller.activeIndex.value])),
                       ],
@@ -117,37 +120,39 @@ class CreditCardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCardsPageView(CreditCardController controller) {
+  Widget _buildCardsPageView() {
     final screenSize = MediaQuery.of(Get.context!).size;
     final cardWidth = screenSize.width - Constants.appHPadding * 2;
     AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
 
-    return SizedBox(
-      height: cardWidth / creditCardAspectRatio,
-      child: PageView.builder(
-        controller: controller.pageController,
-        itemCount: accountPageState.accounts.length,
-        onPageChanged: (index) => controller.setActiveIndex(index),
-        itemBuilder: (context, index) {
-          return AnimatedScale(
-            scale: index == controller.activeIndex.value ? 1 : 0.85,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: HeroMode(
-              enabled: index == controller.activeIndex.value,
-              child: Hero(
-                tag: 'card_${accountPageState.accounts[index].id}',
-                child: CreditCard(
-                  width: cardWidth,
-                  data: controller.cards[index],
-                  isFront: true,
+    return GetBuilder<CreditCardController>(builder: (controller) {
+      return SizedBox(
+        height: cardWidth / creditCardAspectRatio,
+        child: PageView.builder(
+          controller: controller.pageController,
+          itemCount: accountPageState.accounts.length,
+          onPageChanged: (index) => controller.setActiveIndex(index),
+          itemBuilder: (context, index) {
+            return AnimatedScale(
+              scale: index == controller.activeIndex.value ? 1 : 0.85,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: HeroMode(
+                enabled: index == controller.activeIndex.value,
+                child: Hero(
+                  tag: 'card_${accountPageState.accounts[index].id}',
+                  child: CreditCard(
+                    width: cardWidth,
+                    data: controller.cards[index],
+                    isFront: true,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildButtons(Account account) {
@@ -207,8 +212,8 @@ class CreditCardPage extends StatelessWidget {
         const SizedBox(height: 15),
         ...List.generate(
           assets.length,
-              (index) => GestureDetector(
-            child: _TransactionItem(
+          (index) => GestureDetector(
+            child: TransactionItem(
               controller.generateTransactions(assets)[index],
             ),
             onTap: () async {
@@ -277,65 +282,6 @@ class _Button extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _TransactionItem extends StatelessWidget {
-  const _TransactionItem(this.transaction);
-
-  final Transaction transaction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.onWhite,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              transaction.icon,
-              width: 60,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction.title,
-                  style: const TextStyle(
-                    color: AppColors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  transaction.date,
-                  style: const TextStyle(color: AppColors.onBlack),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            (transaction.amount < 0 ? '' : '+') + transaction.amount.toString(),
-            style: TextStyle(
-              color:
-                  transaction.amount < 0 ? AppColors.danger : AppColors.primary,
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
       ),
     );
   }

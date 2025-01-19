@@ -6,6 +6,7 @@ import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail.logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/credit_card_page/credit_card_logic.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,11 @@ class AssetController extends GetxController {
   // 检查是否已经注册了 AccountDetailLogic
   final accountDetailLogic = Get.isRegistered<AccountDetailLogic>()
       ? Get.find<AccountDetailLogic>()
+      : null;
+
+  // 检查是否已经注册了 CreditCardController
+  final creditCardController = Get.isRegistered<CreditCardController>()
+      ? Get.find<CreditCardController>()
       : null;
 
   final assetRepository = AssetRepository();
@@ -105,6 +111,10 @@ class AssetController extends GetxController {
         await accountDetailLogic!
             .refreshAccountAndAssets(selectedAccount?.id ?? '');
       }
+      if (creditCardController != null) {
+        creditCardController!.refreshCardData();
+        creditCardController!.refresh();
+      }
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error adding asset: $e');
@@ -128,6 +138,10 @@ class AssetController extends GetxController {
         await accountDetailLogic!
             .refreshAccountAndAssets(selectedAccount?.id ?? '');
       }
+      if(creditCardController != null) {
+        creditCardController!.refreshCardData();
+        creditCardController!.refresh();
+      }
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error updating asset: $e');
@@ -142,6 +156,10 @@ class AssetController extends GetxController {
       if (accountDetailLogic != null) {
         await accountDetailLogic!
             .refreshAccountAndAssets(selectedAccount?.id ?? '');
+      }
+      if (creditCardController != null) {
+        creditCardController!.refreshCardData();
+        creditCardController!.refresh();
       }
       Get.snackbar('Success', 'Asset deleted successfully!',
           snackPosition: SnackPosition.BOTTOM,

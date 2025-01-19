@@ -17,6 +17,7 @@ class CreditCardController extends GetxController {
   List<Transaction> transactions = [];
 
   CreditCardController(int initialIndex) {
+    debugPrint('initialIndex: $initialIndex');
     activeIndex.value = initialIndex;
     pageController = PageController(
       initialPage: initialIndex,
@@ -25,16 +26,21 @@ class CreditCardController extends GetxController {
   }
 
   @override
-  void onReady() {
-    debugPrint("CreditCardController onReady, activeIndex: ${activeIndex.value}");
-    super.onReady();
+  void onInit() {
+    super.onInit();
+    cards = generateCreditCardData();
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    debugPrint("CreditCardController onInit, activeIndex: ${activeIndex.value}");
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+
+  refreshCardData(){
+    cards.clear();
     cards.addAll(generateCreditCardData());
+    update();
   }
 
   void setActiveIndex(int index) {
@@ -51,7 +57,7 @@ class CreditCardController extends GetxController {
         number: account.id!,
         style: getCardStyleByName(account.extra['cardStyle'])!,
         balance:
-        "${getCurrencySymbolByName(account.currency)} ${account.balance}",
+            "${getCurrencySymbolByName(account.currency)} ${account.balance}",
       );
     }).toList();
   }
@@ -61,9 +67,8 @@ class CreditCardController extends GetxController {
       return Transaction(
           title: asset.name,
           date:
-          DateUtil.formatDateMs(asset.createdAt, format: DateFormats.full),
+              DateUtil.formatDateMs(asset.createdAt, format: DateFormats.full),
           amount: asset.amount,
-          // icon: asset.iconPath,
           icon: 'assets/icons/tiktok.png');
     }).toList();
   }
