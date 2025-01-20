@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
-import 'package:flutter_finance_app/helper/number_input_formatter.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
@@ -42,8 +42,19 @@ class EditAssetPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isEditMode ? 'Edit Asset' : 'Add Asset',
+          isEditMode
+              ? FinanceLocales.l_edit_asset.tr
+              : FinanceLocales.l_add_asset.tr,
           style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
+        ),
+        leading: GestureDetector(
+          onTap: (){
+            Get.back();
+            Get.delete<AssetController>();
+          },
+          child: const Icon(
+            CupertinoIcons.back,
+          ),
         ),
       ),
       body: GetBuilder<AssetController>(
@@ -65,7 +76,9 @@ class EditAssetPage extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: controller.amountFocusNode.hasFocus
-                    ? SafeArea(child: NumericKeyboard(controller: controller.amountController))
+                    ? SafeArea(
+                        child: NumericKeyboard(
+                            controller: controller.amountController))
                     : const SizedBox.shrink())
           ],
         ),
@@ -76,10 +89,10 @@ class EditAssetPage extends StatelessWidget {
   /// 构建账户选择部分
   SettingsSection _buildAccountSection(BuildContext context) {
     return SettingsSection(
-      title: const Text('Account Info'),
+      title: Text(FinanceLocales.l_account_info.tr),
       tiles: [
         SettingsTile.navigation(
-          title: const Text("Belong Account"),
+          title: Text(FinanceLocales.l_belong_account.tr),
           leading: Icon(
             CupertinoIcons.rectangle_stack_badge_plus,
             color: account != null
@@ -90,7 +103,8 @@ class EditAssetPage extends StatelessWidget {
             children: [
               account != null
                   ? Text(account!.name)
-                  : Text(controller.selectedAccount?.name ?? 'Select Account'),
+                  : Text(controller.selectedAccount?.name ??
+                      FinanceLocales.l_select_account.tr),
               const Icon(
                 CupertinoIcons.chevron_right,
                 size: 20,
@@ -117,7 +131,7 @@ class EditAssetPage extends StatelessWidget {
                   dynamic value = await showCupertinoModalBottomSheet(
                     expand: true,
                     enableDrag: false,
-                    context: context,
+                    context: Get.context!,
                     backgroundColor: Colors.transparent,
                     builder: (context) =>
                         AccountSelectModal(accounts: fetchAllAccounts),
@@ -135,7 +149,7 @@ class EditAssetPage extends StatelessWidget {
   /// 构建资产详情部分
   SettingsSection _buildAssetDetailsSection(BuildContext context) {
     return SettingsSection(
-      title: const Text('Assets Details'),
+      title: Text(FinanceLocales.l_asset_detail.tr),
       tiles: [
         _buildAssetNameTile(),
         _buildAssetAmountTile(context),
@@ -147,25 +161,25 @@ class EditAssetPage extends StatelessWidget {
   /// 构建资产名称输入组件
   SettingsTile _buildAssetNameTile() {
     return SettingsTile(
-      title: const Text('Assets Name'),
+      title: Text(FinanceLocales.l_asset_name.tr),
       leading: Icon(
         CupertinoIcons.bag_badge_plus,
         color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
       ),
       description: Text(
-        'Remaining characters: ${controller.remainingCharacters}',
+        '${FinanceLocales.l_remaining_characters.tr}: ${controller.remainingCharacters}',
         style: TextStyle(color: controller.remainingCharactersColor),
       ),
       trailing: SizedBox(
         width: 200,
         child: TextField(
           controller: controller.nameController,
-          decoration: const InputDecoration(
-            hintStyle: TextStyle(color: Colors.grey),
-            hintText: 'Enter Assets name',
+          decoration: InputDecoration(
+            hintStyle: const TextStyle(color: Colors.grey),
+            hintText: FinanceLocales.hint_enter_asset_name.tr,
             counterText: '',
             border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(vertical: 10),
           ),
           textAlign: TextAlign.right,
           maxLength: 20,
@@ -179,7 +193,7 @@ class EditAssetPage extends StatelessWidget {
   SettingsTile _buildAssetAmountTile(BuildContext context) {
     return SettingsTile(
       leading: controller.selectedCurrencyIcon,
-      title: const Text('Amount'),
+      title: Text(FinanceLocales.l_amount_label.tr),
       trailing: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -190,12 +204,12 @@ class EditAssetPage extends StatelessWidget {
               focusNode: controller.amountFocusNode,
               keyboardType: TextInputType.none,
               // Disable system keyboard
-              decoration: const InputDecoration(
-                hintStyle: TextStyle(color: Colors.grey),
-                hintText: 'Amount',
+              decoration: InputDecoration(
+                hintStyle: const TextStyle(color: Colors.grey),
+                hintText: FinanceLocales.l_amount_label.tr,
                 counterText: '',
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
               ),
               textAlign: TextAlign.right,
               maxLength: 10,
@@ -249,7 +263,7 @@ class EditAssetPage extends StatelessWidget {
         controller.toggleCounting(value);
         controller.update();
       },
-      title: const Text("是否计入统计账户"),
+      title: Text(FinanceLocales.l_enable_counting.tr),
     );
   }
 
@@ -273,7 +287,10 @@ class EditAssetPage extends StatelessWidget {
             }
           },
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
-          label: Text(isEditMode ? 'Update Asset' : 'Add Asset',
+          label: Text(
+              isEditMode
+                  ? FinanceLocales.l_update_asset.tr
+                  : FinanceLocales.l_add_asset.tr,
               style: const TextStyle(color: Colors.teal)),
           style: ElevatedButton.styleFrom(
             padding:
@@ -307,8 +324,8 @@ class EditAssetPage extends StatelessWidget {
           },
           icon: const Icon(CupertinoIcons.trash,
               color: CupertinoColors.destructiveRed),
-          label: const Text('Delete Asset',
-              style: TextStyle(color: CupertinoColors.destructiveRed)),
+          label: Text(FinanceLocales.l_delete_asset.tr,
+              style: const TextStyle(color: CupertinoColors.destructiveRed)),
           style: ElevatedButton.styleFrom(
             padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),

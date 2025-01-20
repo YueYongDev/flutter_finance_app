@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/colors.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
@@ -14,9 +15,9 @@ import 'package:pull_down_button/pull_down_button.dart';
 
 CupertinoSliverNavigationBar buildNavigationBar() {
   return CupertinoSliverNavigationBar(
-    largeTitle: const Text(
-      '账户总览',
-      style: TextStyle(color: Colors.white, fontSize: 22),
+    largeTitle: Text(
+      FinanceLocales.home_title.tr,
+      style: const TextStyle(color: Colors.white, fontSize: 22),
     ),
     backgroundColor: AppColors.blueSecondary,
     leading: buildLeadingMenu(),
@@ -130,12 +131,11 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
           ),
         );
       },
-      title: 'Add Account',
+      title: FinanceLocales.item_add_account.tr,
       icon: CupertinoIcons.rectangle_stack_badge_plus,
     ),
     PullDownMenuItem(
-      title: 'Add Assets',
-      subtitle: 'Share in different channel',
+      title: FinanceLocales.item_add_assets.tr,
       onTap: () {
         showCupertinoModalBottomSheet(
           expand: true,
@@ -159,7 +159,7 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
           builder: (context) => TransferPage(),
         );
       },
-      title: 'Transfer',
+      title: FinanceLocales.item_transfer.tr,
       icon: CupertinoIcons.arrow_right_arrow_left_square,
     ),
   ];
@@ -173,7 +173,7 @@ List<PullDownMenuEntry> buildLeadingMenuItems(BuildContext context) {
       icon: CupertinoIcons.lock_open,
     ),
     PullDownMenuItem(
-      title: 'App Settings',
+      title: FinanceLocales.item_app_setting.tr,
       onTap: () async {
         await showCupertinoModalBottomSheet(
           expand: true,

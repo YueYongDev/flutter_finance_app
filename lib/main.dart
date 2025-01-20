@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
+import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -26,6 +30,16 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return GetMaterialApp(
             title: 'Account App',
+            translations: FinanceInternation(),
+            //当前语言
+            locale: financeUI.currentLocale,
+            //本地语言发生变化后回调
+            localeListResolutionCallback: (locales, supportedLocales) {
+              debugPrint("当前系统语言环境$locales");
+              return;
+            },
+            //当前语言不支持的语言类型时使用的默认语言
+            fallbackLocale: const Locale('en', 'US'),
             theme: ThemeData(
               brightness: Brightness.light,
               primaryColor: Colors.blue,

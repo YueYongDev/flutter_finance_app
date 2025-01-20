@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/constant/account_card_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 const double creditCardAspectRatio = 1.56;
 
@@ -90,7 +92,7 @@ class _CreditCardFront extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Balance',
+                      FinanceLocales.l_balance_label.tr,
                       style: TextStyle(color: data.style.textColor),
                     ),
                     Text(

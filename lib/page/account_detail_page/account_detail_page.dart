@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
@@ -160,7 +161,7 @@ class AccountDetailPage extends StatelessWidget {
       children: [
         Expanded(
           child: _Button(
-            label: 'Edit Account',
+            label: FinanceLocales.l_edit_account.tr,
             icon: Icons.edit,
             onTap: () {
               showCupertinoModalBottomSheet(
@@ -173,7 +174,7 @@ class AccountDetailPage extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _Button(
-            label: 'Add Asset',
+            label: FinanceLocales.l_add_asset.tr,
             icon: Icons.add,
             onTap: () async {
               // Open asset edit page (add new asset)
@@ -201,9 +202,9 @@ class AccountDetailPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-        const Text(
-          'Assets List',
-          style: TextStyle(
+         Text(
+          FinanceLocales.l_asset_list.tr,
+          style: const TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.w600,
             fontSize: 16,

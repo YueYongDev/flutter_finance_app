@@ -1,13 +1,19 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
-import 'package:flutter_finance_app/model/data.dart';
+import 'package:flutter_finance_app/page/edit_account_page/edit_account_page_logic.dart';
 import 'package:get/get.dart';
 
 class AccountDetailController extends GetxController {
   AccountPageState accountPageState = Get.find<AccountPageLogic>().state;
+
+  // 检查是否已经注册了 AccountDetailController
+  final editAccountController = Get.isRegistered<AccountController>()
+      ? Get.find<AccountController>()
+      : null;
 
   var activeIndex = 0.obs;
   late PageController pageController;
@@ -32,6 +38,10 @@ class AccountDetailController extends GetxController {
   @override
   void onClose() {
     pageController.dispose();
+    if (editAccountController != null) {
+      editAccountController!.clearInputFields();
+    }
+
     super.onClose();
   }
 

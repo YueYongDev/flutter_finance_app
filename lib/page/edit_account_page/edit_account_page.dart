@@ -6,6 +6,7 @@ import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -47,12 +48,19 @@ class EditAccountPage extends StatelessWidget {
 
   _buildNavigationBar(BuildContext context) {
     return AppBar(
-      title: Text(isEditMode ? 'Edit Account' : 'Add Account'),
+      title: Text(
+        isEditMode
+            ? FinanceLocales.l_edit_account.tr
+            : FinanceLocales.l_add_account.tr,
+        style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
+      ),
       leading: GestureDetector(
-        onTap: () => Get.back(),
+        onTap: () {
+          Get.back();
+          Get.delete<AccountController>();
+        },
         child: const Icon(
           CupertinoIcons.back,
-          color: Colors.teal,
         ),
       ),
     );
@@ -74,13 +82,13 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsSection _buildAccountInfoSection(AccountController controller) {
     return SettingsSection(
-      title: const Text('Account Info'),
+      title: Text(FinanceLocales.l_account_info.tr),
       tiles: [
         SettingsTile(
-          title: const Text('Name'),
-          leading: const Icon(Icons.account_circle, color: Colors.teal),
+          title: Text(FinanceLocales.l_account_name.tr),
+          leading: Icon(Icons.account_circle, color: Colors.blueAccent[100]),
           description: Text(
-            'Remaining characters: ${controller.remainingCharacters}',
+            '${FinanceLocales.l_remaining_characters.tr}: ${controller.remainingCharacters}',
             style: TextStyle(color: controller.remainingCharactersColor),
           ),
           trailing: _buildAccountNameInput(),
@@ -98,12 +106,12 @@ class EditAccountPage extends StatelessWidget {
       width: 200,
       child: TextField(
         controller: controller.nameController,
-        decoration: const InputDecoration(
-          hintStyle: TextStyle(color: Colors.grey),
-          hintText: 'Enter account name',
+        decoration: InputDecoration(
+          hintStyle: const TextStyle(color: Colors.grey),
+          hintText: FinanceLocales.hint_enter_account_name.tr,
           counterText: '',
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10),
         ),
         textAlign: TextAlign.right,
         maxLength: 20,
@@ -116,9 +124,9 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsSection _buildAppearanceSection(AccountController controller) {
     return SettingsSection(
-      title: const Text('Appearance'),
+      title: Text(FinanceLocales.l_appearance.tr),
       tiles: [
-        _buildColorPickerTile(),
+        // _buildColorPickerTile(),
         _buildCurrencySelectorTile(),
         _buildAccountCardStyleSelectorTile(),
       ],
@@ -127,7 +135,7 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsTile _buildColorPickerTile() {
     return SettingsTile(
-      title: const Text('Color'),
+      title: Text(FinanceLocales.l_color.tr),
       leading: const Icon(Icons.color_lens, color: Colors.teal),
       trailing: CircleAvatar(
         radius: 12,
@@ -139,8 +147,8 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsTile _buildCurrencySelectorTile() {
     return SettingsTile(
-      title: const Text('Currency'),
-      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      title: Text(FinanceLocales.l_currency.tr),
+      leading: Icon(Icons.monetization_on, color: Colors.redAccent[100]),
       trailing: PullDownButton(
         itemBuilder: (context) => _buildCurrencyMenu(),
         buttonBuilder: (context, showMenu) => GestureDetector(
@@ -163,8 +171,8 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsTile _buildAccountTypeSelectorTile() {
     return SettingsTile(
-      title: const Text('Account Type'),
-      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      title: Text(FinanceLocales.l_account_type.tr),
+      leading: Icon(Icons.account_balance_wallet, color: Colors.teal[300]),
       trailing: PullDownButton(
         itemBuilder: (context) => _buildAccountTypeMenu(),
         buttonBuilder: (context, showMenu) => GestureDetector(
@@ -187,8 +195,8 @@ class EditAccountPage extends StatelessWidget {
 
   SettingsTile _buildAccountCardStyleSelectorTile() {
     return SettingsTile(
-      title: const Text('Card Style'),
-      leading: const Icon(Icons.monetization_on, color: Colors.teal),
+      title: Text(FinanceLocales.l_card_style.tr),
+      leading: const Icon(CupertinoIcons.creditcard, color: Colors.blueAccent),
       trailing: PullDownButton(
         itemBuilder: (context) => _buildAccountCardStyleMenu(),
         buttonBuilder: (context, showMenu) => GestureDetector(
@@ -215,7 +223,7 @@ class EditAccountPage extends StatelessWidget {
       controller.update();
     }
     return SettingsTile(
-      title: const Text('Bank Type'),
+      title: Text(FinanceLocales.l_bank_type.tr),
       leading: const Icon(Icons.monetization_on, color: Colors.teal),
       trailing: PullDownButton(
         itemBuilder: (context) => _buildBankTypeMenu(),
@@ -314,7 +322,10 @@ class EditAccountPage extends StatelessWidget {
             controller.clearInputFields();
           },
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
-          label: Text(isEditMode ? 'Update Account' : 'Save Account',
+          label: Text(
+              isEditMode
+                  ? FinanceLocales.l_update_account.tr
+                  : FinanceLocales.l_add_account.tr,
               style: const TextStyle(color: Colors.teal)),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -345,8 +356,8 @@ class EditAccountPage extends StatelessWidget {
             );
           },
           icon: const Icon(CupertinoIcons.trash, color: Colors.red),
-          label: const Text('Delete Account',
-              style: TextStyle(color: Colors.redAccent)),
+          label: Text(FinanceLocales.l_delete_account.tr,
+              style: const TextStyle(color: Colors.redAccent)),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             shape: RoundedRectangleBorder(
