@@ -17,6 +17,8 @@ class AppTextColors {
   static const Color white = Color.fromRGBO(255, 255, 255, 1);
   static const Color black = Color.fromRGBO(0, 0, 0, 1);
   static const Color green = Colors.green;
+  static const Color red = Color.fromRGBO(227, 24, 24, 1.0);
+
   static const Color white54 = Colors.white54;
   static const Color black26 = Colors.black26;
 }
@@ -37,7 +39,6 @@ class MyAppColors {
   static Color primaryLightThemeColor = const Color(0xFF1C232D);
   static Color primaryDarkThemeColor = const Color(0xff232930);
   static Color primaryRedColor = const Color(0xFFFF224B);
-
 
   static LinearGradient customAppLinearColor = LinearGradient(colors: [
     primaryLightThemeColor,

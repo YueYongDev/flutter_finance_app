@@ -3,13 +3,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
+import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
   await GetStorage.init();
+
+  // 初始化服务
+  await initServices();
+
   runApp(const MyApp());
+}
+
+Future<void> initServices() async {
+  await Get.putAsync(() async {
+    final service = BalanceHistoryService();
+    service.onInit();
+    return service;
+  });
 }
 
 class MyApp extends StatelessWidget {

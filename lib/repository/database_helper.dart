@@ -19,8 +19,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'finance_app.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -57,8 +58,57 @@ class DatabaseHelper {
       FOREIGN KEY (accountId) REFERENCES account (id)
     )
   ''');
+
+    await db.execute('''
+    CREATE TABLE balance_history(
+      id TEXT PRIMARY KEY,
+      account_id TEXT,
+      total_balance REAL,
+      recorded_at INTEGER,
+      created_at INTEGER,
+      FOREIGN KEY (account_id) REFERENCES account (id)
+    )
+  ''');
+
+    // Insert initial record with total balance 0 and recorded_at as now - 1 day
+    final now = DateTime.now();
+    final oneDayAgo =
+        now.subtract(const Duration(days: 1)).millisecondsSinceEpoch;
+    await db.insert('balance_history', {
+      'id': oneDayAgo.toString(),
+      'account_id': null,
+      'total_balance': 0.0,
+      'recorded_at': oneDayAgo,
+      'created_at': now.millisecondsSinceEpoch,
+    });
   }
 
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Add the new table if it doesn't exist
+      await db.execute('''
+    CREATE TABLE IF NOT EXISTS balance_history(
+      id TEXT PRIMARY KEY,
+      account_id TEXT,
+      total_balance REAL,
+      recorded_at INTEGER,
+      created_at INTEGER,
+      FOREIGN KEY (account_id) REFERENCES account (id)
+    )
+  ''');
+      // Insert initial record with total balance 0 and recorded_at as now - 1 day
+      final now = DateTime.now();
+      final oneDayAgo =
+          now.subtract(const Duration(days: 1)).millisecondsSinceEpoch;
+      await db.insert('balance_history', {
+        'id': oneDayAgo.toString(),
+        'account_id': null,
+        'total_balance': 0.0,
+        'recorded_at': oneDayAgo,
+        'created_at': now.millisecondsSinceEpoch,
+      });
+    }
+  }
   // ---- Account CRUD Operations ----
 
   // Create
@@ -110,5 +160,63 @@ class DatabaseHelper {
   Future<int> deleteAsset(String id) async {
     final db = await database;
     return await db.delete('asset', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // ---- Balance History CRUD Operations ----
+
+  // Create
+  Future<void> insertBalanceHistory(Map<String, dynamic> history) async {
+    final db = await database;
+    await db.insert('balance_history', history);
+  }
+
+  // Read all balance history ordered by recorded_at
+  Future<List<Map<String, dynamic>>> getBalanceHistory({int? limit}) async {
+    final db = await database;
+    return await db.query(
+      'balance_history',
+      orderBy: 'recorded_at DESC',
+      limit: limit,
+    );
+  }
+
+  // Get balance history for a specific date range
+  Future<List<Map<String, dynamic>>> getBalanceHistoryRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    final db = await database;
+    return await db.query(
+      'balance_history',
+      where: 'recorded_at BETWEEN ? AND ?',
+      whereArgs: [
+        startDate.millisecondsSinceEpoch,
+        endDate.millisecondsSinceEpoch
+      ],
+      orderBy: 'recorded_at ASC',
+    );
+  }
+
+  // Calculate total balance from all accounts
+  Future<double> calculateTotalBalance() async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT SUM(balance) as total FROM account',
+    );
+    return result.first['total'] as double? ?? 0.0;
+  }
+
+  // Record current balance in history
+  Future<void> recordCurrentBalance() async {
+    final totalBalance = await calculateTotalBalance();
+    final now = DateTime.now();
+
+    await insertBalanceHistory({
+      'id': now.millisecondsSinceEpoch.toString(),
+      'account_id': '', // Add account_id field
+      'total_balance': totalBalance,
+      'recorded_at': now.millisecondsSinceEpoch,
+      'created_at': now.millisecondsSinceEpoch,
+    });
   }
 }

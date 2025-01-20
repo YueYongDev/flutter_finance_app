@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/colors.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dar
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
 import 'package:flutter_finance_app/page/settings_page/settings_page.dart';
 import 'package:flutter_finance_app/page/transfer_page/transfer_page.dart';
+import 'package:flutter_finance_app/repository/balance_history_repository.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -19,6 +21,7 @@ CupertinoSliverNavigationBar buildNavigationBar() {
       FinanceLocales.home_title.tr,
       style: const TextStyle(color: Colors.white, fontSize: 22),
     ),
+    stretch: true,
     backgroundColor: AppColors.blueSecondary,
     leading: buildLeadingMenu(),
     trailing: buildTrailingMenu(),
@@ -162,6 +165,23 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
       title: FinanceLocales.item_transfer.tr,
       icon: CupertinoIcons.arrow_right_arrow_left_square,
     ),
+    const PullDownMenuDivider.large(),
+    if (kDebugMode)
+      PullDownMenuItem(
+        title: "insert history mock data",
+        onTap: () {
+          BalanceHistoryRepository().insertMockData();
+        },
+        icon: CupertinoIcons.bag_badge_plus,
+      ),
+    if (kDebugMode)
+      PullDownMenuItem(
+        title: "delete history mock data",
+        onTap: () {
+          BalanceHistoryRepository().cleanupMockData();
+        },
+        icon: CupertinoIcons.bag_badge_plus,
+      ),
   ];
 }
 

@@ -20,7 +20,6 @@ class AccountListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = MediaQuery.of(context).size.width > 600;
     return SliverToBoxAdapter(
       child: SafeArea(
           bottom: true,

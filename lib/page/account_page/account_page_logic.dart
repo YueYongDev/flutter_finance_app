@@ -3,12 +3,14 @@ import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
+import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:get/get.dart';
 
 class AccountPageLogic extends GetxController
     with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   final AccountPageState state = AccountPageState();
+  final BalanceHistoryService _balanceHistoryService = Get.find();
 
   @override
   void onInit() async {
@@ -65,6 +67,17 @@ class AccountPageLogic extends GetxController
 
     state.netAssets =
         double.parse((state.totalAssets + state.totalDebt).toStringAsFixed(2));
+
+    // 记录总余额变化
+    await _balanceHistoryService.checkAndRecordTotalBalance(state.netAssets);
+    
+    // 记录每个账户的余额变化
+    for (var account in list) {
+      await _balanceHistoryService.checkAndRecordAccountBalance(
+        account.id!,
+        account.balance
+      );
+    }
 
     update();
   }

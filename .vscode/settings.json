@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/Users/liangyueyong/Dev/flutter/flutter_finance_app/linux"
+    "cmake.sourceDirectory": "/Users/liangyueyong/Dev/flutter/flutter_finance_app/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
