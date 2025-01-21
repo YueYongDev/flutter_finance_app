@@ -98,8 +98,7 @@ class AccountPanel extends StatelessWidget {
   }
 
   Widget _buildChartSection() {
-    final AccountPanelController controller =
-        Get.put(AccountPanelController(accountId: "mock_account_id"));
+    final AccountPanelController controller = Get.put(AccountPanelController());
     return Obx(() {
       return AnimatedSize(
         duration: const Duration(milliseconds: 300),
@@ -114,6 +113,7 @@ class AccountPanel extends StatelessWidget {
   Widget _buildChart(AccountPanelController controller) {
     return Container(
       height: 300,
+      margin: EdgeInsets.only(top: 10, left: 10),
       padding: const EdgeInsets.only(right: 20),
       child: LineChart(
         _createChartData(controller),

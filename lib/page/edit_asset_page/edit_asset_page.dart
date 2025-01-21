@@ -47,15 +47,18 @@ class EditAssetPage extends StatelessWidget {
               : FinanceLocales.l_add_asset.tr,
           style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
         ),
-        leading: GestureDetector(
-          onTap: (){
-            Get.back();
-            Get.delete<AssetController>();
-          },
-          child: const Icon(
-            CupertinoIcons.back,
-          ),
-        ),
+        leading: Container(),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.back();
+                Get.delete<AssetController>();
+              },
+              icon: const Icon(
+                CupertinoIcons.clear_circled_solid,
+                color: Colors.blue,
+              ))
+        ],
       ),
       body: GetBuilder<AssetController>(
         builder: (controller) => Stack(
@@ -93,12 +96,8 @@ class EditAssetPage extends StatelessWidget {
       tiles: [
         SettingsTile.navigation(
           title: Text(FinanceLocales.l_belong_account.tr),
-          leading: Icon(
-            CupertinoIcons.rectangle_stack_badge_plus,
-            color: account != null
-                ? Color(int.parse(account!.color))
-                : Colors.grey,
-          ),
+          leading: Icon(CupertinoIcons.rectangle_stack_badge_plus,
+              color: Colors.blueAccent[100]),
           trailing: Row(
             children: [
               account != null
@@ -164,7 +163,7 @@ class EditAssetPage extends StatelessWidget {
       title: Text(FinanceLocales.l_asset_name.tr),
       leading: Icon(
         CupertinoIcons.bag_badge_plus,
-        color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
+        color: Colors.redAccent[100],
       ),
       description: Text(
         '${FinanceLocales.l_remaining_characters.tr}: ${controller.remainingCharacters}',
@@ -256,7 +255,7 @@ class EditAssetPage extends StatelessWidget {
     return SettingsTile.switchTile(
       leading: Icon(
         CupertinoIcons.percent,
-        color: account != null ? Color(int.parse(account!.color)) : Colors.grey,
+        color: Colors.teal[200],
       ),
       initialValue: controller.enableCounting,
       onToggle: (value) {

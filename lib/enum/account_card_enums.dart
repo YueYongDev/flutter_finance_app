@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:get/get.dart';
 
 enum CreditCardType {
   cash,
@@ -15,8 +17,8 @@ enum CreditCardType {
         return 'Visa';
       case masterCard:
         return 'MasterCard';
-        case unionPay:
-      return 'unionPay';
+      case unionPay:
+        return 'unionPay';
     }
   }
 }
@@ -27,6 +29,21 @@ enum CreditCardStyle {
   accent,
   onBlack,
   onWhite;
+
+  String get displayName {
+    switch (this) {
+      case primary:
+        return FinanceLocales.l_primary_style.tr;
+      case secondary:
+        return FinanceLocales.l_secondary_style.tr;
+      case accent:
+        return FinanceLocales.l_accent_style.tr;
+      case onBlack:
+        return FinanceLocales.l_on_black_style.tr;
+      case onWhite:
+        return FinanceLocales.l_on_white_style.tr;
+    }
+  }
 
   Color get color {
     switch (this) {

@@ -63,7 +63,7 @@ class AccountDetailController extends GetxController {
           date:
               DateUtil.formatDateMs(asset.createdAt, format: DateFormats.full),
           amount: asset.amount,
-          icon: 'assets/icons/twitter.png');
+          icon: 'assets/icons/cards-active.png');
     }).toList();
   }
 }

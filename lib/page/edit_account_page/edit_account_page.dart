@@ -30,6 +30,23 @@ class EditAccountPage extends StatelessWidget {
   final double _blurRadius = 5;
   final double _iconSize = 24;
 
+  String _getCardStyleDisplayName(String style) {
+    switch (style) {
+      case 'PRIMARY':
+        return FinanceLocales.l_primary_style.tr;
+      case 'SECONDARY':
+        return FinanceLocales.l_secondary_style.tr;
+      case 'ACCENT':
+        return FinanceLocales.l_accent_style.tr;
+      case 'ON_BLACK':
+        return FinanceLocales.l_on_black_style.tr;
+      case 'ON_WHITE':
+        return FinanceLocales.l_on_white_style.tr;
+      default:
+        return style;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,15 +71,18 @@ class EditAccountPage extends StatelessWidget {
             : FinanceLocales.l_add_account.tr,
         style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
       ),
-      leading: GestureDetector(
-        onTap: () {
-          Get.back();
-          Get.delete<AccountController>();
-        },
-        child: const Icon(
-          CupertinoIcons.back,
-        ),
-      ),
+      leading: Container(),
+      actions: [
+        IconButton(
+            onPressed: () {
+              Get.back();
+              Get.delete<AccountController>();
+            },
+            icon: const Icon(
+              CupertinoIcons.clear_circled_solid,
+              color: Colors.blue,
+            ))
+      ],
     );
   }
 
@@ -126,22 +146,9 @@ class EditAccountPage extends StatelessWidget {
     return SettingsSection(
       title: Text(FinanceLocales.l_appearance.tr),
       tiles: [
-        // _buildColorPickerTile(),
         _buildCurrencySelectorTile(),
         _buildAccountCardStyleSelectorTile(),
       ],
-    );
-  }
-
-  SettingsTile _buildColorPickerTile() {
-    return SettingsTile(
-      title: Text(FinanceLocales.l_color.tr),
-      leading: const Icon(Icons.color_lens, color: Colors.teal),
-      trailing: CircleAvatar(
-        radius: 12,
-        backgroundColor: Color(int.parse(controller.selectedColor)),
-      ),
-      onPressed: (_) => _showColorPicker(),
     );
   }
 
@@ -179,7 +186,7 @@ class EditAccountPage extends StatelessWidget {
           onTap: showMenu,
           child: Row(
             children: [
-              Text(controller.selectedAccountType),
+              Text(controller.getAccountTypeDisplayName()),
               const SizedBox(width: 3),
               const Icon(
                 CupertinoIcons.chevron_up_chevron_down,
@@ -203,7 +210,8 @@ class EditAccountPage extends StatelessWidget {
           onTap: showMenu,
           child: Row(
             children: [
-              Text(controller.selectedAccountCardStyle),
+              Text(_getCardStyleDisplayName(
+                  controller.selectedAccountCardStyle)),
               const SizedBox(width: 3),
               const Icon(
                 CupertinoIcons.chevron_up_chevron_down,
@@ -231,7 +239,7 @@ class EditAccountPage extends StatelessWidget {
           onTap: showMenu,
           child: Row(
             children: [
-              Text(controller.selectedBankType),
+              Text(controller.getBankTypeDisplayName()),
               const SizedBox(width: 3),
               const Icon(
                 CupertinoIcons.chevron_up_chevron_down,
@@ -259,43 +267,67 @@ class EditAccountPage extends StatelessWidget {
   }
 
   List<PullDownMenuItem> _buildAccountCardStyleMenu() {
-    var accountCardStyleList =
-        CreditCardStyle.values.map((e) => e.name).toList();
-    return List.generate(accountCardStyleList.length, (index) {
-      return PullDownMenuItem(
-        title: accountCardStyleList[index],
+    return [
+      PullDownMenuItem(
+        title: FinanceLocales.l_primary_style.tr,
         onTap: () {
-          controller.selectedAccountCardStyle = accountCardStyleList[index];
+          controller.selectedAccountCardStyle = 'PRIMARY';
           controller.update();
         },
-      );
-    });
+      ),
+      PullDownMenuItem(
+        title: FinanceLocales.l_secondary_style.tr,
+        onTap: () {
+          controller.selectedAccountCardStyle = 'SECONDARY';
+          controller.update();
+        },
+      ),
+      PullDownMenuItem(
+        title: FinanceLocales.l_accent_style.tr,
+        onTap: () {
+          controller.selectedAccountCardStyle = 'ACCENT';
+          controller.update();
+        },
+      ),
+      PullDownMenuItem(
+        title: FinanceLocales.l_on_black_style.tr,
+        onTap: () {
+          controller.selectedAccountCardStyle = 'ON_BLACK';
+          controller.update();
+        },
+      ),
+      PullDownMenuItem(
+        title: FinanceLocales.l_on_white_style.tr,
+        onTap: () {
+          controller.selectedAccountCardStyle = 'ON_WHITE';
+          controller.update();
+        },
+      ),
+    ];
   }
 
   List<PullDownMenuItem> _buildAccountTypeMenu() {
-    var accountTypeList = AccountType.values.map((e) => e.name).toList();
-    return List.generate(accountTypeList.length, (index) {
+    return AccountType.values.map((type) {
       return PullDownMenuItem(
-        title: accountTypeList[index],
+        title: type.displayName,
         onTap: () {
-          controller.selectedAccountType = accountTypeList[index];
+          controller.selectedAccountType = type.name;
           controller.update();
         },
       );
-    });
+    }).toList();
   }
 
   List<PullDownMenuItem> _buildBankTypeMenu() {
-    var bankTypeList = BankType.values.map((e) => e.name).toList();
-    return List.generate(bankTypeList.length, (index) {
+    return BankType.values.map((type) {
       return PullDownMenuItem(
-        title: bankTypeList[index],
+        title: type.displayName,
         onTap: () {
-          controller.selectedBankType = bankTypeList[index];
+          controller.selectedBankType = type.name;
           controller.update();
         },
       );
-    });
+    }).toList();
   }
 
   CustomSettingsSection _buildSaveButtonSection(AccountController controller) {

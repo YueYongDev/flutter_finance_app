@@ -54,6 +54,24 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_card_style: "卡片类型",
   FinanceLocales.l_currency: "货币类型",
 
-  FinanceLocales.hint_enter_account_name:"输入账户名称",
-  FinanceLocales.hint_enter_asset_name:"输入资产名称",
+  FinanceLocales.hint_enter_account_name: "输入账户名称",
+  FinanceLocales.hint_enter_asset_name: "输入资产名称",
+
+  // Account type translations
+  FinanceLocales.account_type_cash: "现金",
+  FinanceLocales.account_type_credit_card: "信用卡",
+  FinanceLocales.account_type_debit_card: "借记卡",
+
+  // Bank type translations
+  FinanceLocales.bank_type_visa: "Visa",
+  FinanceLocales.bank_type_mastercard: "Mastercard",
+  FinanceLocales.bank_type_american_express: "American Express",
+  FinanceLocales.bank_type_unionpay: "银联",
+
+  // Card style translations
+  FinanceLocales.l_primary_style: "主色",
+  FinanceLocales.l_secondary_style: "辅色",
+  FinanceLocales.l_accent_style: "强调色",
+  FinanceLocales.l_on_black_style: "黑底",
+  FinanceLocales.l_on_white_style: "白底",
 };

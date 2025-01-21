@@ -65,8 +65,8 @@ class AccountListWidget extends StatelessWidget {
                         children: [
                           Hero(
                             tag: 'card_${accounts[index].id}',
-                            child: AccountCard(
-                              width: cardWidth,
+                                          child: AccountCard(
+                                            width: cardWidth,
                               data: generateAccountCardData(accounts)[index],
                               isFront: true,
                             ),

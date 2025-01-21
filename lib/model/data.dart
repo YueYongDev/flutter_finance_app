@@ -61,16 +61,17 @@ const List<OnBoardingItem> onBoardingItems = [
   ),
 ];
 
-
 List<AccountCardData> generateAccountCardData(List<Account> accounts) {
   return accounts.map((account) {
     return AccountCardData(
+
         /// 优先取bankType，没有再取accountType
         type: getAccountCardType(account),
         id: account.id!,
         name: account.name,
         number: account.id!,
-        style: getCardStyleByName(account.extra['cardStyle'])!,
+        style: getCardStyleByName(account.extra?['cardStyle'] ?? 'primary') ??
+            CreditCardStyle.primary,
         balance:
             "${getCurrencySymbolByName(account.currency)} ${account.balance.toStringAsFixed(2)}");
   }).toList();

@@ -10,6 +10,18 @@ import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
 
 class AccountController extends GetxController {
+  String getAccountTypeDisplayName() {
+    return AccountType.values
+        .firstWhere((type) => type.name == selectedAccountType)
+        .displayName;
+  }
+
+  String getBankTypeDisplayName() {
+    return BankType.values
+        .firstWhere((type) => type.name == selectedBankType)
+        .displayName;
+  }
+
   final accountPageLogic = Get.find<AccountPageLogic>();
 
   // 检查是否已经注册了 AccountDetailController

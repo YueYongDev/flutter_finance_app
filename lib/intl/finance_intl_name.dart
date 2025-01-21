@@ -80,4 +80,22 @@ abstract class FinanceLocales {
 
   static const hint_enter_account_name = "hint_account_name";
   static const hint_enter_asset_name = "hint_asset_name";
+
+  // Account type translations
+  static const account_type_cash = "account_type_cash";
+  static const account_type_credit_card = "account_type_credit_card";
+  static const account_type_debit_card = "account_type_debit_card";
+
+  // Bank type translations
+  static const bank_type_visa = "bank_type_visa";
+  static const bank_type_mastercard = "bank_type_mastercard";
+  static const bank_type_american_express = "bank_type_american_express";
+  static const bank_type_unionpay = "bank_type_unionpay";
+
+  // Card style translations
+  static const l_primary_style = "l_primary_style";
+  static const l_secondary_style = "l_secondary_style";
+  static const l_accent_style = "l_accent_style";
+  static const l_on_black_style = "l_on_black_style";
+  static const l_on_white_style = "l_on_white_style";
 }

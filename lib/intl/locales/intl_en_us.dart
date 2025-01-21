@@ -62,6 +62,24 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.l_color: "Color",
   FinanceLocales.l_card_style: "Card Style",
   FinanceLocales.l_currency: "Currency",
-  FinanceLocales.hint_enter_account_name:"Enter account name",
-  FinanceLocales.hint_enter_asset_name:"Enter asset name",
+  FinanceLocales.hint_enter_account_name: "Enter account name",
+  FinanceLocales.hint_enter_asset_name: "Enter asset name",
+
+  // Account type translations
+  FinanceLocales.account_type_cash: "Cash",
+  FinanceLocales.account_type_credit_card: "Credit Card",
+  FinanceLocales.account_type_debit_card: "Debit Card",
+
+  // Bank type translations
+  FinanceLocales.bank_type_visa: "Visa",
+  FinanceLocales.bank_type_mastercard: "Mastercard",
+  FinanceLocales.bank_type_american_express: "American Express",
+  FinanceLocales.bank_type_unionpay: "UnionPay",
+
+  // Card style translations
+  FinanceLocales.l_primary_style: "Primary",
+  FinanceLocales.l_secondary_style: "Secondary",
+  FinanceLocales.l_accent_style: "Accent",
+  FinanceLocales.l_on_black_style: "On Black",
+  FinanceLocales.l_on_white_style: "On White",
 };

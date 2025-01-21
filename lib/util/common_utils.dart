@@ -48,15 +48,15 @@ CreditCardType getAccountCardType(Account account) {
 
 CreditCardStyle? getCardStyleByName(String cardStyle) {
   switch (cardStyle) {
-    case 'primary':
+    case 'PRIMARY':
       return CreditCardStyle.primary;
-    case 'secondary':
+    case 'SECONDARY':
       return CreditCardStyle.secondary;
-    case 'accent':
+    case 'ACCENT':
       return CreditCardStyle.accent;
-    case 'onBlack':
+    case 'ON_BLACK':
       return CreditCardStyle.onBlack;
-    case 'onWhite':
+    case 'ON_WHITE':
       return CreditCardStyle.onWhite;
   }
   return null;
