@@ -74,4 +74,14 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_accent_style: "强调色",
   FinanceLocales.l_on_black_style: "黑底",
   FinanceLocales.l_on_white_style: "白底",
+
+  // Onboarding translations
+  FinanceLocales.onboarding_finance_app: "「财务自由」",
+  FinanceLocales.onboarding_get_started: "即刻出发！",
+  FinanceLocales.onboarding_title_1: "「账户」",
+  FinanceLocales.onboarding_subtitle_1: "“人这一生，守好三个钱包，你就稳了”\n——《繁花》",
+  FinanceLocales.onboarding_title_2: "「资产」",
+  FinanceLocales.onboarding_subtitle_2: "“了解你所拥有的，以及你为什么会拥有它们。” —— 彼得·林奇",
+  FinanceLocales.onboarding_title_3: "「资产管理」",
+  FinanceLocales.onboarding_subtitle_3: "“不要把所有鸡蛋放在一个篮子里，然后紧紧盯着这个篮子。”—— 沃伦·巴菲特",
 };

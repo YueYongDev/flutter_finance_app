@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
+import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
 import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -65,8 +66,10 @@ class MyApp extends StatelessWidget {
                     color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
-                bodyLarge: TextStyle(color: Colors.black.withOpacity(0.87)),
-                bodyMedium: TextStyle(color: Colors.black.withOpacity(0.54)),
+                bodyLarge:
+                    TextStyle(color: Colors.black.withValues(alpha: .87)),
+                bodyMedium:
+                    TextStyle(color: Colors.black.withValues(alpha: .54)),
               ),
               appBarTheme: const AppBarTheme(
                 elevation: 0,
@@ -76,7 +79,7 @@ class MyApp extends StatelessWidget {
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
-            home: AccountPage(),
+            home: OnBoardingPage(),
           );
         });
   }

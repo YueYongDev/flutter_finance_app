@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_finance_app/widget/wallet.dart';
+import 'package:get/get.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -48,120 +50,134 @@ class _OnBoardingPageState extends State<OnBoardingPage>
     final screenSize = MediaQuery.of(context).size;
     final itemWidth = screenSize.width * viewportFraction;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 40),
-            const Center(
-              child: Text(
-                'My Wallet',
-                style: TextStyle(fontSize: 35),
+    return Theme(
+      data: AppThemes.darkTheme,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 40),
+              Center(
+                child: Text(
+                  FinanceLocales.onboarding_finance_app.tr,
+                  style: const TextStyle(fontSize: 35),
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            Expanded(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  const Positioned(
-                    left: -250 + 40,
-                    width: 250,
-                    top: -32,
-                    bottom: -32,
-                    child: WalletSide(),
-                  ),
-                  Positioned.fill(
-                    child: GestureDetector(
-                      onTapDown: (_) => animationController.forward(),
-                      onTapUp: (_) => animationController.reverse(),
-                      child: PageView.builder(
-                        controller: pageController,
-                        itemCount: onBoardingItems.length,
-                        onPageChanged: (int index) {
-                          setState(() {
-                            activeIndex = index;
-                          });
-                          animationController.forward().then(
-                                (value) => animationController.reverse(),
-                              );
-                        },
-                        itemBuilder: (context, index) {
-                          return AnimatedScale(
-                            duration: const Duration(milliseconds: 300),
-                            scale: index == activeIndex ? 1 : 0.8,
-                            curve: Curves.easeOut,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.onBlack,
-                                borderRadius: BorderRadius.circular(25),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    onBoardingItems[index].image,
+              const SizedBox(height: 40),
+              Expanded(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Positioned(
+                      left: -250 + 40,
+                      width: 250,
+                      top: -32,
+                      bottom: -32,
+                      child: WalletSide(),
+                    ),
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onTapDown: (_) => animationController.forward(),
+                        onTapUp: (_) => animationController.reverse(),
+                        child: PageView.builder(
+                          controller: pageController,
+                          itemCount: onBoardingItems.length,
+                          onPageChanged: (int index) {
+                            setState(() {
+                              activeIndex = index;
+                            });
+                            animationController.forward().then(
+                                  (value) => animationController.reverse(),
+                                );
+                          },
+                          itemBuilder: (context, index) {
+                            return AnimatedScale(
+                              duration: const Duration(milliseconds: 300),
+                              scale: index == activeIndex ? 1 : 0.8,
+                              curve: Curves.easeOut,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.onBlack,
+                                  borderRadius: BorderRadius.circular(25),
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      onBoardingItems[index].image,
+                                    ),
+                                    fit: BoxFit.fitWidth,
                                   ),
-                                  fit: BoxFit.fitWidth,
                                 ),
                               ),
-                            ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: -250 + 35,
+                      width: 250,
+                      top: -30,
+                      bottom: -30,
+                      child: AnimatedBuilder(
+                        animation: animationController,
+                        builder: (context, child) {
+                          return Transform(
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.001)
+                              ..rotateY(rotationAnimation.value),
+                            alignment: Alignment.center,
+                            child: const WalletSide(),
                           );
                         },
                       ),
                     ),
-                  ),
-                  Positioned(
-                    left: -250 + 35,
-                    width: 250,
-                    top: -30,
-                    bottom: -30,
-                    child: AnimatedBuilder(
-                      animation: animationController,
-                      builder: (context, child) {
-                        return Transform(
-                          transform: Matrix4.identity()
-                            ..setEntry(3, 2, 0.001)
-                            ..rotateY(rotationAnimation.value),
-                          alignment: Alignment.center,
-                          child: const WalletSide(),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: (screenSize.width - itemWidth) / 2,
+                  right: (screenSize.width - itemWidth) / 2,
+                  top: 40,
+                  bottom: 50,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ..._buildItemInfo(activeIndex: activeIndex),
+                    PageIndicator(
+                      length: onBoardingItems.length,
+                      activeIndex: activeIndex,
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    AccountPage(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                            transitionDuration:
+                                const Duration(milliseconds: 300),
+                          ),
                         );
                       },
+                      child: Text(
+                        FinanceLocales.onboarding_get_started.tr,
+                        style: const TextStyle(color: AppColors.white),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: (screenSize.width - itemWidth) / 2,
-                right: (screenSize.width - itemWidth) / 2,
-                top: 40,
-                bottom: 50,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ..._buildItemInfo(activeIndex: activeIndex),
-                  PageIndicator(
-                    length: onBoardingItems.length,
-                    activeIndex: activeIndex,
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (context) => AccountPage(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Get Started!',
-                      style: TextStyle(color: AppColors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -171,17 +187,17 @@ class _OnBoardingPageState extends State<OnBoardingPage>
     return [
       Center(
         child: Text(
-          onBoardingItems[activeIndex].title,
+          onBoardingItems[activeIndex].title.tr,
           style: const TextStyle(
             fontSize: 20,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
       const SizedBox(height: 10),
       Center(
         child: Text(
-          onBoardingItems[activeIndex].subtitle,
+          onBoardingItems[activeIndex].subtitle.tr,
           style: const TextStyle(fontSize: 16),
         ),
       ),

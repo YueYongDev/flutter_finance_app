@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/model/data.dart';
-import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -175,17 +175,15 @@ class _CreditCardBack extends StatelessWidget {
                       color: data.style.textColor,
                       fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
-                      fontFamily: FontFamily.oswaldSemiBold.name
-                  ),
+                      fontFamily: FontFamily.oswaldSemiBold.name),
                 ),
                 Text(
                   data.number,
                   style: TextStyle(
-                    color: data.style.textColor,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: FontFamily.oswaldSemiBold.name
-                  ),
+                      color: data.style.textColor,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: FontFamily.oswaldSemiBold.name),
                 ),
               ],
             ),

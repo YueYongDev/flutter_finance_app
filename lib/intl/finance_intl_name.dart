@@ -98,4 +98,14 @@ abstract class FinanceLocales {
   static const l_accent_style = "l_accent_style";
   static const l_on_black_style = "l_on_black_style";
   static const l_on_white_style = "l_on_white_style";
+
+  // Onboarding translations
+  static const onboarding_finance_app = "onboarding_finance_app";
+  static const onboarding_get_started = "onboarding_get_started";
+  static const onboarding_title_1 = "onboarding_title_1";
+  static const onboarding_subtitle_1 = "onboarding_subtitle_1";
+  static const onboarding_title_2 = "onboarding_title_2";
+  static const onboarding_subtitle_2 = "onboarding_subtitle_2";
+  static const onboarding_title_3 = "onboarding_title_3";
+  static const onboarding_subtitle_3 = "onboarding_subtitle_3";
 }

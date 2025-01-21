@@ -45,18 +45,18 @@ class OnBoardingItem {
 
 const List<OnBoardingItem> onBoardingItems = [
   OnBoardingItem(
-    title: 'Cards',
-    subtitle: 'All your cards in one place!',
+    title: 'onboarding_title_1',
+    subtitle: 'onboarding_subtitle_1',
     image: 'assets/images/on-boarding-1.png',
   ),
   OnBoardingItem(
-    title: 'Transactions',
-    subtitle: 'Send payments quickly and easily!',
+    title: 'onboarding_title_2',
+    subtitle: 'onboarding_subtitle_2',
     image: 'assets/images/on-boarding-2.png',
   ),
   OnBoardingItem(
-    title: 'Insights',
-    subtitle: 'View your transaction history!',
+    title: 'onboarding_title_3',
+    subtitle: 'onboarding_subtitle_3',
     image: 'assets/images/on-boarding-3.png',
   ),
 ];

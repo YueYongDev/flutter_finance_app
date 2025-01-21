@@ -82,4 +82,17 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.l_accent_style: "Accent",
   FinanceLocales.l_on_black_style: "On Black",
   FinanceLocales.l_on_white_style: "On White",
+
+  // Onboarding translations
+  FinanceLocales.onboarding_finance_app: "Financial Independence",
+  FinanceLocales.onboarding_get_started: "Get Started!",
+  FinanceLocales.onboarding_title_1: "「Account」",
+  FinanceLocales.onboarding_subtitle_1:
+      "“In life, protect three wallets and you'll be stable.”\n——《Blossoms》",
+  FinanceLocales.onboarding_title_2: "「Asset」",
+  FinanceLocales.onboarding_subtitle_2:
+      "“Know what you own, and know why you own it.” —— Peter Lynch",
+  FinanceLocales.onboarding_title_3: "「Asset Management」",
+  FinanceLocales.onboarding_subtitle_3:
+      "“Don't put all your eggs in one basket, and then watch that basket closely.”—— Warren Buffett",
 };

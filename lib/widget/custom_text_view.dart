@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/constant/colors.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,14 +15,26 @@ class CustomText extends StatelessWidget {
   final int? maxLine;
 
   const CustomText(
-      {super.key, required this.text, this.fontWeight = FontWeight.w500, this.textSize, this.color, this.fontFamily, this.textOverflow, this.textAlign = TextAlign.start, this.textDecoration = TextDecoration.none, this.maxLine});
+      {super.key,
+      required this.text,
+      this.fontWeight = FontWeight.w500,
+      this.textSize,
+      this.color,
+      this.fontFamily,
+      this.textOverflow,
+      this.textAlign = TextAlign.start,
+      this.textDecoration = TextDecoration.none,
+      this.maxLine});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       textAlign: textAlign,
-      textHeightBehavior: const TextHeightBehavior(applyHeightToFirstAscent: false,applyHeightToLastDescent: false,),
+      textHeightBehavior: const TextHeightBehavior(
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+      ),
       softWrap: false,
       style: TextStyle(
         overflow: textOverflow,

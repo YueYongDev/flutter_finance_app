@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:get/get.dart';
 

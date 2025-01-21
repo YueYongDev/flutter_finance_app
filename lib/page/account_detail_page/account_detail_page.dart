@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../constant/account_card_constants.dart';
-import '../../constant/account_card_styles.dart';
+import '../../constant/app_styles.dart';
 import '../../widget/account_card.dart';
 
 class AccountDetailPage extends StatelessWidget {
@@ -202,7 +202,7 @@ class AccountDetailPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-         Text(
+        Text(
           FinanceLocales.l_asset_list.tr,
           style: const TextStyle(
             color: AppColors.black,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/account_card_constants.dart';
-import 'package:flutter_finance_app/constant/account_card_styles.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/widget/dashed_border_container.dart';
 
 class Wallet extends StatelessWidget {
@@ -104,7 +104,7 @@ class WalletSide extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppBorderRadius.xl),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: .5),
             blurRadius: 10,
           ),
         ],
