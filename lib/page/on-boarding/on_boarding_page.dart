@@ -2,13 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
+import 'package:flutter_finance_app/helper/page_animation_transition.dart';
+import 'package:flutter_finance_app/helper/scale_animation_transition.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/main.dart';
 import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_finance_app/widget/wallet.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:flutter_finance_app/main.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -158,7 +160,10 @@ class _OnBoardingPageState extends State<OnBoardingPage>
                     FilledButton(
                       onPressed: () {
                         GetStorage().write(kFirstLaunchKey, false);
-                        Get.offAll(() => AccountPage());
+                        // Get.offAll(() => AccountPage());
+                        Navigator.of(context).push(PageAnimationTransition(
+                            page: AccountPage(),
+                            pageAnimationType: ScaleAnimationTransition()));
                       },
                       child: Text(
                         FinanceLocales.onboarding_get_started.tr,

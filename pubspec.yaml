@@ -31,7 +31,6 @@ dependencies:
   flustars: ^2.0.1
   change_app_package_name: ^1.4.0
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

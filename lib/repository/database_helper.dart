@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,7 +19,9 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'finance_app.db');
-    debugPrint("DB Path:$path");
+    if (GetPlatform.isDesktop) {
+      debugPrint("DB Path:$path");
+    }
     return await openDatabase(
       path,
       version: 2,
