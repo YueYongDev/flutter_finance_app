@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/main.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_finance_app/page/settings_page/settings_page.dart';
 import 'package:flutter_finance_app/page/transfer_page/transfer_page.dart';
 import 'package:flutter_finance_app/repository/balance_history_repository.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -179,6 +181,14 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
         title: "delete history mock data",
         onTap: () {
           BalanceHistoryRepository().cleanupMockData();
+        },
+        icon: CupertinoIcons.bag_badge_plus,
+      ),
+    if (kDebugMode)
+      PullDownMenuItem(
+        title: "delete kFirstLaunchKey",
+        onTap: () {
+          GetStorage().remove(kFirstLaunchKey);
         },
         icon: CupertinoIcons.bag_badge_plus,
       ),
