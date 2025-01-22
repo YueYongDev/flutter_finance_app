@@ -9,6 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+const String kFirstLaunchKey = 'is_first_launch';
+
 void main() async {
   await GetStorage.init();
 
@@ -79,7 +81,9 @@ class MyApp extends StatelessWidget {
                     TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
-            home: OnBoardingPage(),
+            home: GetStorage().read(kFirstLaunchKey) ?? true
+                ? OnBoardingPage()
+                : AccountPage(),
           );
         });
   }

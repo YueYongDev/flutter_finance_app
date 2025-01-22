@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 abstract class FinanceLocales {
   //命名规则一级名_二级名_具体名，不可超过两级
   static const main_tab_home = "main_tab_home";
@@ -29,9 +31,10 @@ abstract class FinanceLocales {
   static const home_data_date = "home_data_date";
   static const home_data_glucose = "home_data_glucose";
   static const home_data_bloodTime = "home_data_bloodTime";
-
   static const home_data_foodImage = "home_data_foodImage";
   static const home_data_foodShare = "home_data_foodShare";
+  static const home_title_welcome = "home_title_welcome";
+
   static const general_cancel = "General_cancel";
 
   static const bloodTime_a_k = "bloodTime_a_k";

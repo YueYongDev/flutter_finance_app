@@ -20,6 +20,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.setting_product_guide: "产品指南",
   FinanceLocales.home_title: "账户总览",
   FinanceLocales.home_add_title: "添加日记",
+  FinanceLocales.home_title_welcome: "即刻开始你的资产规划",
   FinanceLocales.general_cancel: "取消",
   FinanceLocales.l_locale_language: "语言",
   FinanceLocales.l_account_label: "账户",

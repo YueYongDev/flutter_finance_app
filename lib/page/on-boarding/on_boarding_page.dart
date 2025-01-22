@@ -7,6 +7,8 @@ import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_finance_app/widget/wallet.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:flutter_finance_app/main.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -22,6 +24,9 @@ class _OnBoardingPageState extends State<OnBoardingPage>
   late final PageController pageController;
   static const viewportFraction = 0.7;
   int activeIndex = 0;
+  static const double _sizedBoxHeight = 40;
+  static const double _walletSideLeftPosition = -210;
+  static const double _borderRadius = 25;
 
   @override
   void initState() {
@@ -57,20 +62,20 @@ class _OnBoardingPageState extends State<OnBoardingPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: _sizedBoxHeight),
               Center(
                 child: Text(
                   FinanceLocales.onboarding_finance_app.tr,
                   style: const TextStyle(fontSize: 35),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: _sizedBoxHeight),
               Expanded(
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     const Positioned(
-                      left: -250 + 40,
+                      left: _walletSideLeftPosition,
                       width: 250,
                       top: -32,
                       bottom: -32,
@@ -99,7 +104,8 @@ class _OnBoardingPageState extends State<OnBoardingPage>
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: AppColors.onBlack,
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius:
+                                      BorderRadius.circular(_borderRadius),
                                   image: DecorationImage(
                                     image: AssetImage(
                                       onBoardingItems[index].image,
@@ -151,22 +157,8 @@ class _OnBoardingPageState extends State<OnBoardingPage>
                     ),
                     FilledButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    AccountPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 300),
-                          ),
-                        );
+                        GetStorage().write(kFirstLaunchKey, false);
+                        Get.offAll(() => AccountPage());
                       },
                       child: Text(
                         FinanceLocales.onboarding_get_started.tr,
@@ -206,6 +198,8 @@ class _OnBoardingPageState extends State<OnBoardingPage>
 }
 
 class PageIndicator extends StatelessWidget {
+  static const double _borderRadius = 10;
+
   const PageIndicator({
     super.key,
     this.length = 1,
@@ -245,7 +239,7 @@ class PageIndicator extends StatelessWidget {
                       color: index == activeIndex
                           ? activeColor
                           : AppColors.onBlack,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(_borderRadius),
                     ),
                   ),
                 ),

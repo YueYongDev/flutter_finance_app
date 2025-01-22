@@ -29,6 +29,7 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.home_data_bloodTime: "Glucose time",
   FinanceLocales.home_data_foodImage: "Food images",
   FinanceLocales.home_data_foodShare: "Status Description",
+  FinanceLocales.home_title_welcome: "Record and analyze your finance detail",
   FinanceLocales.general_cancel: "Cancel",
   FinanceLocales.l_locale_language: "Language",
   FinanceLocales.l_account_label: "Account",

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NoAccountCard extends StatelessWidget {
@@ -27,7 +29,7 @@ class NoAccountCard extends StatelessWidget {
                 image: DecorationImage(
                     image: AssetImage("assets/images/bg_ticket_card.png"),
                     fit: BoxFit.fill)),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Container(
@@ -59,9 +61,9 @@ class NoAccountCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Record and analyze your asset detail',
-                  style: TextStyle(
+                Text(
+                  FinanceLocales.home_title_welcome.tr,
+                  style: const TextStyle(
                     color: Color(0xFF29272E),
                     fontSize: 24,
                     fontFamily: 'Inter',
@@ -120,7 +122,8 @@ class NoAccountCard extends StatelessWidget {
                         );
                       },
                       color: Colors.black54,
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       borderRadius: BorderRadius.circular(4),
                       child: const Text(
                         'Add Account',
