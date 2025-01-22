@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
             home: GetStorage().read(kFirstLaunchKey) ?? true
-                ? OnBoardingPage()
+                ? const OnBoardingPage()
                 : AccountPage(),
           );
         });

@@ -111,4 +111,7 @@ abstract class FinanceLocales {
   static const onboarding_subtitle_2 = "onboarding_subtitle_2";
   static const onboarding_title_3 = "onboarding_title_3";
   static const onboarding_subtitle_3 = "onboarding_subtitle_3";
+
+  // 新增图标选择
+  static const l_select_icon = "l_select_icon";
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/account_card_constants.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
@@ -15,8 +16,8 @@ import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class EditAssetPage extends StatelessWidget {
-  final Account? account; // Updated to use Account class
-  final Asset? asset; // Updated to use Asset class
+  final Account? account;
+  final Asset? asset;
   final controller = Get.put(AssetController());
 
   EditAssetPage({super.key, required this.account, this.asset});
@@ -35,6 +36,9 @@ class EditAssetPage extends StatelessWidget {
       controller.selectedAccount = account!;
       controller.selectedCurrencyIcon =
           getCurrencyIconByName(controller.selectedCurrency);
+      if (asset!.extra['icon'] != null) {
+        controller.selectedIcon = asset!.extra['icon'];
+      }
       controller.enableCounting = asset!.enableCounting;
       controller.updateRemainingCharacters(controller.nameController.text);
     }
@@ -152,9 +156,86 @@ class EditAssetPage extends StatelessWidget {
       tiles: [
         _buildAssetNameTile(),
         _buildAssetAmountTile(context),
+        _buildAssetIconTile(context), // 新增图标选择组件
         _buildAssetSwitchTile(),
       ],
     );
+  }
+
+  /// 构建资产图标选择组件
+  SettingsTile _buildAssetIconTile(BuildContext context) {
+    return SettingsTile.navigation(
+      leading: Icon(CupertinoIcons.photo, color: Colors.blue[200]),
+      title: Text(FinanceLocales.l_select_icon.tr),
+      trailing: Row(
+        children: [
+          Image.asset(
+            controller.selectedIcon != null
+                ? '${AccountCardConstants.defaultAssetIconBasePath}/${controller.selectedIcon}'
+                : AccountCardConstants.defaultAssetIcon,
+            width: 30,
+            fit: BoxFit.fitWidth,
+          ),
+          const Icon(
+            CupertinoIcons.chevron_right,
+            size: 20,
+            color: Colors.grey,
+          )
+        ],
+      ),
+      onPressed: (context) async {
+        final iconWidgets = await _buildIconList(context);
+        await showDialog(
+          context: Get.context!,
+          barrierDismissible: false,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              title: const Text('选择图标'),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width * .7,
+                height: MediaQuery.of(context).size.width * .7,
+                child: GridView.count(
+                    crossAxisCount: 4,
+                    childAspectRatio: 1.0,
+                    padding: const EdgeInsets.all(8.0),
+                    mainAxisSpacing: 8.0,
+                    crossAxisSpacing: 8.0,
+                    children: iconWidgets),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('关闭'),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    controller.update();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// 构建图标列表
+  Future<List<Widget>> _buildIconList(BuildContext context) async {
+    return assetIconPathList.map((String url) {
+      return GestureDetector(
+        onTap: () {
+          controller.selectedIcon = url.split('/').last;
+          Navigator.of(context).pop();
+          controller.update();
+        },
+        child: GridTile(
+            child: Image.asset(
+          url,
+          fit: BoxFit.cover,
+          width: 12.0,
+          height: 12.0,
+        )),
+      );
+    }).toList();
   }
 
   /// 构建资产名称输入组件

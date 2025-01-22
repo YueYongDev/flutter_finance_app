@@ -35,6 +35,7 @@ class AssetController extends GetxController {
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
   bool enableCounting = true;
+  String? selectedIcon; // 新增图标选择属性
 
   String tag = "None";
   String note = "";
@@ -58,6 +59,7 @@ class AssetController extends GetxController {
     selectedCurrency = '';
     selectedAccount = null;
     enableCounting = false;
+    selectedIcon = null; // 清除图标选择
   }
 
   void toggleCounting(bool value) {
@@ -96,7 +98,7 @@ class AssetController extends GetxController {
         createdAt: DateTime.now().millisecondsSinceEpoch,
         updatedAt: DateTime.now().millisecondsSinceEpoch,
         type: AccountAssetType.CASH.name,
-        extra: {},
+        extra: {'icon': selectedIcon}, // 将选择的图标保存到 extra 字段
       );
 
       await assetRepository.createAsset(newAsset);
@@ -121,7 +123,7 @@ class AssetController extends GetxController {
           selectedAccount?.id ?? ''; // Ensure accountId is not null
       asset.enableCounting = enableCounting;
       asset.updatedAt = DateTime.now().millisecondsSinceEpoch;
-      asset.extra = {}; // Update extra with Map
+      asset.extra = {'icon': selectedIcon}; // 更新 extra 字段中的图标
       await assetRepository.updateAsset(asset);
       await accountPageLogic.refreshAccount();
 

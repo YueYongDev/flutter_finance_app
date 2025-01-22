@@ -1,5 +1,6 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/account_card_constants.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
@@ -63,7 +64,15 @@ class AccountDetailController extends GetxController {
           date:
               DateUtil.formatDateMs(asset.createdAt, format: DateFormats.full),
           amount: asset.amount,
-          icon: 'assets/icons/cards-active.png');
+          icon: getAssetIcon(asset.extra));
     }).toList();
+  }
+
+  String getAssetIcon(Map<String, dynamic> extra) {
+    if (extra["icon"] == null || extra["icon"].isEmpty) {
+      return AccountCardConstants.defaultAssetIcon;
+    } else {
+      return "${AccountCardConstants.defaultAssetIconBasePath}/${extra["icon"]}";
+    }
   }
 }

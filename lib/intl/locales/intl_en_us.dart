@@ -63,6 +63,7 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.l_color: "Color",
   FinanceLocales.l_card_style: "Card Style",
   FinanceLocales.l_currency: "Currency",
+  FinanceLocales.l_select_icon: "Select Asset Icon",
   FinanceLocales.hint_enter_account_name: "Enter account name",
   FinanceLocales.hint_enter_asset_name: "Enter asset name",
 

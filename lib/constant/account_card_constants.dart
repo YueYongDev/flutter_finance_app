@@ -14,4 +14,7 @@ class AccountCardConstants {
   static const maxCardScale = 1.0;
   static const cardsOffset = 12.0;
   static const minThrowDistance = 300.0;
+  static const defaultAssetIconBasePath = 'assets/icons/choose_asset_icon';
+  static const defaultAssetIcon =
+      '$defaultAssetIconBasePath/asset-default-icon.png';
 }

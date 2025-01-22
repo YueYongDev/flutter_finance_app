@@ -54,6 +54,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_color: "颜色",
   FinanceLocales.l_card_style: "卡片类型",
   FinanceLocales.l_currency: "货币类型",
+  FinanceLocales.l_select_icon: "选择资产图标",
 
   FinanceLocales.hint_enter_account_name: "输入账户名称",
   FinanceLocales.hint_enter_asset_name: "输入资产名称",
