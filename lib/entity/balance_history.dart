@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
+
 class BalanceHistory {
   String? id;
-  String? accountId;  // 新增字段，如果为null则表示是所有账户的总余额
+  String? accountId; // 新增字段，如果为null则表示是所有账户的总余额
   double totalBalance;
   int recordedAt;
   int createdAt;

@@ -6,6 +6,7 @@ import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/repository/asset_operation_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class AssetController extends GetxController {
       : null;
 
   final assetRepository = AssetRepository();
+  final assetOperationRepository = AssetOperationRepository();
   var assets = <Asset>[].obs;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
@@ -102,6 +104,13 @@ class AssetController extends GetxController {
       );
 
       await assetRepository.createAsset(newAsset);
+      await assetOperationRepository.recordAssetOperation(
+        newAsset.accountId,
+        newAsset.id!,
+        newAsset.amount,
+        'Asset created',
+      );
+
       await accountPageLogic.refreshAccount();
       if (accountDetailController != null) {
         accountDetailController!.refreshCardData();
@@ -124,7 +133,14 @@ class AssetController extends GetxController {
       asset.enableCounting = enableCounting;
       asset.updatedAt = DateTime.now().millisecondsSinceEpoch;
       asset.extra = {'icon': selectedIcon}; // 更新 extra 字段中的图标
+      final amountChange = asset.amount - double.parse(amountController.text);
       await assetRepository.updateAsset(asset);
+      await assetOperationRepository.recordAssetOperation(
+        asset.accountId,
+        asset.id!,
+        amountChange,
+        'Asset updated',
+      );
       await accountPageLogic.refreshAccount();
 
       if (accountDetailController != null) {

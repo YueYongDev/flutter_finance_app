@@ -45,34 +45,14 @@ class BalanceHistoryRepository {
   Future<void> recordAccountBalance(String accountId, double balance) async {
     final db = await _databaseHelper.database;
 
-    // Check if a record for this account already exists
-    final result = await db.query(
-      'balance_history',
-      where: 'account_id = ?',
-      whereArgs: [accountId],
-    );
-
-    if (result.isNotEmpty) {
-      // Update the existing record
-      await db.update(
-        'balance_history',
-        {
-          'total_balance': balance,
-          'recorded_at': DateTime.now().millisecondsSinceEpoch
-        },
-        where: 'id = ?',
-        whereArgs: [result.first['id']],
-      );
-    } else {
-      // Insert a new record
-      await db.insert('balance_history', {
-        'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'account_id': accountId,
-        'total_balance': balance,
-        'recorded_at': DateTime.now().millisecondsSinceEpoch,
-        'created_at': DateTime.now().millisecondsSinceEpoch,
-      });
-    }
+    // Insert a new record
+    await db.insert('balance_history', {
+      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+      'account_id': accountId,
+      'total_balance': balance,
+      'recorded_at': DateTime.now().millisecondsSinceEpoch,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+    });
   }
 
   // 获取最新的总余额记录

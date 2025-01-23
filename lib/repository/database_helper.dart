@@ -24,7 +24,7 @@ class DatabaseHelper {
     }
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -75,6 +75,20 @@ class DatabaseHelper {
     )
   ''');
 
+    await db.execute('''
+    CREATE TABLE asset_operation(
+      id TEXT PRIMARY KEY,
+      account_id TEXT,
+      asset_id TEXT,
+      amount REAL,
+      description TEXT,
+      created_at INTEGER,
+      updated_at INTEGER,
+      FOREIGN KEY (account_id) REFERENCES account (id),
+      FOREIGN KEY (asset_id) REFERENCES asset (id)
+    )
+  ''');
+
     // Insert initial record with total balance 0 and recorded_at as now - 1 day
     final now = DateTime.now();
     final oneDayAgo =
@@ -89,6 +103,7 @@ class DatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    debugPrint('Upgrading database from $oldVersion to $newVersion');
     if (oldVersion < 2) {
       // Add the new table if it doesn't exist
       await db.execute('''
@@ -112,6 +127,22 @@ class DatabaseHelper {
         'recorded_at': oneDayAgo,
         'created_at': now.millisecondsSinceEpoch,
       });
+    }
+
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS asset_operation(
+          id TEXT PRIMARY KEY,
+          account_id TEXT,
+          asset_id TEXT,
+          amount REAL,
+          description TEXT,
+          created_at INTEGER,
+          updated_at INTEGER,
+          FOREIGN KEY (account_id) REFERENCES account (id),
+          FOREIGN KEY (asset_id) REFERENCES asset (id)
+        )
+      ''');
     }
   }
   // ---- Account CRUD Operations ----
@@ -223,5 +254,42 @@ class DatabaseHelper {
       'recorded_at': now.millisecondsSinceEpoch,
       'created_at': now.millisecondsSinceEpoch,
     });
+  }
+
+  // Insert asset operation record
+  Future<void> insertAssetOperation(
+    String id,
+    String accountId,
+    String assetId,
+    double amount,
+    String description,
+    int createdAt,
+    int updatedAt,
+  ) async {
+    final db = await database;
+    await db.insert('asset_operation', {
+      'id': id,
+      'account_id': accountId,
+      'asset_id': assetId,
+      'amount': amount,
+      'description': description,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    });
+  }
+
+  // Query asset operations for an account
+  Future<List<Map<String, dynamic>>> queryAssetOperations({
+    required String accountId,
+    int? limit,
+  }) async {
+    final db = await database;
+    return await db.query(
+      'asset_operation',
+      where: 'account_id = ?',
+      whereArgs: [accountId],
+      orderBy: 'created_at DESC',
+      limit: limit,
+    );
   }
 }

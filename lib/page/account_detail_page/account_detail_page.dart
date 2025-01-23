@@ -122,14 +122,9 @@ class AccountDetailPage extends StatelessWidget {
         onPressed: () {
           Account account =
               accountPageState.accounts[controller.activeIndex.value];
-          if (account != null) {
-            Get.to(() => AccountTrendPage(account: account));
-          } else {
-            // Handle the case where account is null
-            Get.snackbar("Error", "No account selected");
-          }
+          Get.to(() => AccountTrendPage(account: account));
         },
-        child: Icon(Icons.trending_up),
+        child: const Icon(Icons.trending_up),
       ),
     );
   }
