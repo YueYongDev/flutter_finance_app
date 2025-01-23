@@ -12,15 +12,17 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: <Widget>[
-          buildNavigationBar(),
-          const SliverToBoxAdapter(child: AccountPanel()),
-          // const SliverToBoxAdapter(child: NetAssetsSection()),
-          AccountListWidget(),
-        ],
+    return Scaffold(
+      body: Material(
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: <Widget>[
+            buildNavigationBar(),
+            const SliverToBoxAdapter(child: AccountPanel()),
+            // const SliverToBoxAdapter(child: NetAssetsSection()),
+            AccountListWidget(),
+          ],
+        ),
       ),
     );
   }

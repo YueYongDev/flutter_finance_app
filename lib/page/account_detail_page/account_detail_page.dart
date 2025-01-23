@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
-import 'package:flutter_finance_app/intl/finance_intl_name.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
+import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:get/get.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart';
+import 'package:flutter_finance_app/widget/transaction_item.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
+import 'package:flutter_finance_app/constant/account_card_constants.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
+import 'package:flutter_finance_app/widget/account_card.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
-import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
-import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
-import 'package:flutter_finance_app/widget/transaction_item.dart';
-import 'package:get/get.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
-import '../../constant/account_card_constants.dart';
-import '../../constant/app_styles.dart';
-import '../../widget/account_card.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
+import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
 
 class AccountDetailPage extends StatelessWidget {
   final int initialIndex;
@@ -117,6 +117,19 @@ class AccountDetailPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Account account =
+              accountPageState.accounts[controller.activeIndex.value];
+          if (account != null) {
+            Get.to(() => AccountTrendPage(account: account));
+          } else {
+            // Handle the case where account is null
+            Get.snackbar("Error", "No account selected");
+          }
+        },
+        child: Icon(Icons.trending_up),
       ),
     );
   }

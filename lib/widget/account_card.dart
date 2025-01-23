@@ -31,7 +31,7 @@ class AccountCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withOpacity(0.5),
+            color: AppColors.black.withValues(alpha: .5),
             blurRadius: 15,
           ),
         ],
