@@ -6,6 +6,7 @@ import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
+import 'package:flutter_finance_app/repository/operation_log_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
 
@@ -30,6 +31,7 @@ class AccountController extends GetxController {
       : null;
 
   final accountRepository = AccountRepository();
+  final operationLogRepository = OperationLogRepository();
 
   final nameController = TextEditingController();
 
@@ -98,7 +100,10 @@ class AccountController extends GetxController {
     if (selectedBankType.isNotEmpty) {
       newAccount.extra['bankType'] = selectedBankType;
     }
+
     await accountRepository.createAccount(newAccount);
+    await operationLogRepository.recordAccountCreate(newAccount);
+
     await accountPageLogic.refreshAccount();
     if (accountDetailController != null) {
       accountDetailController!.refreshCardData();
@@ -116,6 +121,7 @@ class AccountController extends GetxController {
       account.extra['bankType'] = selectedBankType;
     }
     await accountRepository.updateAccount(account);
+    await operationLogRepository.recordAccountUpdate(account);
     await accountPageLogic.refreshAccount();
     if (accountDetailController != null) {
       accountDetailController!.refreshCardData();
@@ -124,6 +130,9 @@ class AccountController extends GetxController {
   }
 
   Future<void> deleteAccount(String accountId) async {
+    Account account = await accountRepository.retrieveAccount(accountId);
+    await operationLogRepository.recordAccountDelete(account);
+
     await accountRepository.deleteAccount(accountId);
     await accountPageLogic.refreshAccount();
   }

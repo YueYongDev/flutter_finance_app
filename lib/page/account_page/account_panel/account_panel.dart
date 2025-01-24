@@ -31,7 +31,7 @@ class AccountPanel extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildTopSection(logic),
+              _buildTopSection(),
               _buildChartSection(),
               _buildBottomSection(logic),
               const SizedBox(height: 20),
@@ -42,46 +42,51 @@ class AccountPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildTopSection(AccountPageLogic logic) {
-    return Column(
-      children: [
-        Text(
-          "¥ ${logic.state.netAssets}",
-          style: const TextStyle(
-            color: AppTextColors.white,
-            fontSize: 35,
-            fontWeight: FontWeight.bold,
+  Widget _buildTopSection() {
+    return GetBuilder<AccountPageLogic>(builder: (logic) {
+      return Column(
+        children: [
+          Text(
+            "¥ ${logic.state.netAssets}",
+            style: const TextStyle(
+              color: AppTextColors.white,
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        _buildGrowthInfo(),
-        Text(
-          FinanceLocales.l_account_balance_uppercase.tr,
-          style: const TextStyle(color: AppTextColors.white54),
-        ),
-      ],
-    );
+          _buildGrowthInfo(),
+          Text(
+            FinanceLocales.l_account_balance_uppercase.tr,
+            style: const TextStyle(color: AppTextColors.white54),
+          ),
+        ],
+      );
+    });
   }
 
   Widget _buildGrowthInfo() {
-    final AccountPanelController controller = Get.put(AccountPanelController());
-    return Padding(
-      padding: const EdgeInsets.only(top: 4, bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Obx(() => Text(
+    return GetBuilder<AccountPanelController>(
+      builder: (controller) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
                 controller.getFormattedBalanceChange(),
                 style:
-                    const TextStyle(color: AppTextColors.white, fontSize: 18),
-              )),
-          const SizedBox(width: 20),
-          Obx(() => _GrowthIndicator(
+                const TextStyle(color: AppTextColors.white, fontSize: 18),
+              ),
+              const SizedBox(width: 20),
+              _GrowthIndicator(
                 percentage: controller.getFormattedPercentage(),
                 isPositive: controller.isPositiveChange.value,
-              )),
-          _buildExpandButton(controller),
-        ],
-      ),
+              ),
+              _buildExpandButton(controller),
+            ],
+          ),
+        );
+      }
     );
   }
 
@@ -110,15 +115,15 @@ class AccountPanel extends StatelessWidget {
     });
   }
 
-  Widget _buildChart(AccountPanelController controller) {
-    return Container(
-      height: 300,
-      margin: EdgeInsets.only(top: 10, left: 10),
-      padding: const EdgeInsets.only(right: 20),
-      child: LineChart(
-        _createChartData(controller),
-      ),
-    );
+  _buildChart(AccountPanelController controller) {
+    return Obx(() => Container(
+          height: 300,
+          margin: const EdgeInsets.only(top: 10, left: 10),
+          padding: const EdgeInsets.only(right: 20),
+          child: LineChart(
+            _createChartData(controller),
+          ),
+        ));
   }
 
   LineChartData _createChartData(AccountPanelController controller) {
@@ -134,7 +139,7 @@ class AccountPanel extends StatelessWidget {
           dotData: const FlDotData(show: false),
           belowBarData: BarAreaData(
             show: true,
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
           ),
         ),
       ],
@@ -148,6 +153,8 @@ class AccountPanel extends StatelessWidget {
       lineTouchData: LineTouchData(
         enabled: true,
         touchTooltipData: LineTouchTooltipData(
+          fitInsideHorizontally: true,
+          fitInsideVertically: true,
           getTooltipItems: (touchedSpots) {
             return touchedSpots.map((LineBarSpot spot) {
               return LineTooltipItem(
@@ -238,19 +245,28 @@ class AccountPanel extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildInfoBlock(
-            "${logic.state.totalDebt}",
-            FinanceLocales.l_debt_label.tr,
+          Expanded(
+            flex: 1,
+            child: _buildInfoBlock(
+              "${logic.state.totalDebt}",
+              FinanceLocales.l_debt_label.tr,
+            ),
           ),
           const _VerticalDivider(),
-          _buildInfoBlock(
-            "${logic.state.totalAssets}",
-            FinanceLocales.l_asset_label.tr,
+          Expanded(
+            flex: 1,
+            child: _buildInfoBlock(
+              "${logic.state.totalAssets}",
+              FinanceLocales.l_asset_label.tr,
+            ),
           ),
           const _VerticalDivider(),
-          _buildInfoBlock(
-            "${logic.state.accounts.length}",
-            FinanceLocales.l_account_label.tr,
+          Expanded(
+            flex: 1,
+            child: _buildInfoBlock(
+              "${logic.state.accounts.length}",
+              FinanceLocales.l_account_label.tr,
+            ),
           ),
         ],
       ),

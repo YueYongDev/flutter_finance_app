@@ -10,6 +10,7 @@ import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.d
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:flutter_finance_app/widget/accout_select_modal.dart';
 import 'package:flutter_finance_app/widget/numeric_keyboard.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
@@ -56,11 +57,14 @@ class EditAssetPage extends StatelessWidget {
           IconButton(
               onPressed: () {
                 Get.back();
-                Get.delete<AssetController>();
+                if (Get.isRegistered<AssetController>()) {
+                  Get.delete<AssetController>();
+                }
               },
-              icon: const Icon(
+              icon: Icon(
                 CupertinoIcons.clear_circled_solid,
                 color: Colors.blue,
+                size: 24.sp,
               ))
         ],
       ),

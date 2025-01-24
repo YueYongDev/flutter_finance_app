@@ -1,11 +1,15 @@
 import 'package:fl_chart/fl_chart.dart'; // Import fl_chart
+import 'package:flustars/flustars.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/entity/account.dart';
-import 'package:flutter_finance_app/entity/asset_operation.dart';
 import 'package:flutter_finance_app/entity/balance_history.dart';
-import 'package:flutter_finance_app/repository/asset_operation_repository.dart';
+import 'package:flutter_finance_app/entity/operation_log.dart';
 import 'package:flutter_finance_app/repository/balance_history_repository.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_finance_app/repository/operation_log_repository.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:timeline_tile/timeline_tile.dart'; // Import timeline_tile
 
 class _TimelineItem {
@@ -23,8 +27,9 @@ class _TimelineItem {
 class AccountTrendPage extends StatelessWidget {
   final BalanceHistoryRepository balanceHistoryRepository =
       BalanceHistoryRepository();
-  final AssetOperationRepository assetOperationRepository =
-      AssetOperationRepository();
+  final OperationLogRepository operationLogRepository =
+      OperationLogRepository();
+
   final Account account;
 
   AccountTrendPage({required this.account, super.key});
@@ -32,112 +37,145 @@ class AccountTrendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Account Trends for ${account.name}'),
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: const Text("账户走势"),
+            leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: AppColors.onBlack,
+                size: 24.sp,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: FutureBuilder<List<dynamic>?>(
+              future: Future.wait([
+                balanceHistoryRepository.getAccountHistory(account.id!),
+                // balanceHistoryRepository.getAccountHistory("mock_account_id"),
+                operationLogRepository.getByAccount(account.id!),
+              ]).then((results) {
+                final balanceHistory = results[0] as List<BalanceHistory>;
+                final operationLogs = results[1] as List<OperationLog>;
+
+                // Combine both lists and sort by timestamp
+                final combined = [
+                  ...balanceHistory.map((h) => _TimelineItem(
+                        timestamp: h.recordedAt,
+                        type: 'balance',
+                        data: h,
+                      )),
+                  ...operationLogs.map((o) => _TimelineItem(
+                        timestamp: o.createdAt,
+                        type: 'operation',
+                        data: o,
+                      )),
+                ];
+
+                combined.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+                return combined;
+              }),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return errorWidget();
+                } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No data available'));
+                } else {
+                  List<_TimelineItem> timelineItems =
+                      snapshot.data! as List<_TimelineItem>;
+                  return buildTrendPage(timelineItems);
+                }
+              },
+            ),
+          )
+        ],
       ),
-      body: FutureBuilder<List<dynamic>?>(
-        future: Future.wait([
-          balanceHistoryRepository.getAccountHistory(account.id!, limit: 30),
-          assetOperationRepository.getAssetOperationsForAccount(account.id!),
-        ]).then((results) {
-          final balanceHistory = results[0] as List<BalanceHistory>;
-          final assetOperations = results[1] as List<AssetOperation>;
+    );
+  }
 
-          // Combine both lists and sort by timestamp
-          final combined = [
-            ...balanceHistory.map((h) => _TimelineItem(
-                  timestamp: h.recordedAt,
-                  type: 'balance',
-                  data: h,
-                )),
-            ...assetOperations.map((o) => _TimelineItem(
-                  timestamp: o.createdAt,
-                  type: 'operation',
-                  data: o,
-                )),
-          ];
+  Widget errorWidget() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            Icon(Icons.error_outline, size: 50, color: Colors.red),
+            SizedBox(height: 16),
+            Text(
+              'Oops!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Something went wrong. Please try again later.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-          combined.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-          return combined;
-        }),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.error_outline, size: 50, color: Colors.red),
-                    SizedBox(height: 16),
-                    Text(
-                      'Oops!',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Something went wrong. Please try again later.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+  buildTrendPage(List<_TimelineItem> timelineItems) {
+    List<BalanceHistory> balanceHistory = timelineItems
+        .where((item) => item.type == 'balance')
+        .map((item) => item.data as BalanceHistory)
+        .toList();
+    List<OperationLog> assetOperation = timelineItems
+        .where((item) => item.type == 'operation')
+        .map((item) => item.data as OperationLog)
+        .toList();
+
+    // 用 SliverList 来支持上下滑动
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 15),
+              child: SizedBox(
+                height: 300,
+                child: LineChart(mainData(balanceHistory)),
+              ),
+            ),
+            const Text("变更记录",
+                style: TextStyle(
+                  color: Color(0xFF29272E),
+                  fontSize: 24,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  height: 0,
+                  letterSpacing: -0.96,
+                )),
+            SafeArea(
+              bottom: true,
+              top: false,
+              child: MediaQuery.removePadding(
+                context: Get.context!,
+                removeTop: true,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const PageScrollPhysics(),
+                  itemCount: assetOperation.length,
+                  itemBuilder: (context, index) {
+                    return buildTimelineTile(assetOperation, index);
+                  },
                 ),
               ),
-            );
-          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No data available'));
-          } else {
-            List<_TimelineItem> timelineItems =
-                snapshot.data! as List<_TimelineItem>;
-            List<BalanceHistory> balanceHistory = timelineItems
-                .where((item) => item.type == 'balance')
-                .map((item) => item.data as BalanceHistory)
-                .toList();
-            List<AssetOperation> assetOperation = timelineItems
-                .where((item) => item.type == 'operation')
-                .map((item) => item.data as AssetOperation)
-                .toList();
-            return Column(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: LineChart(mainData(balanceHistory)),
-                ),
-                Flexible(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: ListView.builder(
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: assetOperation.length,
-                      itemBuilder: (context, index) {
-                        final operation = assetOperation[index];
-                        return TimelineTile(
-                          alignment: TimelineAlign.start,
-                          isFirst: index == 0,
-                          isLast: index == timelineItems.length - 1,
-                          indicatorStyle: const IndicatorStyle(
-                            width: 20,
-                            color: Colors.green,
-                          ),
-                          endChild: ListTile(
-                            title: Text(
-                                'Asset Operation: ${DateTime.fromMillisecondsSinceEpoch(operation.createdAt).toString().substring(0, 10)}'),
-                            subtitle: Text(
-                                '${operation.description}: ${operation.amount.toStringAsFixed(2)}'),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -156,61 +194,72 @@ class AccountTrendPage extends StatelessWidget {
     // 按 recordedAt 时间排序
     balanceHistoryList.sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
 
-    // 将时间戳转换为 DateTime 对象
-    final List<DateTime> dates = balanceHistoryList
-        .where((history) {
-          return history.recordedAt >= history.createdAt;
-        })
-        .map((history) =>
-            DateTime.fromMillisecondsSinceEpoch(history.recordedAt))
-        .toList();
+    DateTime endDate;
+    DateTime startDate;
+    if (balanceHistoryList.length > 10) {
+      endDate = DateTime.fromMillisecondsSinceEpoch(
+          balanceHistoryList.last.recordedAt);
+      startDate = endDate.add(const Duration(days: -10));
+    } else {
+      startDate = DateTime.fromMillisecondsSinceEpoch(
+          balanceHistoryList.first.recordedAt);
 
-    final DateTime earliestDate = dates.first;
-    final DateTime latestDate = dates.last;
+      endDate = startDate.add(const Duration(days: 10));
+    }
 
-    // 横轴最小值和最大值使用时间戳
-    final double minX = earliestDate.millisecondsSinceEpoch.toDouble();
-    final double maxX = latestDate.millisecondsSinceEpoch.toDouble();
+    DateTime startDateOnly =
+        DateTime(startDate.year, startDate.month, startDate.day);
+    DateTime endDateOnly =
+        DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59);
 
-    // 准备图表数据点
-    final List<FlSpot> spots = balanceHistoryList.map((history) {
+    List<BalanceHistory> selectedHistoryList =
+        balanceHistoryList.where((history) {
+      DateTime recordedDate =
+          DateTime.fromMillisecondsSinceEpoch(history.recordedAt);
+      return recordedDate.isAfter(startDateOnly) &&
+          recordedDate.isBefore(endDateOnly);
+    }).toList();
+
+    // debugPrint("startDate:$startDate,endDate:$endDate");
+    // selectedHistoryList.forEach((e) => debugPrint(
+    //     "${e.totalBalance},${DateTime.fromMillisecondsSinceEpoch(e.recordedAt)}"));
+    // 将选中的记录转换为点
+    final List<FlSpot> spots = selectedHistoryList.map((history) {
       final double x = history.recordedAt.toDouble();
       final double y = history.totalBalance;
       return FlSpot(x, y);
     }).toList();
 
     // 计算 Y 轴的最小值和最大值，并添加一定的边距
-    final double minY = (balanceHistoryList
+    double minY = (selectedHistoryList
             .map((history) => history.totalBalance)
             .reduce((a, b) => a < b ? a : b)) *
-        0.95; // 下边距 5%
-    final double maxY = (balanceHistoryList
+        0.95;
+    double maxY = (selectedHistoryList
             .map((history) => history.totalBalance)
             .reduce((a, b) => a > b ? a : b)) *
-        1.05; // 上边距 5%
+        1.05;
 
-    // 使用 intl 包格式化日期
-    final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm');
+    // 确保最大值和最小值不相等
+    if (maxY == minY) {
+      maxY += 1;
+    }
 
     return LineChartData(
       lineBarsData: [
         LineChartBarData(
           spots: spots,
           isCurved: true,
-          gradient: const LinearGradient(
-            colors: [Colors.blue, Colors.lightBlueAccent],
-          ),
-          barWidth: 3,
+          color: Colors.blueAccent,
+          barWidth: 2,
           isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: true,
-          ),
+          dotData: const FlDotData(show: true),
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
               colors: [
-                Colors.blue.withValues(alpha: .3),
-                Colors.blue.withValues(alpha: .0),
+                Colors.blueAccent.withValues(alpha: 0.3),
+                Colors.blueAccent.withValues(alpha: 0.0),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -218,86 +267,102 @@ class AccountTrendPage extends StatelessWidget {
           ),
         ),
       ],
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
         bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            // 动态计算标签间隔，以避免标签重叠
-            interval: (maxX - minX) / 5, // 大致 5 个标签
-            getTitlesWidget: (value, meta) {
-              final DateTime date =
-                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
-              final String formattedDate = dateFormat.format(date);
-              return Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  formattedDate,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 10,
-                  ),
-                ),
-              );
-            },
-          ),
+          sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 40,
-            interval: (maxY - minY) / 5, // Y 轴 5 个标签
-            getTitlesWidget: (value, meta) {
-              return Text(
-                value.toStringAsFixed(0),
-                style: const TextStyle(
-                  color: Colors.black54,
-                  fontSize: 10,
-                ),
-              );
-            },
-          ),
+          sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles:
-            const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
       ),
-      gridData: FlGridData(
+      gridData: const FlGridData(
         show: true,
-        drawVerticalLine: false, // 可选：隐藏竖直网格线
-        horizontalInterval: (maxY - minY) / 5,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            color: Colors.grey.withOpacity(0.3),
-            strokeWidth: 1,
-          );
-        },
+        drawVerticalLine: false,
+        drawHorizontalLine: false,
+        // horizontalInterval: (maxY - minY) / 5,
+        // getDrawingHorizontalLine: (value) {
+        //   return FlLine(
+        //     color: Colors.grey.withOpacity(0.3),
+        //     strokeWidth: 1,
+        //   );
+        // },
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: Colors.grey, width: 1),
+        border: Border(
+          left: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1),
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1),
+          right: BorderSide.none, // 不显示右边
+          top: BorderSide.none, // 不显示上边
+        ),
       ),
-      minX: minX,
-      maxX: maxX > minX ? maxX : minX + 1, // 防止 maxX 等于 minX
-      minY: minY < 0 ? minY : 0,
+      minX: startDate.millisecondsSinceEpoch.toDouble(),
+      maxX: endDate.millisecondsSinceEpoch.toDouble(),
+      minY: minY > 0 ? minY : 0,
       maxY: maxY,
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
-          getTooltipItems: (touchedSpots) {
-            return touchedSpots.map((spot) {
-              final DateTime date =
-                  DateTime.fromMillisecondsSinceEpoch(spot.x.toInt());
-              final String formattedDate = dateFormat.format(date);
-              return LineTooltipItem(
-                '$formattedDate\n\$${spot.y.toStringAsFixed(2)}',
-                const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            }).toList();
-          },
-        ),
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((spot) {
+                final DateTime date =
+                    DateTime.fromMillisecondsSinceEpoch(spot.x.toInt());
+                return LineTooltipItem(
+                  '${date.toLocal().toIso8601String().substring(0, 10)}\n\$${spot.y.toStringAsFixed(2)}',
+                  const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                );
+              }).toList();
+            },
+            fitInsideVertically: true,
+            fitInsideHorizontally: true),
         handleBuiltInTouches: true,
+      ),
+    );
+  }
+
+  buildTimelineTile(List<OperationLog> operationLogList, int index) {
+    final operation = operationLogList[index];
+    return TimelineTile(
+      alignment: TimelineAlign.start,
+      isFirst: index == 0,
+      isLast: index == operationLogList.length - 1,
+      indicatorStyle: IndicatorStyle(
+        width: 24,
+        color: Colors.black,
+        indicator: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(color: Colors.black, width: 2),
+          ),
+          child: const Icon(
+            Icons.check,
+            color: Colors.black,
+            size: 14,
+          ),
+        ),
+      ),
+      afterLineStyle: const LineStyle(
+        color: AppColors.onBlack,
+        thickness: 2.0,
+      ),
+      beforeLineStyle: const LineStyle(
+        color: AppColors.onBlack,
+        thickness: 2.0,
+      ),
+      endChild: ListTile(
+        title: Text(
+          '${operation.getDisplayOperationType()} - ${operation.getDisplayOperationKey()}: ${operation.value}',
+        ),
+        subtitle: Text(
+          DateUtil.formatDateMs(operation.createdAt),
+          style: const TextStyle(
+            color: Colors.black54,
+            fontSize: 12,
+          ),
+        ),
       ),
     );
   }

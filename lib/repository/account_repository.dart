@@ -8,6 +8,11 @@ class AccountRepository {
     await dbHelper.insertAccount(account.toMap());
   }
 
+  Future<Account> retrieveAccount(String id) async {
+    final result = await dbHelper.getAccount(id);
+    return Account.fromMap(result);
+  }
+
   Future<List<Account>> retrieveAccounts() async {
     final result = await dbHelper.getAccounts();
     return result.map((map) => Account.fromMap(map)).toList();

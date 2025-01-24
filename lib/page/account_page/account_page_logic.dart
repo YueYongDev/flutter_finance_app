@@ -70,13 +70,11 @@ class AccountPageLogic extends GetxController
 
     // 记录总余额变化
     await _balanceHistoryService.checkAndRecordTotalBalance(state.netAssets);
-    
+
     // 记录每个账户的余额变化
     for (var account in list) {
       await _balanceHistoryService.checkAndRecordAccountBalance(
-        account.id!,
-        account.balance
-      );
+          account.id!, account.balance);
     }
 
     update();

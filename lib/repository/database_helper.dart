@@ -24,7 +24,7 @@ class DatabaseHelper {
     }
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -76,16 +76,16 @@ class DatabaseHelper {
   ''');
 
     await db.execute('''
-    CREATE TABLE asset_operation(
+    CREATE TABLE operation_log(
       id TEXT PRIMARY KEY,
-      account_id TEXT,
-      asset_id TEXT,
-      amount REAL,
-      description TEXT,
+      operation_type TEXT,
+      accouId TEXT,
+      assetId TEXT,
+      key TEXT,
+      value TEXT,
+      extra TEXT,
       created_at INTEGER,
-      updated_at INTEGER,
-      FOREIGN KEY (account_id) REFERENCES account (id),
-      FOREIGN KEY (asset_id) REFERENCES asset (id)
+      updated_at INTEGER
     )
   ''');
 
@@ -129,18 +129,18 @@ class DatabaseHelper {
       });
     }
 
-    if (oldVersion < 3) {
+    if (oldVersion < 4) {
       await db.execute('''
-        CREATE TABLE IF NOT EXISTS asset_operation(
+        CREATE TABLE IF NOT EXISTS operation_log(
           id TEXT PRIMARY KEY,
-          account_id TEXT,
-          asset_id TEXT,
-          amount REAL,
-          description TEXT,
+          operation_type TEXT,
+          accouId TEXT,
+          assetId TEXT,
+          key TEXT,
+          value TEXT,
+          extra TEXT,
           created_at INTEGER,
-          updated_at INTEGER,
-          FOREIGN KEY (account_id) REFERENCES account (id),
-          FOREIGN KEY (asset_id) REFERENCES asset (id)
+          updated_at INTEGER
         )
       ''');
     }
@@ -151,6 +151,12 @@ class DatabaseHelper {
   Future<void> insertAccount(Map<String, dynamic> account) async {
     final db = await database;
     await db.insert('account', account);
+  }
+
+  Future<Map<String, dynamic>> getAccount(String id) async {
+    final db = await database;
+    final result = await db.query('account', where: 'id = ?', whereArgs: [id]);
+    return result.first;
   }
 
   // Read
@@ -256,40 +262,57 @@ class DatabaseHelper {
     });
   }
 
-  // Insert asset operation record
-  Future<void> insertAssetOperation(
-    String id,
-    String accountId,
-    String assetId,
-    double amount,
-    String description,
-    int createdAt,
-    int updatedAt,
-  ) async {
+  // ---- Operation Log CRUD Operations ----
+
+  // Create
+  Future<void> insertOperationLog(Map<String, dynamic> log) async {
     final db = await database;
-    await db.insert('asset_operation', {
-      'id': id,
-      'account_id': accountId,
-      'asset_id': assetId,
-      'amount': amount,
-      'description': description,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-    });
+    await db.insert('operation_log', log);
   }
 
-  // Query asset operations for an account
-  Future<List<Map<String, dynamic>>> queryAssetOperations({
-    required String accountId,
+  // Read all logs
+  Future<List<Map<String, dynamic>>> getOperationLogs({int? limit}) async {
+    final db = await database;
+    return await db.query(
+      'operation_log',
+      orderBy: 'created_at DESC',
+      limit: limit,
+    );
+  }
+
+  // Read logs by account
+  Future<List<Map<String, dynamic>>> getOperationLogsByAccount(
+    String accouId, {
     int? limit,
   }) async {
     final db = await database;
     return await db.query(
-      'asset_operation',
-      where: 'account_id = ?',
-      whereArgs: [accountId],
+      'operation_log',
+      where: 'accouId = ?',
+      whereArgs: [accouId],
       orderBy: 'created_at DESC',
       limit: limit,
+    );
+  }
+
+  // Update
+  Future<int> updateOperationLog(String id, Map<String, dynamic> log) async {
+    final db = await database;
+    return await db.update(
+      'operation_log',
+      log,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Delete
+  Future<int> deleteOperationLog(String id) async {
+    final db = await database;
+    return await db.delete(
+      'operation_log',
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 }

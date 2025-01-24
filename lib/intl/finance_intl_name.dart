@@ -50,6 +50,7 @@ abstract class FinanceLocales {
   static const l_account_name = "l_account_name";
   static const l_account_info = "l_account_info";
   static const l_account_type = "l_account_type";
+  static const l_account_trend = "l_account_trend";
 
   static const l_asset_label = "l_asset_label";
   static const l_asset_name = "l_asset_name";
@@ -68,12 +69,15 @@ abstract class FinanceLocales {
   static const l_save_asset = "l_save_asset";
   static const l_update_asset = "l_update_asset";
   static const l_delete_asset = "l_delete_asset";
+  static const l_transfer_asset = "l_transfer_asset";
+
   static const l_belong_account = "l_belong_account";
   static const l_select_account = "l_select_account";
   static const l_remaining_characters = "l_remaining_characters";
   static const l_asset_detail = "l_asset_detail";
   static const l_enable_counting = "l_enable_counting";
 
+  static const l_name_label = "l_name_label";
   static const l_amount_label = "l_amount_label";
   static const l_bank_type = "l_bank_type";
   static const l_appearance = "l_appearance";

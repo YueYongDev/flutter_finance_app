@@ -6,8 +6,8 @@ import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/repository/asset_operation_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
+import 'package:flutter_finance_app/repository/operation_log_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +20,7 @@ class AssetController extends GetxController {
       : null;
 
   final assetRepository = AssetRepository();
-  final assetOperationRepository = AssetOperationRepository();
+  final operationLogRepository = OperationLogRepository();
   var assets = <Asset>[].obs;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
@@ -58,9 +58,9 @@ class AssetController extends GetxController {
     // Clear input fields
     nameController.clear();
     amountController.clear();
-    selectedCurrency = '';
+    selectedCurrency = "CNY";
     selectedAccount = null;
-    enableCounting = false;
+    enableCounting = true;
     selectedIcon = null; // 清除图标选择
   }
 
@@ -104,13 +104,8 @@ class AssetController extends GetxController {
       );
 
       await assetRepository.createAsset(newAsset);
-      await assetOperationRepository.recordAssetOperation(
-        newAsset.accountId,
-        newAsset.id!,
-        newAsset.amount,
-        'Asset created',
-      );
 
+      await operationLogRepository.recordAssetCreate(newAsset);
       await accountPageLogic.refreshAccount();
       if (accountDetailController != null) {
         accountDetailController!.refreshCardData();
@@ -133,14 +128,9 @@ class AssetController extends GetxController {
       asset.enableCounting = enableCounting;
       asset.updatedAt = DateTime.now().millisecondsSinceEpoch;
       asset.extra = {'icon': selectedIcon}; // 更新 extra 字段中的图标
-      final amountChange = asset.amount - double.parse(amountController.text);
+
       await assetRepository.updateAsset(asset);
-      await assetOperationRepository.recordAssetOperation(
-        asset.accountId,
-        asset.id!,
-        amountChange,
-        'Asset updated',
-      );
+      await operationLogRepository.recordAssetUpdate(asset);
       await accountPageLogic.refreshAccount();
 
       if (accountDetailController != null) {
@@ -156,6 +146,7 @@ class AssetController extends GetxController {
 
   Future<void> deleteAsset(Asset asset) async {
     try {
+      await operationLogRepository.recordAssetDelete(asset);
       await assetRepository.deleteAsset(asset.id!);
       await accountPageLogic.refreshAccount();
 
@@ -163,10 +154,6 @@ class AssetController extends GetxController {
         accountDetailController!.refreshCardData();
         accountDetailController!.refresh();
       }
-      Get.snackbar('Success', 'Asset deleted successfully!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white);
     } catch (e) {
       debugPrint('Error deleting asset: $e');
       Get.snackbar('Error', 'Failed to delete asset. Please try again.');

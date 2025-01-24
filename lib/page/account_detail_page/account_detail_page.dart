@@ -119,12 +119,21 @@ class AccountDetailPage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.onBlack,
         onPressed: () {
           Account account =
               accountPageState.accounts[controller.activeIndex.value];
-          Get.to(() => AccountTrendPage(account: account));
+          showCupertinoModalBottomSheet(
+            expand: true,
+            context: Get.context!,
+            enableDrag: false,
+            builder: (context) => EditAssetPage(account: account),
+          );
         },
-        child: const Icon(Icons.trending_up),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -182,19 +191,14 @@ class AccountDetailPage extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _Button(
-            label: FinanceLocales.l_add_asset.tr,
-            icon: Icons.add,
+            label: FinanceLocales.l_account_trend.tr,
+            icon: Icons.trending_up,
             onTap: () async {
-              // Open asset edit page (add new asset)
-              await showCupertinoModalBottomSheet(
-                expand: true,
-                context: Get.context!,
-                enableDrag: false,
-                builder: (context) => EditAssetPage(account: account),
-              );
-              // Clear input fields after modal is closed
-              final assetController = Get.find<AssetController>();
-              assetController.clearInputFields();
+              Get.to(() => AccountTrendPage(account: account),transition: Transition.downToUp);
+              // showCupertinoModalBottomSheet(
+              //   context: Get.context!,
+              //   builder: (context) => AccountTrendPage(account: account),
+              // );
             },
           ),
         ),

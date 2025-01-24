@@ -7,6 +7,7 @@ import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -76,11 +77,14 @@ class EditAccountPage extends StatelessWidget {
         IconButton(
             onPressed: () {
               Get.back();
-              Get.delete<AccountController>();
+              if (Get.isRegistered<AccountController>()) {
+                Get.delete<AccountController>();
+              }
             },
-            icon: const Icon(
+            icon: Icon(
               CupertinoIcons.clear_circled_solid,
               color: Colors.blue,
+              size: 24.sp,
             ))
       ],
     );
