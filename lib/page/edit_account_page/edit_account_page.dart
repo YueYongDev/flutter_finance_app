@@ -5,6 +5,7 @@ import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/helper/common_helper.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -32,15 +33,15 @@ class EditAccountPage extends StatelessWidget {
 
   String _getCardStyleDisplayName(String style) {
     switch (style) {
-      case 'PRIMARY':
+      case 'PRIMARY' || 'primary':
         return FinanceLocales.l_primary_style.tr;
-      case 'SECONDARY':
+      case 'SECONDARY' || 'secondary':
         return FinanceLocales.l_secondary_style.tr;
-      case 'ACCENT':
+      case 'ACCENT' || 'accent':
         return FinanceLocales.l_accent_style.tr;
-      case 'ON_BLACK':
+      case 'ON_BLACK' || 'onBlack':
         return FinanceLocales.l_on_black_style.tr;
-      case 'ON_WHITE':
+      case 'ON_WHITE' || 'onWhite':
         return FinanceLocales.l_on_white_style.tr;
       default:
         return style;
@@ -355,15 +356,9 @@ class EditAccountPage extends StatelessWidget {
               controller.addAccount();
             }
             Get.back();
-            Get.snackbar(
-              'Success',
-              isEditMode
-                  ? 'Account updated successfully!'
-                  : 'Account added successfully!',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.green,
-              colorText: Colors.white,
-            );
+            showSuccessTips(isEditMode
+                ? FinanceLocales.snackbar_update_account_success.tr
+                : FinanceLocales.snackbar_add_account_success.tr);
             controller.clearInputFields();
           },
           icon: const Icon(CupertinoIcons.cube, color: Colors.teal),
@@ -392,13 +387,7 @@ class EditAccountPage extends StatelessWidget {
           onPressed: () {
             controller.deleteAccount(account!.id!);
             Get.back();
-            Get.snackbar(
-              'Success',
-              'Account deleted successfully!',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
+            showSuccessTips(FinanceLocales.snackbar_delete_account_success.tr);
           },
           icon: const Icon(CupertinoIcons.trash, color: Colors.red),
           label: Text(FinanceLocales.l_delete_account.tr,
@@ -412,40 +401,6 @@ class EditAccountPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showColorPicker() {
-    showDialog(
-      context: Get.context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select a color'),
-          content: SingleChildScrollView(
-            child: BlockPicker(
-              pickerColor: Color(int.parse(controller.selectedColor)),
-              onColorChanged: (color) {
-                String colorString =
-                    color.value.toRadixString(16).padLeft(8, '0');
-                if (!colorString.startsWith('0xFF')) {
-                  colorString = '0xFF$colorString';
-                }
-                controller.selectedColor = colorString;
-                controller.update();
-              },
-              availableColors: colors,
-              layoutBuilder: pickerLayoutBuilder,
-              itemBuilder: pickerItemBuilder,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Got it'),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -476,7 +431,7 @@ class EditAccountPage extends StatelessWidget {
         color: color,
         boxShadow: [
           BoxShadow(
-              color: color.withOpacity(0.8),
+              color: color.withValues(alpha: 0.8),
               offset: const Offset(1, 2),
               blurRadius: _blurRadius)
         ],

@@ -40,6 +40,7 @@ abstract class FinanceLocales {
   static const home_data_foodImage = "home_data_foodImage";
   static const home_data_foodShare = "home_data_foodShare";
   static const home_title_welcome = "home_title_welcome";
+  static const home_subtitle_welcome = "home_subtitle_welcome";
 
   static const general_cancel = "General_cancel";
 
@@ -130,5 +131,30 @@ abstract class FinanceLocales {
   static const l_currency_hk_dollar = "l_currency_hk_dollar";
   static const l_currency_euro = "l_currency_euro";
   static const l_currency_pound = "l_currency_pound";
+
+  static const snackbar_warning = "snackbar_warning";
+  static const snackbar_success = "snackbar_success";
+  static const snackbar_error = "snackbar_error";
+
+  static const snackbar_add_account_first = "snackbar_add_account_first";
+  static const snackbar_add_account_success = "snackbar_add_account_success";
+  static const snackbar_add_account_failure = "snackbar_add_account_failure";
+  static const snackbar_update_account_success = "snackbar_update_account_success";
+  static const snackbar_update_account_failure = "snackbar_update_account_failure";
+  static const snackbar_delete_account_success="snackbar_delete_account_success";
+  static const snackbar_delete_account_failure="snackbar_delete_account_failure";
+
+  static const snackbar_add_asset_success = "snackbar_add_asset_success";
+  static const snackbar_add_asset_failure = "snackbar_add_asset_failure";
+  static const snackbar_update_asset_success = "snackbar_update_asset_success";
+  static const snackbar_update_asset_failure = "snackbar_update_asset_failure";
+  static const snackbar_delete_asset_success = "snackbar_delete_asset_success";
+  static const snackbar_delete_asset_failure = "snackbar_delete_asset_failure";
+
+  static const snackbar_transfer_asset_success = "snackbar_transfer_asset_success";
+  static const snackbar_transfer_asset_failure = "snackbar_transfer_asset_failure";
+  static const snackbar_transfer_asset_same_account = "snackbar_transfer_asset_same_account";
+  static const snackbar_transfer_asset_same_asset = "snackbar_transfer_asset_same_asset";
+
 
 }

@@ -4,6 +4,7 @@ import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_panel/account_panel_logic.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class AccountPanel extends StatelessWidget {
@@ -65,29 +66,26 @@ class AccountPanel extends StatelessWidget {
   }
 
   Widget _buildGrowthInfo() {
-    return GetBuilder<AccountPanelController>(
-      builder: (controller) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 4, bottom: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                controller.getFormattedBalanceChange(),
-                style:
-                const TextStyle(color: AppTextColors.white, fontSize: 18),
-              ),
-              const SizedBox(width: 20),
-              _GrowthIndicator(
-                percentage: controller.getFormattedPercentage(),
-                isPositive: controller.isPositiveChange.value,
-              ),
-              _buildExpandButton(controller),
-            ],
-          ),
-        );
-      }
-    );
+    return GetBuilder<AccountPanelController>(builder: (controller) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4, bottom: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              controller.getFormattedBalanceChange(),
+              style: const TextStyle(color: AppTextColors.white, fontSize: 18),
+            ),
+            const SizedBox(width: 20),
+            _GrowthIndicator(
+              percentage: controller.getFormattedPercentage(),
+              isPositive: controller.isPositiveChange.value,
+            ),
+            _buildExpandButton(controller),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildExpandButton(AccountPanelController controller) {
@@ -109,21 +107,21 @@ class AccountPanel extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         child: controller.isExpanded.value
-            ? _buildChart(controller)
+            ? _buildChart()
             : const SizedBox.shrink(),
       );
     });
   }
 
-  _buildChart(AccountPanelController controller) {
-    return Obx(() => Container(
-          height: 300,
-          margin: const EdgeInsets.only(top: 10, left: 10),
-          padding: const EdgeInsets.only(right: 20),
-          child: LineChart(
-            _createChartData(controller),
-          ),
-        ));
+  _buildChart() {
+    return GetBuilder<AccountPanelController>(builder: (controller) {
+      return Container(
+        height: 280.sp,
+        margin: EdgeInsets.only(top: 10.sp, left: 10.sp),
+        padding: EdgeInsets.only(right: 20.sp),
+        child: LineChart(_createChartData(controller)),
+      );
+    });
   }
 
   LineChartData _createChartData(AccountPanelController controller) {
@@ -146,7 +144,7 @@ class AccountPanel extends StatelessWidget {
       minY: controller.minY,
       maxY: controller.maxY,
       minX: 0,
-      maxX: 8,
+      maxX: 10,
       titlesData: _createTitlesData(controller, displaySpots.length),
       borderData: _createBorderData(),
       gridData: _createGridData(),
@@ -178,14 +176,14 @@ class AccountPanel extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           getTitlesWidget: (value, meta) => Text(
-            '\$${value.toInt()}',
-            style: const TextStyle(
+            '${value.toInt()}',
+            style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 8.sp,
             ),
           ),
-          reservedSize: 46,
+          reservedSize: 22.sp,
         ),
       ),
       bottomTitles: AxisTitles(
@@ -195,17 +193,17 @@ class AccountPanel extends StatelessWidget {
             if (value.toInt() < spotsLength) {
               return Text(
                 controller.getFormattedDate(value.toInt()),
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 8.sp,
                 ),
               );
             } else {
               return const Text('xxx');
             }
           },
-          reservedSize: 22,
+          reservedSize: 22.sp,
         ),
       ),
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),

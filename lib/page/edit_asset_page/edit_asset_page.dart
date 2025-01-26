@@ -1,20 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/constant/account_card_constants.dart';
-import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
-import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/helper/common_helper.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:flutter_finance_app/page/edit_asset_page/widget/asset_amount_tile.dart';
+import 'package:flutter_finance_app/page/edit_asset_page/widget/asset_icon_tile.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:flutter_finance_app/widget/accout_select_modal.dart';
 import 'package:flutter_finance_app/widget/numeric_keyboard.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class EditAssetPage extends StatelessWidget {
@@ -113,11 +112,8 @@ class EditAssetPage extends StatelessWidget {
                   ? Text(account!.name)
                   : Text(controller.selectedAccount?.name ??
                       FinanceLocales.l_select_account.tr),
-              const Icon(
-                CupertinoIcons.chevron_right,
-                size: 20,
-                color: Colors.grey,
-              )
+              const Icon(CupertinoIcons.chevron_right,
+                  size: 20, color: Colors.grey)
             ],
           ),
           onPressed: account != null
@@ -127,13 +123,8 @@ class EditAssetPage extends StatelessWidget {
                   List<Account> fetchAllAccounts =
                       await accountPageLogic.fetchAllAccountsWithAssets();
                   if (fetchAllAccounts.isEmpty) {
-                    Get.snackbar(
-                      'Warning',
-                      'Please add an account first!',
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: Colors.orange,
-                      colorText: Colors.white,
-                    );
+                    showWarningTips(
+                        FinanceLocales.snackbar_add_account_first.tr);
                     return;
                   }
                   dynamic value = await showCupertinoModalBottomSheet(
@@ -160,87 +151,11 @@ class EditAssetPage extends StatelessWidget {
       title: Text(FinanceLocales.l_asset_detail.tr),
       tiles: [
         _buildAssetNameTile(),
-        _buildAssetAmountTile(context),
-        _buildAssetIconTile(context), // 新增图标选择组件
+        buildAssetAmountTile(context),
+        buildAssetIconTile(context), // 新增图标选择组件
         _buildAssetSwitchTile(),
       ],
     );
-  }
-
-  /// 构建资产图标选择组件
-  SettingsTile _buildAssetIconTile(BuildContext context) {
-    return SettingsTile.navigation(
-      leading: Icon(CupertinoIcons.photo, color: Colors.blue[200]),
-      title: Text(FinanceLocales.l_select_icon.tr),
-      trailing: Row(
-        children: [
-          Image.asset(
-            controller.selectedIcon != null
-                ? '${AccountCardConstants.defaultAssetIconBasePath}/${controller.selectedIcon}'
-                : AccountCardConstants.defaultAssetIcon,
-            width: 30,
-            fit: BoxFit.fitWidth,
-          ),
-          const Icon(
-            CupertinoIcons.chevron_right,
-            size: 20,
-            color: Colors.grey,
-          )
-        ],
-      ),
-      onPressed: (context) async {
-        final iconWidgets = await _buildIconList(context);
-        await showDialog(
-          context: Get.context!,
-          barrierDismissible: false,
-          builder: (BuildContext dialogContext) {
-            return AlertDialog(
-              title: const Text('选择图标'),
-              content: SizedBox(
-                width: MediaQuery.of(context).size.width * .7,
-                height: MediaQuery.of(context).size.width * .7,
-                child: GridView.count(
-                    crossAxisCount: 4,
-                    childAspectRatio: 1.0,
-                    padding: const EdgeInsets.all(8.0),
-                    mainAxisSpacing: 8.0,
-                    crossAxisSpacing: 8.0,
-                    children: iconWidgets),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('关闭'),
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                    controller.update();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  /// 构建图标列表
-  Future<List<Widget>> _buildIconList(BuildContext context) async {
-    return assetIconPathList.map((String url) {
-      return GestureDetector(
-        onTap: () {
-          controller.selectedIcon = url.split('/').last;
-          Navigator.of(context).pop();
-          controller.update();
-        },
-        child: GridTile(
-            child: Image.asset(
-          url,
-          fit: BoxFit.cover,
-          width: 12.0,
-          height: 12.0,
-        )),
-      );
-    }).toList();
   }
 
   /// 构建资产名称输入组件
@@ -272,77 +187,6 @@ class EditAssetPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// 构建资产金额输入组件
-  SettingsTile _buildAssetAmountTile(BuildContext context) {
-    return SettingsTile(
-      leading: controller.selectedCurrencyIcon,
-      title: Text(FinanceLocales.l_amount_label.tr),
-      trailing: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 100,
-            child: TextField(
-              controller: controller.amountController,
-              focusNode: controller.amountFocusNode,
-              keyboardType: TextInputType.none,
-              // Disable system keyboard
-              decoration: InputDecoration(
-                hintStyle: const TextStyle(color: Colors.grey),
-                hintText: FinanceLocales.l_amount_label.tr,
-                counterText: '',
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-              textAlign: TextAlign.right,
-              maxLength: 10,
-            ),
-          ),
-          const SizedBox(width: 1),
-          PullDownButton(
-            itemBuilder: (context) => _buildCurrencyMenu(),
-            buttonBuilder: (context, showMenu) => GestureDetector(
-              onTap: showMenu,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    controller.selectedCurrency,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 1),
-                  const Icon(
-                    CupertinoIcons.chevron_up_chevron_down,
-                    color: Colors.grey,
-                    size: 18,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 构建货币选择菜单
-  List<PullDownMenuItem> _buildCurrencyMenu() {
-    var currencyList = CurrencyType.values.map((e) => e.name).toList();
-    return List.generate(currencyList.length, (index) {
-      return PullDownMenuItem(
-        title: currencyList[index],
-        onTap: () {
-          controller.selectedCurrency = currencyList[index];
-          controller.update();
-        },
-      );
-    });
   }
 
   /// 构建是否计入统计的开关
@@ -409,8 +253,8 @@ class EditAssetPage extends StatelessWidget {
             await controller.deleteAsset(asset!);
             Get.back();
             Get.snackbar(
-              'Success',
-              'Asset deleted successfully!',
+              FinanceLocales.snackbar_success.tr,
+              FinanceLocales.snackbar_add_account_success.tr,
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.green,
               colorText: Colors.white,

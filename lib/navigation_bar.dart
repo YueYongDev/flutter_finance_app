@@ -178,11 +178,11 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
 
 List<PullDownMenuEntry> buildLeadingMenuItems(BuildContext context) {
   return [
-    PullDownMenuItem(
-      onTap: () {},
-      title: 'OpenAI',
-      icon: CupertinoIcons.lock_open,
-    ),
+    // PullDownMenuItem(
+    //   onTap: () {},
+    //   title: 'OpenAI',
+    //   icon: CupertinoIcons.lock_open,
+    // ),
     PullDownMenuItem(
       title: FinanceLocales.item_app_setting.tr,
       onTap: () async {

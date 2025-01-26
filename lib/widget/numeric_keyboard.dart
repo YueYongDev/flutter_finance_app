@@ -17,6 +17,7 @@ class NumericKeyboard extends StatefulWidget {
     this.keyBorderRadius = 10,
     this.actionKeyIconColor = Colors.white,
     this.onEnterTapped,
+    this.onBackspaceTapped, // 新增回调
     super.key,
   });
 
@@ -55,6 +56,9 @@ class NumericKeyboard extends StatefulWidget {
 
   /// Callback Function for Enter Key
   final Function()? onEnterTapped;
+
+  /// Callback Function for Backspace Key
+  final Function()? onBackspaceTapped;
 
   @override
   State<NumericKeyboard> createState() => _NumericKeyboardState();
@@ -143,6 +147,9 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
           if (widget.controller.text.isNotEmpty) {
             widget.controller.text = widget.controller.text
                 .substring(0, widget.controller.text.length - 1);
+            if (widget.onBackspaceTapped != null) {
+              widget.onBackspaceTapped!();
+            }
           }
         } else if (kKey == SpecialKey.enter) {
           if (widget.onEnterTapped != null) {
@@ -164,7 +171,11 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
             }
           }
         } else if (kKey == SpecialKey.hide) {
-          FocusScope.of(context).unfocus();
+          if (widget.onEnterTapped != null) {
+            widget.onEnterTapped!();
+          } else {
+            widget.controller.text += '\n';
+          }
         }
       },
       borderRadius: BorderRadius.circular(widget.keyBorderRadius),

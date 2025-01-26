@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/account_card_constants.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:get/get.dart';
 
 Future<dynamic> pushFadeInRoute(
   BuildContext context, {
@@ -25,5 +27,35 @@ Future<dynamic> pushFadeInRoute(
         );
       },
     ),
+  );
+}
+
+showSuccessTips(String msg) {
+  Get.snackbar(
+    FinanceLocales.snackbar_success.tr,
+    msg,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: Colors.green,
+    colorText: Colors.white,
+  );
+}
+
+showErrorTips(String msg) {
+  Get.snackbar(
+    FinanceLocales.snackbar_error.tr,
+    msg,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: Colors.red,
+    colorText: Colors.white,
+  );
+}
+
+showWarningTips(String msg) {
+  Get.snackbar(
+    FinanceLocales.snackbar_warning.tr,
+    msg,
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: Colors.orange,
+    colorText: Colors.white,
   );
 }

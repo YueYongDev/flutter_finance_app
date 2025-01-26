@@ -4,7 +4,6 @@ import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPageLogic extends GetxController {
   String selectedLanguage = FinanceInternation.localeMap[financeUI.appLocale]!;
@@ -24,10 +23,6 @@ class SettingsPageLogic extends GetxController {
     return CurrencyType.values
         .firstWhere((type) => type.name == selectedCurrency)
         .displayName;
-  }
-
-  Future<PackageInfo> getAppInfo() async {
-    return await PackageInfo.fromPlatform();
   }
 
   changeDefaultCurrency(String defaultCurrency) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
+import 'package:flutter_finance_app/page/account_page/account_panel/account_panel_logic.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/service/balance_history_service.dart';
@@ -75,6 +76,15 @@ class AccountPageLogic extends GetxController
     for (var account in list) {
       await _balanceHistoryService.checkAndRecordAccountBalance(
           account.id!, account.balance);
+    }
+
+    // 检查是否已经注册了 AccountPanelController
+    final accountPanelLogic = Get.isRegistered<AccountPanelController>()
+        ? Get.find<AccountPanelController>()
+        : null;
+    if (accountPanelLogic != null) {
+      accountPanelLogic.loadBalanceHistory();
+      accountPanelLogic.update();
     }
 
     update();

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -23,38 +25,13 @@ class NoAccountCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            height: 280,
+            height: 220.sp,
             width: double.infinity,
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage("assets/images/bg_ticket_card.png"),
-                    fit: BoxFit.fill)),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Container(
-                //   width: 76,
-                //   height: 24,
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                //   decoration: ShapeDecoration(
-                //     color: const Color(0xFF29272E),
-                //     shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(4)),
-                //   ),
-                //   child: const Text(
-                //     '07:00 PM',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 13,
-                //       fontFamily: 'Inter',
-                //       fontWeight: FontWeight.w500,
-                //       height: 0,
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+                    fit: BoxFit.cover)),
+            child: Container(),
           ),
           Container(
             padding: const EdgeInsets.all(16),
@@ -63,9 +40,9 @@ class NoAccountCard extends StatelessWidget {
               children: [
                 Text(
                   FinanceLocales.home_title_welcome.tr,
-                  style: const TextStyle(
-                    color: Color(0xFF29272E),
-                    fontSize: 24,
+                  style: TextStyle(
+                    color: AppColors.onBlack,
+                    fontSize: 22.sp,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
                     height: 0,
@@ -73,11 +50,11 @@ class NoAccountCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.',
+                Text(
+                  FinanceLocales.home_subtitle_welcome.tr,
                   style: TextStyle(
-                    color: Color(0xFF615F68),
-                    fontSize: 16,
+                    color: AppColors.grey,
+                    fontSize: 16.sp,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
                     height: 0,
@@ -85,18 +62,6 @@ class NoAccountCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                // const Text(
-                //   '2 hours 40 minutes',
-                //   style: TextStyle(
-                //     color: Color(0xFFA7A5AC),
-                //     fontSize: 14,
-                //     fontFamily: 'Inter',
-                //     fontWeight: FontWeight.w400,
-                //     height: 0,
-                //     letterSpacing: -0.56,
-                //   ),
-                // ),
-                // const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

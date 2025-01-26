@@ -6,11 +6,12 @@ import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/main.dart';
+import 'package:flutter_finance_app/page/about_page/about_page.dart';
 import 'package:flutter_finance_app/repository/balance_history_repository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -23,44 +24,32 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor =
-        CupertinoTheme.of(Get.context!).barBackgroundColor;
+    final Color backgroundColor = CupertinoTheme.of(context).barBackgroundColor;
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
+        backgroundColor: backgroundColor,
         title: Text(FinanceLocales.main_tab_setting.tr,
             style: const TextStyle(color: CupertinoColors.label, fontSize: 18)),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: GetBuilder<SettingsPageLogic>(
-          builder: (context) {
-            return ListView(
-              shrinkWrap: true,
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SettingsList(
-                  lightTheme:
-                      SettingsThemeData(settingsListBackground: backgroundColor),
-                  shrinkWrap: true,
-                  sections: [
-                    // 基础设置
-                    _buildBasicSettingsSection(),
-                    // 数据与安全设置
-                    _buildDataSecuritySection(),
-                    // 产品指南
-                    _buildProductGuideSection(),
-                    // 联系我们
-                    _buildContactUsSection(),
-                    if (kDebugMode) _buildDeveloperSection(),
-                    // 关于
-                    _buildAboutAppSection(),
-                  ],
-                ),
-              ],
-            );
-          }
-        ),
-      ),
+      body: GetBuilder<SettingsPageLogic>(builder: (context) {
+        return SettingsList(
+          lightTheme:
+              SettingsThemeData(settingsListBackground: backgroundColor),
+          shrinkWrap: true,
+          sections: [
+            // 基础设置
+            _buildBasicSettingsSection(),
+            // 数据与安全设置
+            _buildDataSecuritySection(),
+            // 产品指南
+            _buildProductGuideSection(),
+            // 联系我们
+            _buildContactUsSection(),
+            if (kDebugMode) _buildDeveloperSection(),
+          ],
+        );
+      }),
     );
   }
 
@@ -246,43 +235,19 @@ class SettingsPage extends StatelessWidget {
             // Define action on press, if required.
           },
         ),
-      ],
-    );
-  }
-
-  // 关于
-  _buildAboutAppSection() {
-    return CustomSettingsSection(
-      child: Center(
-        child: FutureBuilder<PackageInfo>(
-          future: controller.getAppInfo(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              PackageInfo packageInfo = snapshot.data!;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 应用 Logo
-                  Image.asset('assets/images/app-logo-removebg.png',
-                      width: 100, height: 100),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('App Name: ${packageInfo.appName}'),
-                      Text('Version: ${packageInfo.version}'),
-                    ],
-                  ),
-                ],
-              );
-            }
+        SettingsTile.navigation(
+          leading: const Icon(CupertinoIcons.news, color: Colors.blueGrey),
+          title: Text(FinanceLocales.setting_about_us.tr),
+          onPressed: (context) async {
+            await showCupertinoModalBottomSheet(
+              expand: true,
+              context: context,
+              enableDrag: false,
+              builder: (context) => const AboutPage(),
+            );
           },
         ),
-      ),
+      ],
     );
   }
 }

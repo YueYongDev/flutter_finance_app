@@ -4,6 +4,8 @@ import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/count_summary_type.dart';
+import 'package:flutter_finance_app/helper/common_helper.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
@@ -112,7 +114,7 @@ class AssetController extends GetxController {
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error adding asset: $e');
-      Get.snackbar('Error', 'Failed to add asset. Please try again.');
+      showErrorTips(FinanceLocales.snackbar_add_asset_failure.tr);
     }
   }
 
@@ -138,7 +140,7 @@ class AssetController extends GetxController {
       Get.back(); // Close the dialog or page
     } catch (e) {
       debugPrint('Error updating asset: $e');
-      Get.snackbar('Error', 'Failed to update asset. Please try again.');
+      showErrorTips(FinanceLocales.snackbar_update_asset_failure.tr);
     }
   }
 
@@ -154,7 +156,7 @@ class AssetController extends GetxController {
       }
     } catch (e) {
       debugPrint('Error deleting asset: $e');
-      Get.snackbar('Error', 'Failed to delete asset. Please try again.');
+      showErrorTips(FinanceLocales.snackbar_delete_asset_failure.tr);
     }
   }
 }

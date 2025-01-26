@@ -36,6 +36,8 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.home_data_foodImage: "Food images",
   FinanceLocales.home_data_foodShare: "Status Description",
   FinanceLocales.home_title_welcome: "Record and analyze your finance detail",
+  FinanceLocales.home_subtitle_welcome:
+      "From Tracking to Strategy: Take Charge of Your Finances",
   FinanceLocales.general_cancel: "Cancel",
   FinanceLocales.l_locale_language: "Language",
   FinanceLocales.l_account_label: "Account",
@@ -107,9 +109,31 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.onboarding_subtitle_3:
       "“Don't put all your eggs in one basket, and then watch that basket closely.”—— Warren Buffett",
 
-  FinanceLocales.l_currency_cny: "Yuan",
+  FinanceLocales.l_currency_cny: "CNY",
   FinanceLocales.l_currency_us_dollar: "USD",
   FinanceLocales.l_currency_euro: "Euro",
   FinanceLocales.l_currency_pound: "Pound",
   FinanceLocales.l_currency_hk_dollar: "HKD",
+
+  FinanceLocales.snackbar_warning: "Warning",
+  FinanceLocales.snackbar_error: "Error",
+  FinanceLocales.snackbar_success: "Success",
+  FinanceLocales.snackbar_add_account_first: "Please add an account first",
+  FinanceLocales.snackbar_add_account_success: "Account added successfully",
+  FinanceLocales.snackbar_add_asset_success: "Asset added successfully",
+  FinanceLocales.snackbar_update_asset_success: "Asset updated successfully",
+  FinanceLocales.snackbar_update_account_success:
+      "Account updated successfully",
+  FinanceLocales.snackbar_delete_account_success:
+      "Account deleted successfully",
+  FinanceLocales.snackbar_delete_asset_success: "Asset deleted successfully",
+  FinanceLocales.snackbar_add_account_failure: "Failed to add account",
+  FinanceLocales.snackbar_update_account_failure: "Failed to update account",
+  FinanceLocales.snackbar_add_asset_failure: "Failed to add asset",
+  FinanceLocales.snackbar_update_asset_failure: "Failed to update asset",
+  FinanceLocales.snackbar_delete_asset_failure: "Failed to delete asset",
+  FinanceLocales.snackbar_delete_account_failure: "Failed to delete account",
+  FinanceLocales.snackbar_transfer_asset_success:
+      "Asset transferred successfully",
+  FinanceLocales.snackbar_transfer_asset_failure: "Failed to transfer asset",
 };
