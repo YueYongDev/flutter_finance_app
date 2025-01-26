@@ -1,32 +1,26 @@
 import 'dart:math';
 
-import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/account_card_enums.dart';
+import 'package:flutter_finance_app/enum/currency_type.dart';
 
 getCurrencyIconByName(String currencyName) {
-  for (var currency in currencyList) {
-    if (currency.containsKey(currencyName)) {
-      return currency[currencyName];
+  for (var currency in CurrencyType.values) {
+    if (currency.name == currencyName) {
+      return currency.icon;
     }
   }
   return null;
 }
 
 String? getCurrencySymbolByName(String currencyName) {
-  switch (currencyName) {
-    case 'CNY':
-      return '¥';
-    case 'HKD':
-      return 'HK\$';
-    case 'USD':
-      return '\$';
-    case 'EUR':
-      return '€';
-    default:
-      return null;
+  for (var currency in CurrencyType.values) {
+    if (currency.name == currencyName) {
+      return currency.currencySymbol;
+    }
   }
+  return null;
 }
 
 CreditCardType getAccountCardType(Account account) {

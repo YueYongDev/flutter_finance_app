@@ -4,7 +4,6 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
-import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -157,22 +156,32 @@ class EditAccountPage extends StatelessWidget {
   }
 
   SettingsTile _buildCurrencySelectorTile() {
+    List<PullDownMenuItem> buildCurrencyMenu() {
+      return CurrencyType.values.map((type) {
+        return PullDownMenuItem(
+          title: type.displayName,
+          onTap: () {
+            controller.selectedCurrency = type.name;
+            controller.update();
+          },
+        );
+      }).toList();
+    }
+
     return SettingsTile(
-      title: Text(FinanceLocales.l_currency.tr),
-      leading: Icon(Icons.monetization_on, color: Colors.redAccent[100]),
+      title: Text(FinanceLocales.setting_default_currency.tr),
+      leading: const Icon(Icons.monetization_on, color: Colors.redAccent),
       trailing: PullDownButton(
-        itemBuilder: (context) => _buildCurrencyMenu(),
+        itemBuilder: (context) => buildCurrencyMenu(),
         buttonBuilder: (context, showMenu) => GestureDetector(
           onTap: showMenu,
           child: Row(
             children: [
-              Text(controller.selectedCurrency),
+              Text(controller.getCurrencyDisplayName(),
+                  style: TextStyle(fontSize: 14.sp)),
               const SizedBox(width: 3),
-              const Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey,
-                size: 18,
-              ),
+              Icon(CupertinoIcons.chevron_up_chevron_down,
+                  color: Colors.grey, size: 18.sp),
             ],
           ),
         ),
@@ -217,10 +226,10 @@ class EditAccountPage extends StatelessWidget {
               Text(_getCardStyleDisplayName(
                   controller.selectedAccountCardStyle)),
               const SizedBox(width: 3),
-              const Icon(
+              Icon(
                 CupertinoIcons.chevron_up_chevron_down,
                 color: Colors.grey,
-                size: 18,
+                size: 18.sp,
               ),
             ],
           ),

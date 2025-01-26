@@ -9,7 +9,7 @@ abstract class FinanceLocales {
   static const item_app_setting = "item_app_setting";
   static const item_add_account = "item_add_account";
   static const item_add_assets = "item_add_assets";
-  static const item_transfer = "item_transfer";
+  static const item_transfer_asset = "item_transfer_asset";
 
   static const setting_themeMode_title = "setting_themeMode_title";
   static const setting_themeMode_auto = "setting_themeMode_auto";
@@ -21,6 +21,12 @@ abstract class FinanceLocales {
   static const setting_advance = "setting_advance";
   static const setting_basic = "setting_basic";
   static const setting_product_guide = "setting_product_guide";
+  static const setting_product_docs = "setting_product_docs";
+  static const setting_about_us = "setting_about_us";
+  static const setting_contact_us = "setting_contact_us";
+  static const setting_feedback = "setting_feedback";
+  static const setting_five_star_rating = "setting_five_star_rating";
+  static const setting_share_with_friends = "setting_share_with_friends";
 
   static const home_title = "home_title";
   static const home_add_title = "home_add_title";
@@ -118,4 +124,11 @@ abstract class FinanceLocales {
 
   // 新增图标选择
   static const l_select_icon = "l_select_icon";
+
+  static const l_currency_cny = "l_currency_yuan";
+  static const l_currency_us_dollar = "l_currency_us_dollar";
+  static const l_currency_hk_dollar = "l_currency_hk_dollar";
+  static const l_currency_euro = "l_currency_euro";
+  static const l_currency_pound = "l_currency_pound";
+
 }

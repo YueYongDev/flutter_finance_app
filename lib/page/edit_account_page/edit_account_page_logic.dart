@@ -23,6 +23,12 @@ class AccountController extends GetxController {
         .displayName;
   }
 
+  String getCurrencyDisplayName() {
+    return CurrencyType.values
+        .firstWhere((type) => type.name == selectedCurrency)
+        .displayName;
+  }
+
   final accountPageLogic = Get.find<AccountPageLogic>();
 
   // 检查是否已经注册了 AccountDetailController

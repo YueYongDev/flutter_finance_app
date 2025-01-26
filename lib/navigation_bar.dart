@@ -1,19 +1,15 @@
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
-import 'package:flutter_finance_app/main.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/asset_transfer/payment_bottom_sheet.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
 import 'package:flutter_finance_app/page/settings_page/settings_page.dart';
-import 'package:flutter_finance_app/page/transfer_page/transfer_page.dart';
-import 'package:flutter_finance_app/repository/balance_history_repository.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -154,44 +150,29 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
       },
       icon: CupertinoIcons.bag_badge_plus,
     ),
-    const PullDownMenuDivider.large(),
-    PullDownMenuItem(
-      onTap: () {
-        showCupertinoModalBottomSheet(
-          expand: true,
-          context: context,
-          enableDrag: false,
-          builder: (context) => TransferPage(),
-        );
-      },
-      title: FinanceLocales.item_transfer.tr,
-      icon: CupertinoIcons.arrow_right_arrow_left_square,
-    ),
-    const PullDownMenuDivider.large(),
-    if (kDebugMode)
-      PullDownMenuItem(
-        title: "insert history mock data",
-        onTap: () {
-          BalanceHistoryRepository().insertMockData();
-        },
-        icon: CupertinoIcons.bag_badge_plus,
-      ),
-    if (kDebugMode)
-      PullDownMenuItem(
-        title: "delete history mock data",
-        onTap: () {
-          BalanceHistoryRepository().cleanupMockData();
-        },
-        icon: CupertinoIcons.bag_badge_plus,
-      ),
-    if (kDebugMode)
-      PullDownMenuItem(
-        title: "delete kFirstLaunchKey",
-        onTap: () {
-          GetStorage().remove(kFirstLaunchKey);
-        },
-        icon: CupertinoIcons.bag_badge_plus,
-      ),
+    // todo 资产转移功能先不上
+    // const PullDownMenuDivider.large(),
+    // PullDownMenuItem(
+    //   onTap: () {
+    //     showModalBottomSheet<void>(
+    //       context: context,
+    //       backgroundColor: AppColors.onBlack,
+    //       elevation: 0,
+    //       useRootNavigator: true,
+    //       isScrollControlled: true,
+    //       showDragHandle: true,
+    //       shape: const RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.only(
+    //           topRight: Radius.circular(25),
+    //           topLeft: Radius.circular(25),
+    //         ),
+    //       ),
+    //       builder: (context) => const PaymentBottomSheet(),
+    //     );
+    //   },
+    //   title: FinanceLocales.item_transfer_asset.tr,
+    //   icon: CupertinoIcons.arrow_right_arrow_left_square,
+    // ),
   ];
 }
 

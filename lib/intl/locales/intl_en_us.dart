@@ -7,7 +7,7 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.item_app_setting: "App Settings",
   FinanceLocales.item_add_account: "Add Account",
   FinanceLocales.item_add_assets: "Add Assets",
-  FinanceLocales.item_transfer: "Transfer",
+  FinanceLocales.item_transfer_asset: "Transfer",
   FinanceLocales.setting_themeMode_title: "Theme Mode",
   FinanceLocales.setting_themeMode_auto: "Auto",
   FinanceLocales.setting_themeMode_dark: "Dark",
@@ -18,6 +18,12 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.setting_advance: "Advance",
   FinanceLocales.setting_basic: "Basic",
   FinanceLocales.setting_product_guide: "Product Guide",
+  FinanceLocales.setting_product_docs: "Product Docs",
+  FinanceLocales.setting_about_us: "About Us",
+  FinanceLocales.setting_contact_us: "Contact Us",
+  FinanceLocales.setting_feedback: "Feedback",
+  FinanceLocales.setting_five_star_rating: "Five Star Rating",
+  FinanceLocales.setting_share_with_friends: "Share with Friends",
   FinanceLocales.home_title: "Account Overview",
   FinanceLocales.home_add_title: "Add Record",
   FinanceLocales.home_data_meats: "Meats",
@@ -100,4 +106,10 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.onboarding_title_3: "「Asset Management」",
   FinanceLocales.onboarding_subtitle_3:
       "“Don't put all your eggs in one basket, and then watch that basket closely.”—— Warren Buffett",
+
+  FinanceLocales.l_currency_cny: "Yuan",
+  FinanceLocales.l_currency_us_dollar: "USD",
+  FinanceLocales.l_currency_euro: "Euro",
+  FinanceLocales.l_currency_pound: "Pound",
+  FinanceLocales.l_currency_hk_dollar: "HKD",
 };

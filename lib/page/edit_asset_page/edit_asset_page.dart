@@ -4,6 +4,7 @@ import 'package:flutter_finance_app/constant/account_card_constants.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
@@ -280,6 +281,7 @@ class EditAssetPage extends StatelessWidget {
       title: Text(FinanceLocales.l_amount_label.tr),
       trailing: Row(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 100,
@@ -299,19 +301,29 @@ class EditAssetPage extends StatelessWidget {
               maxLength: 10,
             ),
           ),
-          const SizedBox(width: 3),
-          Text(
-            controller.selectedCurrency,
-            style: Theme.of(context)
-                .textTheme
-                .labelLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
+          const SizedBox(width: 1),
           PullDownButton(
             itemBuilder: (context) => _buildCurrencyMenu(),
-            buttonBuilder: (context, showMenu) => buildMenuButton(
-              showMenu,
-              icon: CupertinoIcons.chevron_up_chevron_down,
+            buttonBuilder: (context, showMenu) => GestureDetector(
+              onTap: showMenu,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    controller.selectedCurrency,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 1),
+                  const Icon(
+                    CupertinoIcons.chevron_up_chevron_down,
+                    color: Colors.grey,
+                    size: 18,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -321,14 +333,12 @@ class EditAssetPage extends StatelessWidget {
 
   /// 构建货币选择菜单
   List<PullDownMenuItem> _buildCurrencyMenu() {
-    return List.generate(currencyList.length, (i) {
-      var currency = currencyList[i].entries;
+    var currencyList = CurrencyType.values.map((e) => e.name).toList();
+    return List.generate(currencyList.length, (index) {
       return PullDownMenuItem(
-        title: currency.first.key,
-        icon: currency.first.value.icon,
+        title: currencyList[index],
         onTap: () {
-          controller.selectedCurrency = currency.first.key.toString();
-          controller.selectedCurrencyIcon = currency.first.value;
+          controller.selectedCurrency = currencyList[index];
           controller.update();
         },
       );
@@ -422,12 +432,4 @@ class EditAssetPage extends StatelessWidget {
       ),
     );
   }
-}
-
-/// 构建菜单按钮
-Widget buildMenuButton(VoidCallback showMenu, {required IconData icon}) {
-  return IconButton(
-    icon: Icon(icon, size: 20),
-    onPressed: showMenu,
-  );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/model/data.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AssetItem extends StatelessWidget {
   const AssetItem(this.assetItemData, {super.key});
@@ -14,19 +15,19 @@ class AssetItem extends StatelessWidget {
         color: AppColors.onWhite,
         borderRadius: BorderRadius.circular(12),
       ),
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.all(13.sp),
+      margin: EdgeInsets.only(bottom: 10.sp),
       child: Row(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.asset(
               assetItemData.icon,
-              width: 50,
+              width: 44,
               fit: BoxFit.fitWidth,
             ),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 12.sp),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -30,10 +30,8 @@ class AssetController extends GetxController {
   String selectedCurrency = "CNY";
   CountSummaryType selectedCountType = CountSummaryType.SummaryAccount;
   String selectedCountTypeString = 'Summary Account';
-  Icon selectedCurrencyIcon = const Icon(
-    CupertinoIcons.money_yen,
-    color: Colors.red,
-  );
+  Icon selectedCurrencyIcon =
+      const Icon(CupertinoIcons.money_yen, color: Colors.red);
   var remainingCharacters = 20.obs;
   Color remainingCharactersColor = Colors.grey;
   bool enableCounting = true;
