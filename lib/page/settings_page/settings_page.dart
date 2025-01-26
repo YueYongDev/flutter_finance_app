@@ -32,22 +32,25 @@ class SettingsPage extends StatelessWidget {
         title: Text(FinanceLocales.main_tab_setting.tr,
             style: const TextStyle(color: CupertinoColors.label, fontSize: 18)),
       ),
-      body: GetBuilder<SettingsPageLogic>(builder: (context) {
-        return SettingsList(
-          lightTheme:
-              SettingsThemeData(settingsListBackground: backgroundColor),
-          shrinkWrap: true,
-          sections: [
-            // 基础设置
-            _buildBasicSettingsSection(),
-            // 数据与安全设置
-            _buildDataSecuritySection(),
-            // 产品指南
-            _buildProductGuideSection(),
-            // 联系我们
-            _buildContactUsSection(),
-            if (kDebugMode) _buildDeveloperSection(),
-          ],
+      body: GetBuilder<SettingsPageLogic>(builder: (logic) {
+        return MediaQuery.removePadding(
+          context: context,
+          child: SettingsList(
+            lightTheme:
+                SettingsThemeData(settingsListBackground: backgroundColor),
+            shrinkWrap: true,
+            sections: [
+              // 基础设置
+              _buildBasicSettingsSection(),
+              // 数据与安全设置
+              _buildDataSecuritySection(),
+              // 产品指南
+              _buildProductGuideSection(),
+              // 联系我们
+              _buildContactUsSection(),
+              if (kDebugMode) _buildDeveloperSection(),
+            ],
+          ),
         );
       }),
     );

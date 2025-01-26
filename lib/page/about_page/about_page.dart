@@ -12,6 +12,7 @@ class AboutPage extends StatelessWidget {
     final Color backgroundColor = CupertinoTheme.of(context).barBackgroundColor;
     return Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: backgroundColor,
           title: const Text('About'),
         ),

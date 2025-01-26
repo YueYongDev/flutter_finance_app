@@ -1,21 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_finance_app/entity/asset.dart';
-import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
-import 'package:get/get.dart';
-import 'package:flutter_finance_app/entity/account.dart';
-import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart';
-import 'package:flutter_finance_app/widget/transaction_item.dart';
-import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
-import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
 import 'package:flutter_finance_app/constant/account_card_constants.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
-import 'package:flutter_finance_app/widget/account_card.dart';
+import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
+import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
+import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
-import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:flutter_finance_app/widget/account_card.dart';
+import 'package:flutter_finance_app/widget/transaction_item.dart';
+import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
-import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:pull_down_button/pull_down_button.dart';
 
 class AccountDetailPage extends StatelessWidget {
   final int initialIndex;
@@ -45,96 +46,115 @@ class AccountDetailPage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.black,
-        title: Obx(() => Text(
-              accountPageState.accounts[controller.activeIndex.value].name,
-              style: const TextStyle(color: Colors.white),
-            )),
-        leading: IconButton(
-          onPressed: () {
-            Get.delete<AccountDetailController>();
-            Navigator.of(context).pop(controller.activeIndex.value);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
+        backgroundColor: AppColors.white,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: AppColors.black,
+          title: Obx(() => Text(
+                accountPageState.accounts[controller.activeIndex.value].name,
+                style: const TextStyle(color: Colors.white),
+              )),
+          leading: IconButton(
+            onPressed: () {
+              Get.delete<AccountDetailController>();
+              Navigator.of(context).pop(controller.activeIndex.value);
+            },
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           ),
+          actions: [
+            buildActionMenu(
+                accountPageState.accounts[controller.activeIndex.value])
+          ],
         ),
-      ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 20),
-            decoration: const BoxDecoration(
-              color: AppColors.black,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(bottom: 20),
+              decoration: const BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
               ),
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: Column(
-              children: [
-                _buildCardsPageView(),
-                SlideTransition(
-                  position: slideAnimation,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
-                      children: [
-                        Obx(() => PageIndicator(
-                              length: controller.cards.length,
-                              activeIndex: controller.activeIndex.value,
-                              activeColor: controller
-                                  .cards[controller.activeIndex.value]
-                                  .style
-                                  .color,
-                            )),
-                        Obx(() => _buildButtons(accountPageState
-                            .accounts[controller.activeIndex.value])),
-                      ],
+              clipBehavior: Clip.hardEdge,
+              child: Column(
+                children: [
+                  _buildCardsPageView(),
+                  SlideTransition(
+                    position: slideAnimation,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        children: [
+                          Obx(() => PageIndicator(
+                                length: controller.cards.length,
+                                activeIndex: controller.activeIndex.value,
+                                activeColor: controller
+                                    .cards[controller.activeIndex.value]
+                                    .style
+                                    .color,
+                              )),
+                          Obx(() => _buildButtons(accountPageState
+                              .accounts[controller.activeIndex.value])),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: SlideTransition(
-                position: slideAnimation,
-                child: GetBuilder<AccountDetailController>(
-                  builder: (controller) {
-                    return _buildLatestTransactionsSection(
-                      accountPageState.accounts[controller.activeIndex.value],
-                    );
-                  },
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: SlideTransition(
+                  position: slideAnimation,
+                  child: GetBuilder<AccountDetailController>(
+                    builder: (controller) {
+                      return _buildLatestTransactionsSection(
+                        accountPageState.accounts[controller.activeIndex.value],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.onBlack,
-        onPressed: () {
-          Account account =
-              accountPageState.accounts[controller.activeIndex.value];
-          showCupertinoModalBottomSheet(
-            expand: true,
-            context: Get.context!,
-            enableDrag: false,
-            builder: (context) => EditAssetPage(account: account),
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+          ],
+        ));
+  }
+
+  Widget buildActionMenu(Account account) {
+    List<PullDownMenuEntry> buildLeadingMenuItems(BuildContext context) {
+      return [
+        PullDownMenuItem(
+            title: FinanceLocales.l_edit_account.tr,
+            onTap: () async {
+              showCupertinoModalBottomSheet(
+                context: Get.context!,
+                builder: (context) => EditAccountPage(account: account),
+              );
+            },
+            icon: Icons.edit),
+      ];
+    }
+
+    Widget buildMenuButton(VoidCallback showMenu, {required IconData icon}) {
+      return CupertinoButton(
+        onPressed: showMenu,
+        padding: EdgeInsets.zero,
+        child: Icon(icon, size: 24, color: Colors.white),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PullDownButton(
+          itemBuilder: (context) => buildLeadingMenuItems(context),
+          buttonBuilder: (context, showMenu) =>
+              buildMenuButton(showMenu, icon: CupertinoIcons.ellipsis),
         ),
-      ),
+      ],
     );
   }
 
@@ -178,27 +198,26 @@ class AccountDetailPage extends StatelessWidget {
       children: [
         Expanded(
           child: _Button(
-            label: FinanceLocales.l_edit_account.tr,
-            icon: Icons.edit,
-            onTap: () {
-              showCupertinoModalBottomSheet(
-                context: Get.context!,
-                builder: (context) => EditAccountPage(account: account),
-              );
+            label: FinanceLocales.l_account_trend.tr,
+            icon: Icons.trending_up,
+            onTap: () async {
+              Get.to(() => AccountTrendPage(account: account),
+                  transition: Transition.downToUp);
             },
           ),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: _Button(
-            label: FinanceLocales.l_account_trend.tr,
-            icon: Icons.trending_up,
-            onTap: () async {
-              Get.to(() => AccountTrendPage(account: account),transition: Transition.downToUp);
-              // showCupertinoModalBottomSheet(
-              //   context: Get.context!,
-              //   builder: (context) => AccountTrendPage(account: account),
-              // );
+            label: FinanceLocales.l_add_asset.tr,
+            icon: Icons.add,
+            onTap: () {
+              showCupertinoModalBottomSheet(
+                expand: true,
+                context: Get.context!,
+                enableDrag: false,
+                builder: (context) => EditAssetPage(account: account),
+              );
             },
           ),
         ),

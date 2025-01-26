@@ -27,6 +27,28 @@ CupertinoSliverNavigationBar buildNavigationBar() {
 }
 
 Widget buildLeadingMenu() {
+  List<PullDownMenuEntry> buildLeadingMenuItems(BuildContext context) {
+    return [
+      // PullDownMenuItem(
+      //   onTap: () {},
+      //   title: 'OpenAI',
+      //   icon: CupertinoIcons.lock_open,
+      // ),
+      PullDownMenuItem(
+        title: FinanceLocales.item_app_setting.tr,
+        onTap: () async {
+          await showCupertinoModalBottomSheet(
+            expand: true,
+            context: context,
+            enableDrag: false,
+            builder: (context) => SettingsPage(),
+          );
+        },
+        icon: CupertinoIcons.settings,
+      ),
+    ];
+  }
+
   return Row(
     mainAxisSize: MainAxisSize.min,
     children: [
@@ -173,28 +195,6 @@ List<PullDownMenuEntry> buildAddMenuItems(BuildContext context) {
     //   title: FinanceLocales.item_transfer_asset.tr,
     //   icon: CupertinoIcons.arrow_right_arrow_left_square,
     // ),
-  ];
-}
-
-List<PullDownMenuEntry> buildLeadingMenuItems(BuildContext context) {
-  return [
-    // PullDownMenuItem(
-    //   onTap: () {},
-    //   title: 'OpenAI',
-    //   icon: CupertinoIcons.lock_open,
-    // ),
-    PullDownMenuItem(
-      title: FinanceLocales.item_app_setting.tr,
-      onTap: () async {
-        await showCupertinoModalBottomSheet(
-          expand: true,
-          context: context,
-          enableDrag: false,
-          builder: (context) => SettingsPage(),
-        );
-      },
-      icon: CupertinoIcons.settings,
-    ),
   ];
 }
 

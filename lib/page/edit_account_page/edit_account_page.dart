@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
@@ -83,7 +82,7 @@ class EditAccountPage extends StatelessWidget {
             },
             icon: Icon(
               CupertinoIcons.clear_circled_solid,
-              color: Colors.blue,
+              color: Colors.blue[200],
               size: 24.sp,
             ))
       ],

@@ -63,7 +63,7 @@ class EditAssetPage extends StatelessWidget {
               },
               icon: Icon(
                 CupertinoIcons.clear_circled_solid,
-                color: Colors.blue,
+                color: Colors.blue[200],
                 size: 24.sp,
               ))
         ],
