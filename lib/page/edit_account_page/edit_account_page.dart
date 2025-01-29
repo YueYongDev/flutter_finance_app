@@ -6,8 +6,10 @@ import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/helper/common_helper.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
+import 'package:flutter_finance_app/page/card_style_preview_page/card_style_preview_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -65,11 +67,12 @@ class EditAccountPage extends StatelessWidget {
 
   _buildNavigationBar(BuildContext context) {
     return AppBar(
+      scrolledUnderElevation: 0,
       title: Text(
         isEditMode
             ? FinanceLocales.l_edit_account.tr
             : FinanceLocales.l_add_account.tr,
-        style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
+        style: TextStyle(color: CupertinoColors.label, fontSize: 14.sp),
       ),
       leading: Container(),
       actions: [
@@ -214,27 +217,25 @@ class EditAccountPage extends StatelessWidget {
   }
 
   SettingsTile _buildAccountCardStyleSelectorTile() {
-    return SettingsTile(
+    return SettingsTile.navigation(
       title: Text(FinanceLocales.l_card_style.tr),
       leading: const Icon(CupertinoIcons.creditcard, color: Colors.blueAccent),
-      trailing: PullDownButton(
-        itemBuilder: (context) => _buildAccountCardStyleMenu(),
-        buttonBuilder: (context, showMenu) => GestureDetector(
-          onTap: showMenu,
-          child: Row(
-            children: [
-              Text(_getCardStyleDisplayName(
-                  controller.selectedAccountCardStyle)),
-              const SizedBox(width: 3),
-              Icon(
-                CupertinoIcons.chevron_up_chevron_down,
-                color: Colors.grey,
-                size: 18.sp,
-              ),
-            ],
-          ),
-        ),
+      trailing: Row(
+        children: [
+          Text(_getCardStyleDisplayName(controller.selectedAccountCardStyle)),
+          Icon(CupertinoIcons.chevron_right, size: 16.w, color: Colors.grey)
+        ],
       ),
+      onPressed: (BuildContext context) async {
+        dynamic value = await showCupertinoModalBottomSheet(
+          expand: true,
+          enableDrag: false,
+          context: Get.context!,
+          backgroundColor: Colors.transparent,
+          builder: (context) => CardStylePreviewPage(),
+        );
+        debugPrint('value: $value');
+      },
     );
   }
 
@@ -264,59 +265,6 @@ class EditAccountPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<PullDownMenuItem> _buildCurrencyMenu() {
-    var currencyList = CurrencyType.values.map((e) => e.name).toList();
-    return List.generate(currencyList.length, (index) {
-      return PullDownMenuItem(
-        title: currencyList[index],
-        onTap: () {
-          controller.selectedCurrency = currencyList[index];
-          controller.update();
-        },
-      );
-    });
-  }
-
-  List<PullDownMenuItem> _buildAccountCardStyleMenu() {
-    return [
-      PullDownMenuItem(
-        title: FinanceLocales.l_primary_style.tr,
-        onTap: () {
-          controller.selectedAccountCardStyle = 'PRIMARY';
-          controller.update();
-        },
-      ),
-      PullDownMenuItem(
-        title: FinanceLocales.l_secondary_style.tr,
-        onTap: () {
-          controller.selectedAccountCardStyle = 'SECONDARY';
-          controller.update();
-        },
-      ),
-      PullDownMenuItem(
-        title: FinanceLocales.l_accent_style.tr,
-        onTap: () {
-          controller.selectedAccountCardStyle = 'ACCENT';
-          controller.update();
-        },
-      ),
-      PullDownMenuItem(
-        title: FinanceLocales.l_on_black_style.tr,
-        onTap: () {
-          controller.selectedAccountCardStyle = 'ON_BLACK';
-          controller.update();
-        },
-      ),
-      PullDownMenuItem(
-        title: FinanceLocales.l_on_white_style.tr,
-        onTap: () {
-          controller.selectedAccountCardStyle = 'ON_WHITE';
-          controller.update();
-        },
-      ),
-    ];
   }
 
   List<PullDownMenuItem> _buildAccountTypeMenu() {

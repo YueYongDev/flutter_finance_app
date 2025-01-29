@@ -46,11 +46,12 @@ class EditAssetPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text(
           isEditMode
               ? FinanceLocales.l_edit_asset.tr
               : FinanceLocales.l_add_asset.tr,
-          style: const TextStyle(color: CupertinoColors.label, fontSize: 18),
+          style: TextStyle(color: CupertinoColors.label, fontSize: 14.sp),
         ),
         leading: Container(),
         actions: [
@@ -112,8 +113,7 @@ class EditAssetPage extends StatelessWidget {
                   ? Text(account!.name)
                   : Text(controller.selectedAccount?.name ??
                       FinanceLocales.l_select_account.tr),
-              const Icon(CupertinoIcons.chevron_right,
-                  size: 20, color: Colors.grey)
+              Icon(CupertinoIcons.chevron_right, size: 16.w, color: Colors.grey)
             ],
           ),
           onPressed: account != null

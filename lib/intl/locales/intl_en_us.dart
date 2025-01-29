@@ -39,6 +39,7 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.home_subtitle_welcome:
       "From Tracking to Strategy: Take Charge of Your Finances",
   FinanceLocales.general_cancel: "Cancel",
+  FinanceLocales.title_card_style_preview: "Card Style Preview",
   FinanceLocales.l_locale_language: "Language",
   FinanceLocales.l_account_label: "Account",
   FinanceLocales.l_account_name: "Account Name",

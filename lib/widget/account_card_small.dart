@@ -33,12 +33,12 @@ class AccountCardSmall extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: .2),
-            blurRadius: 2,
+            blurRadius: 2.r,
           ),
         ],
         image: DecorationImage(
           image: AssetImage(
-            'assets/images/${isFront ? data.style.frontBg : data.style.backBg}',
+            'assets/images/card_style/${isFront ? data.style.frontBg : data.style.backBg}',
           ),
           fit: BoxFit.cover,
         ),
@@ -62,51 +62,42 @@ class _AccountCardSmallFront extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  data.name,
-                  style: TextStyle(
-                    color: data.style.textColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Image(
-                  image: AssetImage('assets/icons/bank/${data.type.name}.png'),
-                  width: 38.w,
-                  fit: BoxFit.cover,
-                  color: data.style.textColor,
-                ),
-              ],
-            ),
-          ),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.balance,
-                      style: TextStyle(
-                        color: data.style.textColor,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      "${FinanceLocales.l_last_update.tr}:${TimelineUtil.format(data.lastUpdate)}",
-                      style: TextStyle(
-                          color: data.style.textColor, fontSize: 10.sp),
-                    ),
-                  ],
+              Text(
+                data.name,
+                style: TextStyle(
+                  color: data.style.textColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
                 ),
+              ),
+              SizedBox(width: 8.w),
+              Image(
+                image: AssetImage('assets/icons/bank/${data.type.name}.png'),
+                width: 32.w,
+                fit: BoxFit.cover,
+                color: data.style.textColor,
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data.balance,
+                style: TextStyle(
+                  color: data.style.textColor,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                "${FinanceLocales.l_last_update.tr}:${TimelineUtil.format(data.lastUpdate)}",
+                style: TextStyle(
+                    color: data.style.textColor, fontSize: 10.sp),
               ),
             ],
           ),

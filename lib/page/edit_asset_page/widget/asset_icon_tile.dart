@@ -4,6 +4,7 @@ import 'package:flutter_finance_app/constant/account_card_constants.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page_logic.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -61,8 +62,8 @@ SettingsTile buildAssetIconTile(BuildContext context) {
                   crossAxisCount: 4,
                   childAspectRatio: 1.0,
                   padding: const EdgeInsets.all(8.0),
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 20.w,
+                  crossAxisSpacing: 20.h,
                   children: iconWidgets),
             ),
             actions: <Widget>[

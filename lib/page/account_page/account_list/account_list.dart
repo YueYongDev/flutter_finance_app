@@ -151,14 +151,14 @@ class AccountListWidget extends StatelessWidget {
         builder: (controller) {
           List<Account> accounts = controller.state.accounts;
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.w),
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // Number of columns
                 crossAxisSpacing: 15.w,
-                mainAxisSpacing: 20.h,
+                mainAxisSpacing: 15.h,
                 childAspectRatio:
                     cardWidth / 300.h, // Adjust the aspect ratio as needed
               ),

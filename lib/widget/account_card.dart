@@ -38,7 +38,7 @@ class AccountCard extends StatelessWidget {
         ],
         image: DecorationImage(
           image: AssetImage(
-            'assets/images/${isFront ? data.style.frontBg : data.style.backBg}',
+            'assets/images/card_style/${isFront ? data.style.frontBg : data.style.backBg}',
           ),
           fit: BoxFit.cover,
         ),

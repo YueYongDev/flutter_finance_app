@@ -42,6 +42,7 @@ abstract class FinanceLocales {
   static const home_title_welcome = "home_title_welcome";
   static const home_subtitle_welcome = "home_subtitle_welcome";
 
+  static const title_card_style_preview = "title_card_style_preview";
   static const general_cancel = "General_cancel";
 
   static const bloodTime_a_k = "bloodTime_a_k";

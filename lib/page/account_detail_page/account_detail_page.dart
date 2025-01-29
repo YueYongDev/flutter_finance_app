@@ -11,7 +11,7 @@ import 'package:flutter_finance_app/page/account_page/account_page_state.dart';
 import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart';
 import 'package:flutter_finance_app/page/edit_account_page/edit_account_page.dart';
 import 'package:flutter_finance_app/page/edit_asset_page/edit_asset_page.dart';
-import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:flutter_finance_app/page/on_boarding/on_boarding_page.dart';
 import 'package:flutter_finance_app/widget/account_card.dart';
 import 'package:flutter_finance_app/widget/transaction_item.dart';
 import 'package:get/get.dart';

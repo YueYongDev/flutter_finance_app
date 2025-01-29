@@ -46,6 +46,7 @@ flutter:
     - assets/icons/bank/
     - assets/icons/choose_asset_icon/
     - assets/images/
+    - assets/images/card_style/
   fonts:
     - family: alumniSansBold
       fonts:

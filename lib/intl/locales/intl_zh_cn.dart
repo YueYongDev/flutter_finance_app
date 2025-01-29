@@ -28,6 +28,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.home_add_title: "添加日记",
   FinanceLocales.home_title_welcome: "即刻开始你的资产规划",
   FinanceLocales.home_subtitle_welcome: "从跟踪到策略：对你的财务规划了如指掌",
+  FinanceLocales.title_card_style_preview: "卡片样式预览",
   FinanceLocales.general_cancel: "取消",
   FinanceLocales.l_locale_language: "语言",
   FinanceLocales.l_account_label: "账户",

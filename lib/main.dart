@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
-import 'package:flutter_finance_app/page/on-boarding/on_boarding_page.dart';
+import 'package:flutter_finance_app/page/on_boarding/on_boarding_page.dart';
 import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart'; // 新增导入
 import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
