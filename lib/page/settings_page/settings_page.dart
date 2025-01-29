@@ -43,7 +43,7 @@ class SettingsPage extends StatelessWidget {
               // 基础设置
               _buildBasicSettingsSection(),
               // 数据与安全设置
-              _buildDataSecuritySection(),
+              // _buildDataSecuritySection(),
               // 产品指南
               _buildProductGuideSection(),
               // 联系我们
@@ -152,7 +152,7 @@ class SettingsPage extends StatelessWidget {
       title: Text(FinanceLocales.setting_data_security.tr),
       tiles: <SettingsTile>[
         SettingsTile.switchTile(
-          enabled: false,
+          enabled: true,
           onToggle: (bool value) {
             controller.toggleIcloudSync(value);
             controller.update();
