@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/entity/account.dart';
+import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/account_card_enums.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/account_detail_page/account_detail_page_logic.dart';
 import 'package:flutter_finance_app/page/account_page/account_page_logic.dart';
 import 'package:flutter_finance_app/repository/account_repository.dart';
+import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/repository/operation_log_repository.dart';
 import 'package:flutter_finance_app/util/common_utils.dart';
 import 'package:get/get.dart';
@@ -19,13 +22,14 @@ class AccountController extends GetxController {
       : null;
 
   final accountRepository = AccountRepository();
+  final assetRepository = AssetRepository();
   final operationLogRepository = OperationLogRepository();
 
   final nameController = TextEditingController();
 
   String selectedCurrency = CurrencyType.CNY.name;
   String selectedAccountType = AccountType.CASH.name;
-  String selectedAccountCardStyle = CreditCardStyle.primary.name;
+  String selectedAccountCardStyle = AccountCardStyle.primary.name;
   String selectedBankType = "";
 
   String selectedColor = "0xFFFFABAB";
@@ -135,11 +139,25 @@ class AccountController extends GetxController {
     }
   }
 
-  Future<void> deleteAccount(String accountId) async {
+  Future<bool> deleteAccount(String accountId) async {
+    List<Asset> assets =
+        await assetRepository.retrieveAssetsByAccountId(accountId);
+    if (assets.isNotEmpty) {
+      Get.defaultDialog(
+        title: FinanceLocales.cannot_delete_account_title.tr,
+        middleText: FinanceLocales.cannot_delete_account_message.tr,
+        textConfirm: FinanceLocales.ok.tr,
+        onConfirm: () {
+          Get.back();
+        },
+      );
+      return false;
+    }
+
     Account account = await accountRepository.retrieveAccount(accountId);
     await operationLogRepository.recordAccountDelete(account);
-
     await accountRepository.deleteAccount(accountId);
     await accountPageLogic.refreshAccount();
+    return true;
   }
 }

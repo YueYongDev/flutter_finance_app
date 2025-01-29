@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/enum/account_asset_type.dart';
 import 'package:flutter_finance_app/enum/account_card_enums.dart';
@@ -40,18 +41,12 @@ CreditCardType getAccountCardType(Account account) {
   return CreditCardType.visa;
 }
 
-CreditCardStyle? getCardStyleByName(String cardStyle) {
-  switch (cardStyle) {
-    case 'PRIMARY':
-      return CreditCardStyle.primary;
-    case 'SECONDARY':
-      return CreditCardStyle.secondary;
-    case 'ACCENT':
-      return CreditCardStyle.accent;
-    case 'ON_BLACK':
-      return CreditCardStyle.onBlack;
-    case 'ON_WHITE':
-      return CreditCardStyle.onWhite;
+
+AccountCardStyle? getCardStyleByName(String cardStyle) {
+  for (var style in AccountCardStyle.values) {
+    if (style.name== cardStyle) {
+      return style;
+    }
   }
   return null;
 }

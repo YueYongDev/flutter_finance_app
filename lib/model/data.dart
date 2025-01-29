@@ -9,7 +9,7 @@ class AccountCardData {
     required this.name,
     required this.type,
     this.number = '1234567812345678',
-    this.style = CreditCardStyle.primary,
+    this.style = AccountCardStyle.primary,
     this.balance = '0.00',
     this.lastUpdate = 0,
   });
@@ -17,7 +17,7 @@ class AccountCardData {
   final String id;
   final String name;
   final String number;
-  final CreditCardStyle style;
+  final AccountCardStyle style;
   final CreditCardType type;
   final String balance;
   final int lastUpdate;
@@ -72,7 +72,7 @@ List<AccountCardData> generateAccountCardData(List<Account> accounts) {
         name: account.name,
         number: account.id!,
         style: getCardStyleByName(account.extra['cardStyle'] ?? 'primary') ??
-            CreditCardStyle.primary,
+            AccountCardStyle.primary,
         lastUpdate: account.updatedAt,
         balance:
             "${getCurrencySymbolByName(account.currency)} ${account.balance.toStringAsFixed(2)}");

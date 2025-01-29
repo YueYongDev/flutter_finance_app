@@ -31,7 +31,7 @@ class CardStylePreviewPage extends StatelessWidget {
           type: CreditCardType.visa,
           balance: "¥ 1234.56",
           style: getCardStyleByName(controller.selectedAccountCardStyle) ??
-              CreditCardStyle.primary,
+              AccountCardStyle.primary,
         );
 
         return Column(
@@ -49,54 +49,20 @@ class CardStylePreviewPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView(
-                children: [
-                  RadioListTile<String>(
-                    title: Text(FinanceLocales.l_primary_style.tr),
-                    value: 'PRIMARY',
+              child: ListView.builder(
+                itemCount: AccountCardStyle.values.length,
+                itemBuilder: (context, index) {
+                  final style = AccountCardStyle.values[index];
+                  return RadioListTile<String>(
+                    title: Text(style.displayName),
+                    value: style.name,
                     groupValue: controller.selectedAccountCardStyle,
                     onChanged: (value) {
                       controller.selectedAccountCardStyle = value!;
                       controller.update();
                     },
-                  ),
-                  RadioListTile<String>(
-                    title: Text(FinanceLocales.l_secondary_style.tr),
-                    value: 'SECONDARY',
-                    groupValue: controller.selectedAccountCardStyle,
-                    onChanged: (value) {
-                      controller.selectedAccountCardStyle = value!;
-                      controller.update();
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: Text(FinanceLocales.l_accent_style.tr),
-                    value: 'ACCENT',
-                    groupValue: controller.selectedAccountCardStyle,
-                    onChanged: (value) {
-                      controller.selectedAccountCardStyle = value!;
-                      controller.update();
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: Text(FinanceLocales.l_on_black_style.tr),
-                    value: 'ON_BLACK',
-                    groupValue: controller.selectedAccountCardStyle,
-                    onChanged: (value) {
-                      controller.selectedAccountCardStyle = value!;
-                      controller.update();
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: Text(FinanceLocales.l_on_white_style.tr),
-                    value: 'ON_WHITE',
-                    groupValue: controller.selectedAccountCardStyle,
-                    onChanged: (value) {
-                      controller.selectedAccountCardStyle = value!;
-                      controller.update();
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],

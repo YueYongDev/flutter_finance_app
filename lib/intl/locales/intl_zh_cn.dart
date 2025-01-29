@@ -83,11 +83,16 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.bank_type_unionpay: "银联",
 
   // Card style translations
-  FinanceLocales.l_primary_style: "主色",
-  FinanceLocales.l_secondary_style: "辅色",
-  FinanceLocales.l_accent_style: "强调色",
-  FinanceLocales.l_on_black_style: "黑底",
-  FinanceLocales.l_on_white_style: "白底",
+  FinanceLocales.l_primary_style: "希腊蓝",
+  FinanceLocales.l_secondary_style: "柠檬黄",
+  FinanceLocales.l_accent_style: "石竹粉",
+  FinanceLocales.l_on_black_style: "暗夜黑",
+  FinanceLocales.l_on_white_style: "雪山白",
+  FinanceLocales.l_light_coral_style: "浅珊瑚",
+  FinanceLocales.l_plum_style: "梅子紫",
+  FinanceLocales.l_light_salmon_style: "浅鲑鱼",
+  FinanceLocales.l_light_sky_blue_style: "浅天蓝",
+  FinanceLocales.l_sea_green_style: "海洋绿",
 
   // Onboarding translations
   FinanceLocales.onboarding_finance_app: "「财务自由」",
@@ -121,4 +126,8 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.snackbar_delete_asset_failure: "资产删除失败",
   FinanceLocales.snackbar_transfer_asset_success: "资产转移成功",
   FinanceLocales.snackbar_transfer_asset_failure: "资产转移失败",
+
+  FinanceLocales.cannot_delete_account_title: "无法删除账户",
+  FinanceLocales.cannot_delete_account_message: "该账户有相关联的资产。请先删除所有资产，然后再删除该账户。",
+  FinanceLocales.ok: "确定",
 };

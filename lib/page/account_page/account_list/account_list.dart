@@ -11,6 +11,7 @@ import 'package:flutter_finance_app/widget/account_card_small.dart';
 import 'package:flutter_finance_app/widget/no_account_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 import 'account_list_logic.dart';
 
@@ -142,105 +143,101 @@ class AccountListWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountCardGrid() {
+Widget _buildAccountCardGrid() {
     final screenSize = MediaQuery.of(Get.context!).size;
     final cardHeight = screenSize.width * 0.75;
     final cardWidth = cardHeight * accountCardSmallAspectRatio;
-    return SingleChildScrollView(
-      child: GetBuilder<AccountPageLogic>(
-        builder: (controller) {
-          List<Account> accounts = controller.state.accounts;
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of columns
-                crossAxisSpacing: 15.w,
-                mainAxisSpacing: 15.h,
-                childAspectRatio:
-                    cardWidth / 300.h, // Adjust the aspect ratio as needed
-              ),
-              itemCount: accounts.length,
-              itemBuilder: (context, index) {
-                Account account = accounts[index];
-                return GestureDetector(
-                  onTap: () {
-                    debugPrint(
-                        'onTap|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
-                    toAccountDetailPage(account, index);
-                  },
-                  child: Hero(
-                    tag: 'card_${accounts[index].id}',
-                    child: AccountCardSmall(
-                      width: cardWidth,
-                      data: generateAccountCardData(accounts)[index],
-                      isFront: true,
-                    ),
-                    flightShuttleBuilder: (
-                      BuildContext context,
-                      Animation<double> animation,
-                      _,
-                      __,
-                      ___,
-                    ) {
-                      final rotationAnimation =
-                          Tween<double>(begin: -pi, end: pi).animate(
-                        CurvedAnimation(
-                          parent: animation,
+    return GetBuilder<AccountPageLogic>(
+      builder: (controller) {
+        List<Account> accounts = controller.state.accounts;
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+          child: ReorderableGridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Number of columns
+              crossAxisSpacing: 15.w,
+              mainAxisSpacing: 15.h,
+              childAspectRatio: cardWidth / 300.h, // Adjust the aspect ratio as needed
+            ),
+            itemCount: accounts.length,
+            itemBuilder: (context, index) {
+              Account account = accounts[index];
+              return GestureDetector(
+                key: ValueKey(account.id),
+                onTap: () {
+                  debugPrint('onTap|Account: ${account.name}, index: $index,Assets: ${account.assets.length}');
+                  toAccountDetailPage(account, index);
+                },
+                child: Hero(
+                  tag: 'card_${accounts[index].id}',
+                  child: AccountCardSmall(
+                    width: cardWidth,
+                    data: generateAccountCardData(accounts)[index],
+                    isFront: true,
+                  ),
+                  flightShuttleBuilder: (
+                    BuildContext context,
+                    Animation<double> animation,
+                    _,
+                    __,
+                    ___,
+                  ) {
+                    final rotationAnimation = Tween<double>(begin: -pi, end: pi).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOut,
+                      ),
+                    );
+
+                    final flipAnimation = Tween<double>(begin: pi, end: pi).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: const Interval(
+                          0.3,
+                          0.5,
                           curve: Curves.easeOut,
                         ),
-                      );
+                      ),
+                    );
 
-                      final flipAnimation =
-                          Tween<double>(begin: pi, end: pi).animate(
-                        CurvedAnimation(
-                          parent: animation,
-                          curve: const Interval(
-                            0.3,
-                            0.5,
-                            curve: Curves.easeOut,
-                          ),
-                        ),
-                      );
-
-                      return Material(
-                        color: Colors.transparent,
-                        child: AnimatedBuilder(
-                          animation: animation,
-                          builder: (context, child) {
-                            return Transform(
-                              transform: Matrix4.identity()
-                                ..setEntry(3, 2, 0.001)
-                                ..rotateZ(rotationAnimation.value)
-                                ..rotateX(-flipAnimation.value),
+                    return Material(
+                      color: Colors.transparent,
+                      child: AnimatedBuilder(
+                        animation: animation,
+                        builder: (context, child) {
+                          return Transform(
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.001)
+                              ..rotateZ(rotationAnimation.value)
+                              ..rotateX(-flipAnimation.value),
+                            alignment: Alignment.center,
+                            child: Transform(
                               alignment: Alignment.center,
-                              child: Transform(
-                                alignment: Alignment.center,
-                                transform: Matrix4.rotationY(pi),
-                                child: AccountCardSmall(
-                                  width: cardWidth,
-                                  data:
-                                      generateAccountCardData(accounts)[index],
-                                  isFront: true,
-                                ),
+                              transform: Matrix4.rotationY(pi),
+                              child: AccountCardSmall(
+                                width: cardWidth,
+                                data: generateAccountCardData(accounts)[index],
+                                isFront: true,
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          );
-        },
-      ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+            onReorder: (oldIndex, newIndex) {
+              controller.updateAccountOrder(oldIndex, newIndex);
+            },
+          ),
+        );
+      },
     );
   }
-
   toAccountDetailPage(Account account, int index) {
     pushFadeInRoute(
       Get.context!,

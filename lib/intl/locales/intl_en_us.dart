@@ -92,11 +92,16 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.bank_type_unionpay: "UnionPay",
 
   // Card style translations
-  FinanceLocales.l_primary_style: "Primary",
-  FinanceLocales.l_secondary_style: "Secondary",
-  FinanceLocales.l_accent_style: "Accent",
-  FinanceLocales.l_on_black_style: "On Black",
-  FinanceLocales.l_on_white_style: "On White",
+  FinanceLocales.l_primary_style: "Greek Blue",
+  FinanceLocales.l_secondary_style: "Lemon Yellow",
+  FinanceLocales.l_accent_style: "Carnation Pink",
+  FinanceLocales.l_on_black_style: "Midnight Black",
+  FinanceLocales.l_on_white_style: "Snow White",
+  FinanceLocales.l_light_coral_style: "Light Coral",
+  FinanceLocales.l_plum_style: "Plum",
+  FinanceLocales.l_light_salmon_style: "Light Salmon",
+  FinanceLocales.l_light_sky_blue_style: "Light Sky Blue",
+  FinanceLocales.l_sea_green_style: "Sea Green",
 
   // Onboarding translations
   FinanceLocales.onboarding_finance_app: "Financial Independence",
@@ -138,4 +143,8 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.snackbar_transfer_asset_success:
       "Asset transferred successfully",
   FinanceLocales.snackbar_transfer_asset_failure: "Failed to transfer asset",
+
+  FinanceLocales.cannot_delete_account_title: "Cannot Delete Account",
+  FinanceLocales.cannot_delete_account_message: "The account has associated assets. Please delete all assets before deleting the account.",
+  FinanceLocales.ok: "OK",
 };

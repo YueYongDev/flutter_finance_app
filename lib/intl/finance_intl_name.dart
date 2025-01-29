@@ -114,6 +114,11 @@ abstract class FinanceLocales {
   static const l_accent_style = "l_accent_style";
   static const l_on_black_style = "l_on_black_style";
   static const l_on_white_style = "l_on_white_style";
+  static const l_light_coral_style = "l_light_coral_style";
+  static const l_plum_style = "l_plum_style";
+  static const l_light_salmon_style = "l_light_salmon_style";
+  static const l_light_sky_blue_style = "l_light_sky_blue_style";
+  static const l_sea_green_style = "l_sea_green_style";
 
   // Onboarding translations
   static const onboarding_finance_app = "onboarding_finance_app";
@@ -165,4 +170,8 @@ abstract class FinanceLocales {
       "snackbar_transfer_asset_same_account";
   static const snackbar_transfer_asset_same_asset =
       "snackbar_transfer_asset_same_asset";
+
+  static const cannot_delete_account_title = "cannot_delete_account_title";
+  static const cannot_delete_account_message = "cannot_delete_account_message";
+  static const ok = "ok";
 }

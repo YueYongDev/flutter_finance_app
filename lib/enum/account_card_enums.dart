@@ -23,12 +23,18 @@ enum CreditCardType {
   }
 }
 
-enum CreditCardStyle {
+enum AccountCardStyle {
   primary,
   secondary,
   accent,
   onBlack,
-  onWhite;
+  onWhite,
+  lightCoral,
+  plum,
+  lightSalmon,
+  lightSkyBlue,
+  seaGreen,
+  ;
 
   String get displayName {
     switch (this) {
@@ -42,6 +48,16 @@ enum CreditCardStyle {
         return FinanceLocales.l_on_black_style.tr;
       case onWhite:
         return FinanceLocales.l_on_white_style.tr;
+      case lightCoral:
+        return FinanceLocales.l_light_coral_style.tr;
+      case plum:
+        return FinanceLocales.l_plum_style.tr;
+      case lightSalmon:
+        return FinanceLocales.l_light_salmon_style.tr;
+      case lightSkyBlue:
+        return FinanceLocales.l_light_sky_blue_style.tr;
+      case seaGreen:
+        return FinanceLocales.l_sea_green_style.tr;
     }
   }
 
@@ -57,11 +73,21 @@ enum CreditCardStyle {
         return AppColors.onBlack;
       case onWhite:
         return AppColors.onWhite;
+      case lightCoral:
+        return AppColors.lightCoral;
+      case plum:
+        return AppColors.plum;
+      case lightSalmon:
+        return AppColors.lightSalmon;
+      case lightSkyBlue:
+        return AppColors.lightSkyBlue;
+      case seaGreen:
+        return AppColors.seaGreen;
     }
   }
 
   Color get textColor {
-    return color.computeLuminance() > 0.3 ? AppColors.black : AppColors.white;
+    return color.computeLuminance() > 0.5 ? AppColors.black : AppColors.white;
   }
 
   String get frontBg => '$name-pattern-front.png';

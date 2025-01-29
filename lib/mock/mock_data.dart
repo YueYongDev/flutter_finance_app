@@ -10,25 +10,25 @@ const mockAccountCards = [
   AccountCardData(
     id: "1",
     name: 'Bank of Commerce',
-    style: CreditCardStyle.secondary,
+    style: AccountCardStyle.secondary,
     type: CreditCardType.masterCard,
   ),
   AccountCardData(
     id: "2",
     name: 'Central Bank',
-    style: CreditCardStyle.accent,
+    style: AccountCardStyle.accent,
     type: CreditCardType.visa,
   ),
   AccountCardData(
     id: "3",
     name: 'Central Bank',
-    style: CreditCardStyle.onBlack,
+    style: AccountCardStyle.onBlack,
     type: CreditCardType.masterCard,
   ),
   AccountCardData(
     id: "4",
     name: 'Bank of Commerce',
-    style: CreditCardStyle.onWhite,
+    style: AccountCardStyle.onWhite,
     type: CreditCardType.visa,
   ),
 ];

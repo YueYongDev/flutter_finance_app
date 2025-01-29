@@ -4,12 +4,18 @@ class AppColors {
   static const Color primary = Color(0xff1A77FF);
   static const Color secondary = Color(0xffFFBB05);
   static const Color accent = Color(0xffF5C3D2);
+  static const Color onBlack = Color(0xff353535);
+  static const Color onWhite = Color(0xffEBEBEB);
+  static const Color lightCoral = Color(0xffDB7093);
+  static const Color plum = Color(0xff483D8B);
+  static const Color lightSalmon = Color(0xffFFE4B5);
+  static const Color lightSkyBlue = Color(0xff4169E1);
+  static const Color seaGreen = Color(0xff2E8B57);
+
   static const Color border = Color(0xff505254);
   static const Color danger = Color(0xffF70000);
   static const Color success = Color(0xff04B616);
   static const Color black = Color(0xff1A1A1A);
-  static const Color onBlack = Color(0xff353535);
-  static const Color onWhite = Color(0xffEBEBEB);
   static const Color white = Color(0xffF2F2F2);
   static const Color grey = Color.fromRGBO(177, 179, 185, 1.0);
   static const Color whiteSecondary = Color.fromRGBO(83, 85, 155, 0.18);

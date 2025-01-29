@@ -331,10 +331,13 @@ class EditAccountPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton.icon(
-          onPressed: () {
-            controller.deleteAccount(account!.id!);
-            Get.back();
-            showSuccessTips(FinanceLocales.snackbar_delete_account_success.tr);
+          onPressed: () async {
+            bool deleteResult = await controller.deleteAccount(account!.id!);
+            if (deleteResult) {
+              Get.back();
+              showSuccessTips(
+                  FinanceLocales.snackbar_delete_account_success.tr);
+            }
           },
           icon: const Icon(CupertinoIcons.trash, color: Colors.red),
           label: Text(FinanceLocales.l_delete_account.tr,

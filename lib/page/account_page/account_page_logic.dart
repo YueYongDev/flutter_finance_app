@@ -6,12 +6,14 @@ import 'package:flutter_finance_app/repository/account_repository.dart';
 import 'package:flutter_finance_app/repository/asset_repository.dart';
 import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class AccountPageLogic extends GetxController
     with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   final AccountPageState state = AccountPageState();
   final BalanceHistoryService _balanceHistoryService = Get.find();
+  final box = GetStorage();
 
   @override
   void onInit() async {
@@ -21,6 +23,7 @@ class AccountPageLogic extends GetxController
       vsync: this,
     );
     await refreshAccount();
+    loadAccountOrder();
   }
 
   void startRotation() {
@@ -69,16 +72,16 @@ class AccountPageLogic extends GetxController
     state.netAssets =
         double.parse((state.totalAssets + state.totalDebt).toStringAsFixed(2));
 
-    // 记录总余额变化
+    // Record total balance change
     await _balanceHistoryService.checkAndRecordTotalBalance(state.netAssets);
 
-    // 记录每个账户的余额变化
+    // Record each account's balance change
     for (var account in list) {
       await _balanceHistoryService.checkAndRecordAccountBalance(
           account.id!, account.balance);
     }
 
-    // 检查是否已经注册了 AccountPanelController
+    // Check if AccountPanelController is registered
     final accountPanelLogic = Get.isRegistered<AccountPanelController>()
         ? Get.find<AccountPanelController>()
         : null;
@@ -105,5 +108,39 @@ class AccountPageLogic extends GetxController
           "${account.name} has ${account.assets.length} assets with a total balance of ${account.balance}");
     }
     return accounts;
+  }
+
+  void loadAccountOrder() {
+    List<dynamic>? savedOrderDynamic = box.read<List<dynamic>>('accountOrder');
+    List<String> savedOrder = savedOrderDynamic?.map((e) => e as String).toList() ?? [];
+    if (savedOrder.isNotEmpty) {
+      state.accounts.sort((a, b) =>
+          savedOrder.indexOf(a.id!).compareTo(savedOrder.indexOf(b.id!)));
+    }
+  }
+
+  void saveAccountOrder() {
+    List<String> accountOrder =
+        state.accounts.map((account) => account.id!).toList();
+    box.write('accountOrder', accountOrder);
+  }
+
+  void updateAccountOrder(int oldIndex, int newIndex) {
+    debugPrint(
+        "oldIndex: $oldIndex, newIndex: $newIndex, accounts: ${state.accounts}");
+    if (state.accounts.isEmpty ||
+        oldIndex < 0 ||
+        oldIndex >= state.accounts.length ||
+        newIndex < 0 ||
+        newIndex >= state.accounts.length) {
+      return;
+    }
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final Account account = state.accounts.removeAt(oldIndex);
+    state.accounts.insert(newIndex, account);
+    saveAccountOrder();
+    update();
   }
 }
