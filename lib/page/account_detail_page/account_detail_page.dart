@@ -165,7 +165,7 @@ class AccountDetailPage extends StatelessWidget {
 
     return GetBuilder<AccountDetailController>(builder: (controller) {
       return SizedBox(
-        height: cardWidth / creditCardAspectRatio,
+        height: cardWidth / accountCardAspectRatio,
         child: PageView.builder(
           controller: controller.pageController,
           itemCount: accountPageState.accounts.length,

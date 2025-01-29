@@ -21,7 +21,7 @@ class AccountPanel extends StatelessWidget {
       builder: (logic) {
         return Container(
           width: size.width,
-          constraints: BoxConstraints(minHeight: size.height * .28),
+          constraints: BoxConstraints(minHeight: size.height * .20.h),
           decoration: const BoxDecoration(
             color: AppColors.blueSecondary,
             borderRadius: BorderRadius.only(
@@ -30,12 +30,11 @@ class AccountPanel extends StatelessWidget {
             ),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildTopSection(),
-              _buildChartSection(),
               _buildBottomSection(logic),
-              const SizedBox(height: 20),
+              _buildChartSection(),
+              // const SizedBox(height: 20),
             ],
           ),
         );
@@ -117,8 +116,8 @@ class AccountPanel extends StatelessWidget {
     return GetBuilder<AccountPanelController>(builder: (controller) {
       return Container(
         height: 280.sp,
-        margin: EdgeInsets.only(top: 10.sp, left: 10.sp),
-        padding: EdgeInsets.only(right: 20.sp),
+        margin: EdgeInsets.only(top: 10.h, left: 10.h),
+        padding: EdgeInsets.only(right: 20.w),
         child: LineChart(_createChartData(controller)),
       );
     });

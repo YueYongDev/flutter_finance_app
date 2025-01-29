@@ -1,21 +1,21 @@
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_finance_app/enum/font_family.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/model/data.dart';
-import 'package:flutter_finance_app/constant/app_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-const double accountCardAspectRatio = 1.56;
+const double accountCardSmallAspectRatio = 1.5;
 
-class AccountCard extends StatelessWidget {
-  const AccountCard({
+class AccountCardSmall extends StatelessWidget {
+  const AccountCardSmall({
     required this.data,
     super.key,
     this.width,
     this.isFront = false,
-  }) : height = width != null ? width / accountCardAspectRatio : null;
+  }) : height = width != null ? width / accountCardSmallAspectRatio : null;
 
   final AccountCardData data;
   final bool isFront;
@@ -29,11 +29,11 @@ class AccountCard extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         color: data.style.color,
-        borderRadius: BorderRadius.circular(AppBorderRadius.xxl),
+        borderRadius: BorderRadius.circular(AppBorderRadius.lg),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: .5),
-            blurRadius: 15,
+            color: AppColors.black.withValues(alpha: .2),
+            blurRadius: 2,
           ),
         ],
         image: DecorationImage(
@@ -44,13 +44,13 @@ class AccountCard extends StatelessWidget {
         ),
       ),
       clipBehavior: Clip.hardEdge,
-      child: isFront ? _CreditCardFront(data) : _CreditCardBack(data),
+      child: isFront ? _AccountCardSmallFront(data) : _CreditCardBack(data),
     );
   }
 }
 
-class _CreditCardFront extends StatelessWidget {
-  const _CreditCardFront(this.data);
+class _AccountCardSmallFront extends StatelessWidget {
+  const _AccountCardSmallFront(this.data);
 
   final AccountCardData data;
 
@@ -93,37 +93,20 @@ class _CreditCardFront extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      FinanceLocales.l_balance_label.tr,
-                      style: TextStyle(color: data.style.textColor),
-                    ),
-                    Text(
                       data.balance,
                       style: TextStyle(
                         color: data.style.textColor,
-                        fontSize: 22.sp,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
-                      data.id,
-                      style:
-                          TextStyle(color: data.style.textColor, fontSize: 16),
+                      "${FinanceLocales.l_last_update.tr}:${TimelineUtil.format(data.lastUpdate)}",
+                      style: TextStyle(
+                          color: data.style.textColor, fontSize: 10.sp),
                     ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    FinanceLocales.l_last_update.tr,
-                    style: TextStyle(color: data.style.textColor, fontSize: 16),
-                  ),
-                  Text(
-                    TimelineUtil.format(data.lastUpdate),
-                    style: TextStyle(color: data.style.textColor, fontSize: 16),
-                  ),
-                ],
               ),
             ],
           ),

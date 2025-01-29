@@ -11,6 +11,7 @@ class AccountCardData {
     this.number = '1234567812345678',
     this.style = CreditCardStyle.primary,
     this.balance = '0.00',
+    this.lastUpdate = 0,
   });
 
   final String id;
@@ -19,6 +20,7 @@ class AccountCardData {
   final CreditCardStyle style;
   final CreditCardType type;
   final String balance;
+  final int lastUpdate;
 }
 
 class TabItem {
@@ -71,8 +73,10 @@ List<AccountCardData> generateAccountCardData(List<Account> accounts) {
         number: account.id!,
         style: getCardStyleByName(account.extra['cardStyle'] ?? 'primary') ??
             CreditCardStyle.primary,
+        lastUpdate: account.updatedAt,
         balance:
             "${getCurrencySymbolByName(account.currency)} ${account.balance.toStringAsFixed(2)}");
+
   }).toList();
 }
 

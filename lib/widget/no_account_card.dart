@@ -25,7 +25,7 @@ class NoAccountCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            height: 220.sp,
+            height: 220.h,
             width: double.infinity,
             decoration: const BoxDecoration(
                 image: DecorationImage(

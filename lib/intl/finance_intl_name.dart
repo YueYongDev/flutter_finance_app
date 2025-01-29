@@ -63,6 +63,7 @@ abstract class FinanceLocales {
   static const l_asset_name = "l_asset_name";
   static const l_debt_label = "l_debt_label";
   static const l_balance_label = "l_balance_label";
+  static const l_last_update = "l_last_update";
   static const l_account_balance_uppercase = "l_account_balance_uppercase";
   static const l_asset_list = "l_asset_list";
   static const l_add_account = "l_add_account";
@@ -139,10 +140,14 @@ abstract class FinanceLocales {
   static const snackbar_add_account_first = "snackbar_add_account_first";
   static const snackbar_add_account_success = "snackbar_add_account_success";
   static const snackbar_add_account_failure = "snackbar_add_account_failure";
-  static const snackbar_update_account_success = "snackbar_update_account_success";
-  static const snackbar_update_account_failure = "snackbar_update_account_failure";
-  static const snackbar_delete_account_success="snackbar_delete_account_success";
-  static const snackbar_delete_account_failure="snackbar_delete_account_failure";
+  static const snackbar_update_account_success =
+      "snackbar_update_account_success";
+  static const snackbar_update_account_failure =
+      "snackbar_update_account_failure";
+  static const snackbar_delete_account_success =
+      "snackbar_delete_account_success";
+  static const snackbar_delete_account_failure =
+      "snackbar_delete_account_failure";
 
   static const snackbar_add_asset_success = "snackbar_add_asset_success";
   static const snackbar_add_asset_failure = "snackbar_add_asset_failure";
@@ -151,10 +156,12 @@ abstract class FinanceLocales {
   static const snackbar_delete_asset_success = "snackbar_delete_asset_success";
   static const snackbar_delete_asset_failure = "snackbar_delete_asset_failure";
 
-  static const snackbar_transfer_asset_success = "snackbar_transfer_asset_success";
-  static const snackbar_transfer_asset_failure = "snackbar_transfer_asset_failure";
-  static const snackbar_transfer_asset_same_account = "snackbar_transfer_asset_same_account";
-  static const snackbar_transfer_asset_same_asset = "snackbar_transfer_asset_same_asset";
-
-
+  static const snackbar_transfer_asset_success =
+      "snackbar_transfer_asset_success";
+  static const snackbar_transfer_asset_failure =
+      "snackbar_transfer_asset_failure";
+  static const snackbar_transfer_asset_same_account =
+      "snackbar_transfer_asset_same_account";
+  static const snackbar_transfer_asset_same_asset =
+      "snackbar_transfer_asset_same_asset";
 }

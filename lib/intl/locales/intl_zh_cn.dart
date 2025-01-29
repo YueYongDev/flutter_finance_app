@@ -40,6 +40,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_debt_label: "负债",
   FinanceLocales.l_account_balance_uppercase: "账户余额总览",
   FinanceLocales.l_balance_label: "余额",
+  FinanceLocales.l_last_update: "上次更新",
   FinanceLocales.l_asset_list: "资产列表",
   FinanceLocales.l_add_account: "添加账户",
   FinanceLocales.l_edit_account: "编辑账户",

@@ -50,6 +50,7 @@ final Map<String, String> intlEnUS = {
   FinanceLocales.l_debt_label: "Debt",
   FinanceLocales.l_account_balance_uppercase: "ACCOUNT BALANCE",
   FinanceLocales.l_balance_label: "Balance",
+  FinanceLocales.l_last_update: "Last Update",
   FinanceLocales.l_asset_list: "Asset List",
   FinanceLocales.l_add_account: "Add Account",
   FinanceLocales.l_edit_account: "Edit Account",
