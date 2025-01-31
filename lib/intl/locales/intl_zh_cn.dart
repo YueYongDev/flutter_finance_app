@@ -95,7 +95,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_sea_green_style: "海洋绿",
 
   // Onboarding translations
-  FinanceLocales.onboarding_finance_app: "「财务自由」",
+  FinanceLocales.onboarding_finance_app: "「钱管家」",
   FinanceLocales.onboarding_get_started: "即刻出发！",
   FinanceLocales.onboarding_title_1: "「账户」",
   FinanceLocales.onboarding_subtitle_1: "“人这一生，守好三个钱包，你就稳了”\n——《繁花》",

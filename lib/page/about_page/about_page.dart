@@ -57,7 +57,7 @@ class AboutPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // 应用 Logo
-                Image.asset('assets/images/app-logo-removebg.png',
+                Image.asset('assets/images/app-logo-circle.png',
                     width: 100, height: 100),
                 Text(packageInfo.appName,
                     style: TextStyle(
