@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_finance_app/entity/account.dart';
 import 'package:flutter_finance_app/entity/asset.dart';
 import 'package:flutter_finance_app/enum/operation_log_enum.dart';
@@ -12,7 +14,7 @@ class OperationLogRepository {
   Future<void> recordAccountCreate(Account account) async {
     final log = OperationLog(
       id: generateShortId(),
-      accouId: account.id!,
+      accountId: account.id!,
       operationType: OperationLogTypeEnum.ADD_ACCOUNT.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -25,7 +27,7 @@ class OperationLogRepository {
   Future<void> recordAccountUpdate(Account account) async {
     final log = OperationLog(
       id: generateShortId(),
-      accouId: account.id!,
+      accountId: account.id!,
       operationType: OperationLogTypeEnum.UPDATE_ACCOUNT.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -38,7 +40,7 @@ class OperationLogRepository {
   Future<void> recordAccountDelete(Account account) async {
     final log = OperationLog(
       id: generateShortId(),
-      accouId: account.id!,
+      accountId: account.id!,
       operationType: OperationLogTypeEnum.DELETE_ACCOUNT.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -51,7 +53,7 @@ class OperationLogRepository {
   Future<void> recordAssetCreate(Asset asset) async {
     final log1 = OperationLog(
       id: generateShortId(),
-      accouId: asset.accountId,
+      accountId: asset.accountId,
       assetId: asset.id!,
       operationType: OperationLogTypeEnum.ADD_ASSET.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -61,7 +63,7 @@ class OperationLogRepository {
     );
     final log2 = OperationLog(
       id: generateShortId(),
-      accouId: asset.accountId,
+      accountId: asset.accountId,
       assetId: asset.id!,
       operationType: OperationLogTypeEnum.UPDATE_ACCOUNT.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -76,7 +78,7 @@ class OperationLogRepository {
   Future<void> recordAssetUpdate(Asset asset) async {
     final log = OperationLog(
       id: generateShortId(),
-      accouId: asset.accountId,
+      accountId: asset.accountId,
       assetId: asset.id!,
       operationType: OperationLogTypeEnum.UPDATE_ASSET.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -90,7 +92,7 @@ class OperationLogRepository {
   Future<void> recordAssetDelete(Asset asset) async {
     final log = OperationLog(
       id: generateShortId(),
-      accouId: asset.accountId,
+      accountId: asset.accountId,
       assetId: asset.id!,
       operationType: OperationLogTypeEnum.DELETE_ASSET.name,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -110,9 +112,9 @@ class OperationLogRepository {
     return maps.map((map) => OperationLog.fromMap(map)).toList();
   }
 
-  Future<List<OperationLog>> getByAccount(String accouId, {int? limit}) async {
+  Future<List<OperationLog>> getByAccount(String accountId, {int? limit}) async {
     final maps =
-        await _dbHelper.getOperationLogsByAccount(accouId, limit: limit);
+        await _dbHelper.getOperationLogsByAccount(accountId, limit: limit);
     return maps.map((map) => OperationLog.fromMap(map)).toList();
   }
 
@@ -122,5 +124,46 @@ class OperationLogRepository {
 
   Future<void> delete(String id) async {
     await _dbHelper.deleteOperationLog(id);
+  }
+
+  Future<void> insertMockData() async {
+    final now = DateTime.now();
+    final random = Random();
+    double randomBalance = 500 + random.nextDouble() * 1000;
+    // Insert mock data for the past 10 days
+    for (int i = 0; i < 20; i++) {
+      final date = now.subtract(Duration(days: i));
+      final timestamp =
+          date.millisecondsSinceEpoch; // Get the timestamp for i days ago
+      final log1 = OperationLog(
+        id: generateShortId(),
+        accountId: "mock_account_id",
+        operationType: OperationLogTypeEnum.UPDATE_ACCOUNT.name,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        key: OperationLogKeyEnum.NAME.name,
+        value: "mock_account_name",
+      );
+      final log2 = OperationLog(
+        id: generateShortId(),
+        accountId: "mock_account_id",
+        assetId: "mock_asset_id",
+        operationType: OperationLogTypeEnum.UPDATE_ACCOUNT.name,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        key: OperationLogKeyEnum.AMOUNT.name,
+        value: randomBalance.toString(),
+      );
+      await create(log1);
+      await create(log2);
+    }
+  }
+
+  Future<void> cleanupMockData() async {
+    final db = await _dbHelper.database;
+
+    // Delete all mock data entries
+    await db.delete('operation_log',
+        where: 'account_id = ?', whereArgs: ["mock_account_id"]);
   }
 }

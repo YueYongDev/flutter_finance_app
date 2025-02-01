@@ -79,8 +79,8 @@ class DatabaseHelper {
     CREATE TABLE operation_log(
       id TEXT PRIMARY KEY,
       operation_type TEXT,
-      accouId TEXT,
-      assetId TEXT,
+      account_id TEXT,
+      asset_id TEXT,
       key TEXT,
       value TEXT,
       extra TEXT,
@@ -134,8 +134,8 @@ class DatabaseHelper {
         CREATE TABLE IF NOT EXISTS operation_log(
           id TEXT PRIMARY KEY,
           operation_type TEXT,
-          accouId TEXT,
-          assetId TEXT,
+          account_id TEXT,
+          asset_id TEXT,
           key TEXT,
           value TEXT,
           extra TEXT,
@@ -282,14 +282,14 @@ class DatabaseHelper {
 
   // Read logs by account
   Future<List<Map<String, dynamic>>> getOperationLogsByAccount(
-    String accouId, {
+    String accountId, {
     int? limit,
   }) async {
     final db = await database;
     return await db.query(
       'operation_log',
-      where: 'accouId = ?',
-      whereArgs: [accouId],
+      where: 'account_id = ?',
+      whereArgs: [accountId],
       orderBy: 'created_at DESC',
       limit: limit,
     );

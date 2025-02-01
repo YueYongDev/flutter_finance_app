@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/app_styles.dart';
+import 'package:flutter_finance_app/constant/settings_page_key.dart';
 import 'package:flutter_finance_app/helper/page_animation_transition.dart';
 import 'package:flutter_finance_app/helper/scale_animation_transition.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
-import 'package:flutter_finance_app/main.dart';
 import 'package:flutter_finance_app/model/data.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_finance_app/widget/wallet.dart';

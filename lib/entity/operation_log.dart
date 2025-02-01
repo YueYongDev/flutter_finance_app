@@ -5,7 +5,7 @@ import 'package:flutter_finance_app/enum/operation_log_enum.dart';
 class OperationLog {
   final String id;
   final String operationType;
-  final String accouId;
+  final String accountId;
   final String? assetId;
   final String key;
   final String value;
@@ -16,7 +16,7 @@ class OperationLog {
   OperationLog({
     required this.id,
     required this.operationType,
-    required this.accouId,
+    required this.accountId,
     this.assetId,
     required this.key,
     required this.value,
@@ -29,8 +29,8 @@ class OperationLog {
     return {
       'id': id,
       'operation_type': operationType,
-      'accouId': accouId,
-      'assetId': assetId,
+      'account_id': accountId,
+      'asset_id': assetId,
       'key': key,
       'value': value,
       'extra': jsonEncode(extra),
@@ -43,8 +43,8 @@ class OperationLog {
     return OperationLog(
       id: map['id'],
       operationType: map['operation_type'],
-      accouId: map['accouId'],
-      assetId: map['assetId'],
+      accountId: map['account_id'],
+      assetId: map['asset_id'],
       key: map['key'],
       value: map['value'],
       extra: jsonDecode(map['extra']),

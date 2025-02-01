@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const String feedbackUrl = "https://txc.qq.com/products/691950";
+const String appLandingPageUrl = "https://txc.qq.com/products/691950";
 const List<Color> colors = [
   Colors.red,
   Colors.pink,
@@ -38,9 +39,7 @@ const assetIconPathList = [
   "assets/icons/choose_asset_icon/tiktok.png",
   "assets/icons/choose_asset_icon/baitiao.png",
   "assets/icons/choose_asset_icon/unionpay.png",
-  // "assets/icons/choose_asset_icon/visa.png",
   "assets/icons/choose_asset_icon/wechat.png",
-  // "assets/icons/choose_asset_icon/youtube.png",
   "assets/icons/choose_asset_icon/zhihu.png",
   "assets/icons/choose_asset_icon/btc.png",
   "assets/icons/choose_asset_icon/doge.png",

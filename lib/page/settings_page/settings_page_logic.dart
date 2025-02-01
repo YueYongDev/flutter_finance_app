@@ -1,9 +1,11 @@
+import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/constant/settings_page_key.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPageLogic extends GetxController {
   String selectedLanguage = FinanceInternation.localeMap[financeUI.appLocale]!;
@@ -37,5 +39,12 @@ class SettingsPageLogic extends GetxController {
 
   changeIcloudSyncEnable(bool enable) {
     box.write(iCloudSyncKey, enable);
+  }
+
+  Future<void> launchToFeedback() async {
+    final Uri url = Uri.parse(feedbackUrl);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 }

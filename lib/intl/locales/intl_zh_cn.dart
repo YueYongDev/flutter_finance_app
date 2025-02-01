@@ -15,6 +15,9 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.setting_default_currency: "默认展示货币",
   FinanceLocales.setting_data_security: "数据与安全",
   FinanceLocales.setting_icloud_data_sync: "iCloud同步",
+  FinanceLocales.setting_data_import_export: "数据导入&导出",
+  FinanceLocales.setting_data_import: "数据导入",
+  FinanceLocales.setting_data_export: "数据导出",
   FinanceLocales.setting_advance: "高级设置",
   FinanceLocales.setting_basic: "基础设置",
   FinanceLocales.setting_product_guide: "产品指南",
@@ -95,7 +98,7 @@ final Map<String, String> intlZhCN = {
   FinanceLocales.l_sea_green_style: "海洋绿",
 
   // Onboarding translations
-  FinanceLocales.onboarding_finance_app: "「钱管家」",
+  FinanceLocales.onboarding_finance_app: "「财管家」",
   FinanceLocales.onboarding_get_started: "即刻出发！",
   FinanceLocales.onboarding_title_1: "「账户」",
   FinanceLocales.onboarding_subtitle_1: "“人这一生，守好三个钱包，你就稳了”\n——《繁花》",

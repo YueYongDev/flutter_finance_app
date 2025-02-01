@@ -18,6 +18,9 @@ abstract class FinanceLocales {
   static const setting_default_currency = "setting_default_currency";
   static const setting_data_security = "setting_data_security";
   static const setting_icloud_data_sync = "setting_icloud_data_sync";
+  static const setting_data_import_export = "setting_data_import_export";
+  static const setting_data_import = "setting_data_import";
+  static const setting_data_export = "setting_data_export";
   static const setting_advance = "setting_advance";
   static const setting_basic = "setting_basic";
   static const setting_product_guide = "setting_product_guide";

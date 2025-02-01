@@ -1,19 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance_app/constant/common_constant.dart';
+import 'package:flutter_finance_app/constant/settings_page_key.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
-import 'package:flutter_finance_app/main.dart';
 import 'package:flutter_finance_app/page/about_page/about_page.dart';
 import 'package:flutter_finance_app/repository/balance_history_repository.dart';
+import 'package:flutter_finance_app/repository/operation_log_repository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'settings_page_logic.dart';
 
@@ -32,31 +36,30 @@ class SettingsPage extends StatelessWidget {
         title: Text(FinanceLocales.main_tab_setting.tr,
             style: const TextStyle(color: CupertinoColors.label, fontSize: 18)),
       ),
-      body: Column(
-        children: [
-          GetBuilder<SettingsPageLogic>(builder: (logic) {
-            return MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: SettingsList(
-                lightTheme:
-                    SettingsThemeData(settingsListBackground: backgroundColor),
-                shrinkWrap: true,
-                sections: [
-                  // 基础设置
-                  _buildBasicSettingsSection(),
-                  // 数据与安全设置
-                  // _buildDataSecuritySection(),
-                  // 产品指南
-                  _buildProductGuideSection(),
-                  // 联系我们
-                  _buildContactUsSection(),
-                  if (kDebugMode) _buildDeveloperSection(),
-                ],
-              ),
-            );
-          }),
-        ],
+      body: SingleChildScrollView(
+        child: GetBuilder<SettingsPageLogic>(builder: (logic) {
+          return MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: SettingsList(
+              physics: const NeverScrollableScrollPhysics(),
+              lightTheme:
+                  SettingsThemeData(settingsListBackground: backgroundColor),
+              shrinkWrap: true,
+              sections: [
+                // 基础设置
+                _buildBasicSettingsSection(),
+                // 数据与安全设置
+                _buildDataSecuritySection(),
+                // 产品指南
+                _buildProductGuideSection(),
+                // 联系我们
+                _buildContactUsSection(),
+                if (kDebugMode) _buildDeveloperSection(),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -156,16 +159,56 @@ class SettingsPage extends StatelessWidget {
     return SettingsSection(
       title: Text(FinanceLocales.setting_data_security.tr),
       tiles: <SettingsTile>[
-        SettingsTile.switchTile(
+        // SettingsTile.switchTile(
+        //   enabled: true,
+        //   onToggle: (bool value) {
+        //     controller.toggleIcloudSync(value);
+        //     controller.update();
+        //   },
+        //   initialValue: controller.icloudSyncEnable,
+        //   leading: const Icon(Icons.cloud_sync, color: Colors.grey),
+        //   title: Text(FinanceLocales.setting_icloud_data_sync.tr),
+        // ),
+        SettingsTile.navigation(
           enabled: true,
-          onToggle: (bool value) {
-            controller.toggleIcloudSync(value);
-            controller.update();
+          leading: const Icon(Icons.import_export, color: Colors.blueAccent),
+          title: Text(FinanceLocales.setting_data_import_export.tr),
+          onPressed: (context) {
+            showCupertinoDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CupertinoAlertDialog(
+                  title: Text(FinanceLocales.setting_data_import_export.tr),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text(FinanceLocales.setting_data_import.tr,
+                          style: const TextStyle(color: Colors.blueAccent)),
+                      onPressed: () {
+                        // Handle import data action
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text(FinanceLocales.setting_data_export.tr,
+                          style: const TextStyle(color: Colors.blueAccent)),
+                      onPressed: () {
+                        // Handle export data action
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      isDestructiveAction: true,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(FinanceLocales.general_cancel.tr),
+                    ),
+                  ],
+                );
+              },
+            );
           },
-          initialValue: controller.icloudSyncEnable,
-          leading: const Icon(Icons.cloud_sync, color: Colors.grey),
-          title: Text(FinanceLocales.setting_icloud_data_sync.tr),
-        ),
+        )
       ],
     );
   }
@@ -196,6 +239,7 @@ class SettingsPage extends StatelessWidget {
           title: const Text("insert history mock data"),
           onPressed: (context) {
             BalanceHistoryRepository().insertMockData();
+            OperationLogRepository().insertMockData();
           },
         ),
         SettingsTile.navigation(
@@ -203,6 +247,7 @@ class SettingsPage extends StatelessWidget {
           title: const Text("delete history mock data"),
           onPressed: (context) {
             BalanceHistoryRepository().cleanupMockData();
+            OperationLogRepository().cleanupMockData();
           },
         ),
         SettingsTile.navigation(
@@ -225,22 +270,23 @@ class SettingsPage extends StatelessWidget {
           leading:
               const Icon(Icons.feedback_outlined, color: Colors.blueAccent),
           title: Text(FinanceLocales.setting_feedback.tr),
-          onPressed: (context) {
-            // Define action on press, if required.
-          },
+          onPressed: (context) => controller.launchToFeedback(),
         ),
         SettingsTile.navigation(
           leading: const Icon(Icons.star, color: Colors.orangeAccent),
           title: Text(FinanceLocales.setting_five_star_rating.tr),
-          onPressed: (context) {
-            // Define action on press, if required.
+          onPressed: (context) async {
+            final InAppReview inAppReview = InAppReview.instance;
+            if (await inAppReview.isAvailable()) {
+              inAppReview.requestReview();
+            }
           },
         ),
         SettingsTile.navigation(
           leading: const Icon(CupertinoIcons.share_up, color: Colors.teal),
           title: Text(FinanceLocales.setting_share_with_friends.tr),
           onPressed: (context) {
-            // Define action on press, if required.
+            Share.shareUri(Uri.parse(appLandingPageUrl));
           },
         ),
         SettingsTile.navigation(

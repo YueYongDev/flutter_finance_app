@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_finance_app/constant/settings_page_key.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/page/account_page/account_page.dart';
 import 'package:flutter_finance_app/page/on_boarding/on_boarding_page.dart';
-import 'package:flutter_finance_app/page/account_trend_page/account_trend_page.dart'; // 新增导入
 import 'package:flutter_finance_app/service/balance_history_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-const String kFirstLaunchKey = 'is_first_launch';
 
 void main() async {
   await GetStorage.init();

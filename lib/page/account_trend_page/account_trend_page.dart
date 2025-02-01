@@ -60,6 +60,7 @@ class AccountTrendPage extends StatelessWidget {
                 balanceHistoryRepository.getAccountHistory(account.id!),
                 // balanceHistoryRepository.getAccountHistory("mock_account_id"),
                 operationLogRepository.getByAccount(account.id!),
+                // operationLogRepository.getByAccount("mock_account_id"),
               ]).then((results) {
                 final balanceHistory = results[0] as List<BalanceHistory>;
                 final operationLogs = results[1] as List<OperationLog>;
