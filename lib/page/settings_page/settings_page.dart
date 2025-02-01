@@ -1,15 +1,21 @@
+import 'dart:io'; // Added import for File
+
+import 'package:file_picker/file_picker.dart'; // Added import for FilePicker
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_finance_app/constant/common_constant.dart';
 import 'package:flutter_finance_app/constant/settings_page_key.dart';
 import 'package:flutter_finance_app/enum/currency_type.dart';
+import 'package:flutter_finance_app/helper/common_helper.dart';
 import 'package:flutter_finance_app/helper/finance_ui_manager.dart';
 import 'package:flutter_finance_app/intl/finance_internation.dart';
 import 'package:flutter_finance_app/intl/finance_intl_name.dart';
 import 'package:flutter_finance_app/page/about_page/about_page.dart';
 import 'package:flutter_finance_app/repository/balance_history_repository.dart';
 import 'package:flutter_finance_app/repository/operation_log_repository.dart';
+import 'package:flutter_finance_app/service/export_service.dart'; // Added import for ExportService
+import 'package:flutter_finance_app/service/import_service.dart'; // Added import for ImportService
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -23,6 +29,8 @@ import 'settings_page_logic.dart';
 
 class SettingsPage extends StatelessWidget {
   final controller = Get.put(SettingsPageLogic());
+  final ImportService _importService =
+      ImportService(); // Added ImportService instance
 
   SettingsPage({super.key});
 
@@ -61,6 +69,96 @@ class SettingsPage extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  // 数据与安全设置
+  _buildDataSecuritySection() {
+    return SettingsSection(
+      title: Text(FinanceLocales.setting_data_security.tr),
+      tiles: <SettingsTile>[
+        SettingsTile(
+          leading: const Icon(Icons.import_export, color: Colors.blueAccent),
+          title: Text(FinanceLocales.setting_data_import_export.tr),
+          onPressed: (context) async {
+            showCupertinoDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CupertinoAlertDialog(
+                  title: Text(FinanceLocales.setting_data_import_export.tr),
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text(FinanceLocales.setting_data_import.tr,
+                          style: const TextStyle(color: Colors.blueAccent)),
+                      onPressed: () async {
+                        try {
+                          final result = await FilePicker.platform.pickFiles(
+                            type: FileType.custom,
+                            allowedExtensions: ['zip'],
+                          );
+                          if (result != null &&
+                              result.files.single.path != null) {
+                            final File zipFile =
+                                File(result.files.single.path!);
+                            await _importService.importData(zipFile);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Import completed')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('No file selected')),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Import failed: $e')),
+                          );
+                        } finally {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text(FinanceLocales.setting_data_export.tr,
+                          style: const TextStyle(color: Colors.blueAccent)),
+                      onPressed: () async {
+                        // 提前计算分享位置
+                        final Rect sharePositionOrigin =
+                            getSharePositionOrigin(context);
+                        try {
+                          final ExportService exportService = ExportService();
+                          final File zipFile = await exportService.exportData();
+                          if (zipFile.path.isNotEmpty) {
+                            await shareExportedFile(
+                                zipFile.path, sharePositionOrigin);
+                          }
+                          // Optionally, handle the exported file (e.g., share or save it)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Export completed')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Export failed: $e')),
+                          );
+                        } finally {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      isDestructiveAction: true,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(FinanceLocales.general_cancel.tr),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        )
+      ],
     );
   }
 
@@ -150,65 +248,6 @@ class SettingsPage extends StatelessWidget {
         // ),
         buildCurrencySelectorTile(),
         buildLanguageSelectorTile(),
-      ],
-    );
-  }
-
-  // 数据与安全设置
-  _buildDataSecuritySection() {
-    return SettingsSection(
-      title: Text(FinanceLocales.setting_data_security.tr),
-      tiles: <SettingsTile>[
-        // SettingsTile.switchTile(
-        //   enabled: true,
-        //   onToggle: (bool value) {
-        //     controller.toggleIcloudSync(value);
-        //     controller.update();
-        //   },
-        //   initialValue: controller.icloudSyncEnable,
-        //   leading: const Icon(Icons.cloud_sync, color: Colors.grey),
-        //   title: Text(FinanceLocales.setting_icloud_data_sync.tr),
-        // ),
-        SettingsTile.navigation(
-          enabled: true,
-          leading: const Icon(Icons.import_export, color: Colors.blueAccent),
-          title: Text(FinanceLocales.setting_data_import_export.tr),
-          onPressed: (context) {
-            showCupertinoDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CupertinoAlertDialog(
-                  title: Text(FinanceLocales.setting_data_import_export.tr),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text(FinanceLocales.setting_data_import.tr,
-                          style: const TextStyle(color: Colors.blueAccent)),
-                      onPressed: () {
-                        // Handle import data action
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text(FinanceLocales.setting_data_export.tr,
-                          style: const TextStyle(color: Colors.blueAccent)),
-                      onPressed: () {
-                        // Handle export data action
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      isDestructiveAction: true,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(FinanceLocales.general_cancel.tr),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-        )
       ],
     );
   }

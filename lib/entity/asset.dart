@@ -46,6 +46,10 @@ class Asset {
     };
   }
 
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
   factory Asset.fromMap(Map<String, dynamic> map) {
     return Asset(
       id: map['id'],
@@ -65,5 +69,10 @@ class Asset {
       // Parse new field
       extra: jsonDecode(map['extra']), // Parse JSON string to Map
     );
+  }
+
+  factory Asset.fromJson(String jsonString) {
+    final map = jsonDecode(jsonString);
+    return Asset.fromMap(map);
   }
 }

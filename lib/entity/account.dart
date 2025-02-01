@@ -44,6 +44,10 @@ class Account {
     };
   }
 
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
   factory Account.fromMap(Map<String, dynamic> map) {
     String color = map['color'];
     if (!color.startsWith('0xFF')) {
@@ -63,5 +67,10 @@ class Account {
       // Parse JSON string to Map
       assets: [],
     );
+  }
+
+  factory Account.fromJson(String jsonString) {
+    final map = jsonDecode(jsonString);
+    return Account.fromMap(map);
   }
 }

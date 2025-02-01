@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'dart:convert'; // Added import for jsonEncode and jsonDecode
 
 class BalanceHistory {
   String? id;
@@ -25,6 +26,10 @@ class BalanceHistory {
     };
   }
 
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
   factory BalanceHistory.fromMap(Map<String, dynamic> map) {
     return BalanceHistory(
       id: map['id'],
@@ -33,6 +38,11 @@ class BalanceHistory {
       recordedAt: map['recorded_at'] as int,
       createdAt: map['created_at'] as int,
     );
+  }
+
+  factory BalanceHistory.fromJson(String jsonString) {
+    final map = jsonDecode(jsonString);
+    return BalanceHistory.fromMap(map);
   }
 
   @override

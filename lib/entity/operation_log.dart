@@ -39,6 +39,10 @@ class OperationLog {
     };
   }
 
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
   factory OperationLog.fromMap(Map<String, dynamic> map) {
     return OperationLog(
       id: map['id'],
@@ -47,10 +51,15 @@ class OperationLog {
       assetId: map['asset_id'],
       key: map['key'],
       value: map['value'],
-      extra: jsonDecode(map['extra']),
+      extra: map['extra'] != null ? jsonDecode(map['extra']) : null,
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
     );
+  }
+
+  factory OperationLog.fromJson(String jsonString) {
+    final map = jsonDecode(jsonString);
+    return OperationLog.fromMap(map);
   }
 
   String getDisplayOperationType() {
