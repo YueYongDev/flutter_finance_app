@@ -180,8 +180,7 @@ class EditAccountPage extends StatelessWidget {
           onTap: showMenu,
           child: Row(
             children: [
-              Text(controller.getCurrencyDisplayName(),
-                  style: TextStyle(fontSize: 14.sp)),
+              Text(controller.getCurrencyDisplayName()),
               const SizedBox(width: 3),
               Icon(CupertinoIcons.chevron_up_chevron_down,
                   color: Colors.grey, size: 18.sp),

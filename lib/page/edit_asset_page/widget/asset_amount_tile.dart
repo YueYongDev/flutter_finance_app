@@ -34,7 +34,7 @@ SettingsTile buildAssetAmountTile(BuildContext context) {
       builder: (context) {
         return GestureDetector(
           onTap: () {}, // 阻止点击穿透
-          child: Container(
+          child: SizedBox(
             height: 260, // 与 NumericKeyboard 默认高度一致
             child: NumericKeyboard(
               controller: controller.amountController,
